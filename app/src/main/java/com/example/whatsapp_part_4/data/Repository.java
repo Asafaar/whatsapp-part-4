@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class Repository {
-    private UserDao userDao;
+//    private UserDao userDao;
     private MessageDao messageDao;
     private String token;
     private ListUsers listusers;
+
+    private ListUserGet listUserGets;
     private Appdb db;
     private ListMessage listmessages;
     private MainApiManger mainApiManger;
@@ -18,16 +20,20 @@ public class Repository {
 
     private LastMsgByuser lastMsgByuser;
 
+    private UeserGet useserGet;
+
 
     public Repository(Appdb db) {
         this.db = db;
-        userDao = db.userDao();
+//        userDao = db.userDao();
         messageDao = db.messageDao();
         userMessageConnectDao = db.userMessageConnectDao();
         lastMsgByuser = db.lastMsgByuser();
+        useserGet = db.UeserGet();
         listusers = new ListUsers();
         listmessages = new ListMessage();
-        mainApiManger = new MainApiManger(listusers, listmessages, userDao, messageDao, null, userMessageConnectDao);
+        listUserGets = new ListUserGet();
+        mainApiManger = new MainApiManger(listusers,listUserGets, listmessages,  messageDao, null, userMessageConnectDao,useserGet);
     }
 
     public MutableLiveData<List<Message>> getListmessages() {
@@ -63,7 +69,7 @@ public class Repository {
     }
 
     public void adduser(User user) {
-        userDao.insertUser(user);
+//        userDao.insertUser(user);
         List<User> myDataList = listusers.getValue();//add to live data
         myDataList.add(user);
         listusers.postValue(myDataList);
@@ -111,7 +117,7 @@ public class Repository {
         if (statusapi != 200) {//cant del from server
             return -1;
         }
-        userDao.deleteUser(user);
+//        userDao.deleteUser(user);
         List<String> list = userMessageConnectDao.getMessageIdsForUser(user.getId());
         for (String id : list) {
             messageDao.deleteMessageById(id);
@@ -125,4 +131,7 @@ public class Repository {
         return 1;
     }
 
+    public LiveData<List<UserGet>> getListusersget() {
+        return listUserGets;
+    }
 }

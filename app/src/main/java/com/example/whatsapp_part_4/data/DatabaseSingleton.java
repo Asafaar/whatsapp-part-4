@@ -12,7 +12,7 @@ public class DatabaseSingleton {
 
     public static synchronized Appdb getDatabase(Context context) {
         if (db == null) {
-            db = Room.databaseBuilder(context.getApplicationContext(), Appdb.class, "maindb5")
+            db = Room.databaseBuilder(context.getApplicationContext(), Appdb.class, "maind8")
                     .allowMainThreadQueries().build();
         }
         return db;

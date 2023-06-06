@@ -13,6 +13,7 @@ public interface MessageDao {
     List<Message> getMessagesById(String id);
     @Query("SELECT * FROM Message")
     List<Message> getAllMessages();
+
     @Insert
     void insertMessage(Message... messages);
     @Insert

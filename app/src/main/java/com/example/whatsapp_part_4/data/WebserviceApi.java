@@ -26,7 +26,7 @@ public interface WebserviceApi {
 
     @Headers("Content-Type: application/json")
     @GET("Chats")
-    Call<List<User>> getFriends(@Header("Authorization") String authorization);
+    Call<List<UserGet>> getFriends(@Header("Authorization") String authorization);
 
     @Headers("Content-Type: application/json")
     @POST("Chats/{friendId}/Messages")

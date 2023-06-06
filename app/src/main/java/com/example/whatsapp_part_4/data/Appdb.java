@@ -6,14 +6,17 @@ import androidx.room.TypeConverters;
 
 import org.w3c.dom.Comment;
 
-@Database(entities = {User.class, Message.class, UserMessage.class, LastmessgeByuser.class}, version = 2)
+@Database(entities = { Message.class, UserMessage.class, LastmessgeByuser.class,UserGet.class}, version = 2)
 @TypeConverters({Converters.class})
 public abstract class Appdb extends RoomDatabase {
-    public abstract UserDao userDao();
+//    public abstract UserDao userDao();
 
     public abstract MessageDao messageDao();
 
     public abstract UserMessageConnectDao userMessageConnectDao();
 
     public abstract LastMsgByuser lastMsgByuser();
+
+    public abstract UeserGet UeserGet();
+
 }

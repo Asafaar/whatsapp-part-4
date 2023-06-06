@@ -27,19 +27,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainApiManger {
     private MutableLiveData<List<User>> users;
     private MutableLiveData<List<Message>> messages;
+    private MutableLiveData<List<UserGet>> usersget;
     private Retrofit retrofit;
     private WebserviceApi api;
-    private UserDao userDao;
+//    private UserDao userDao;
     private MessageDao messageDao;
     private UserMessageConnectDao userMessageConnectDao;
     private String token;
+    private UeserGet UeserGet;
 
-    public MainApiManger(MutableLiveData<List<User>> users, MutableLiveData<List<Message>> messages, UserDao userDao, MessageDao messageDao, String token,UserMessageConnectDao userMessageConnectDao) {
+    public MainApiManger(MutableLiveData<List<User>> users,MutableLiveData<List<UserGet>> userget, MutableLiveData<List<Message>> messages, MessageDao messageDao, String token,UserMessageConnectDao userMessageConnectDao,UeserGet ueserGet) {
         this.users = users;
         this.token = "bearer" + token;
         this.messages = messages;
+        this.usersget = userget;
+        this.UeserGet = ueserGet;
         this.userMessageConnectDao = userMessageConnectDao;
-        this.userDao = userDao;
+//        this.userDao = userDao;
         this.messageDao = messageDao;
         retrofit = new Retrofit.Builder()
                 .baseUrl(ConstantData.BASE_URL)
@@ -51,17 +55,22 @@ public class MainApiManger {
 
     public void getfriends() {
 
-        api.getFriends(token).enqueue(new Callback<List<User>>() {
+        api.getFriends(token).enqueue(new Callback<List<UserGet>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                userDao.deleteAllUsers();
-                userDao.insertAll(response.body());
-                users.setValue(userDao.getAllUsers());
+            public void onResponse(Call<List<UserGet>> call, Response<List<UserGet>> response) {
+//                userDao.deleteAllUsers();
+//                userDao.insertAll(response.body());
+                UeserGet.insertAll(response.body());
+                List<UserGet> myDataList = usersget.getValue();
+                myDataList.addAll(response.body());
+                usersget.postValue(myDataList);
+
+
             }
 
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                users.setValue(userDao.getAllUsers());
+            public void onFailure(Call<List<UserGet>> call, Throwable t) {
+//                Log.e(TAG, "onFailure: "call failed", );
             }
         });
 
@@ -77,6 +86,22 @@ public class MainApiManger {
         public void onResponse(Call<Message> call, Response<Message> response) {
             if(response.code()==200){
                      message[0] = response.body();
+                 UserMessage userMessage = new UserMessage(idofFriend, message[0].getId());//TODO check if it works
+                userMessageConnectDao.update(userMessage);
+                List<UserGet> list=usersget.getValue();
+                for (UserGet userGet:list) {
+                    if(userGet.getId().equals(idofFriend)){
+                        userGet.getLastMessage().setContent(message[0].getContent());
+                        userGet.getLastMessage().setCreated(message[0].getCreated());
+                        break;
+                    }
+                }
+                usersget.setValue(list);
+                messageDao.insertMessage(message[0]);
+                List<Message> list1=messages.getValue();
+                list1.add(message[0]);
+                messages.setValue(list1);
+
                 Log.d("sendmsg","send successfully");
             }
             else {
@@ -95,23 +120,23 @@ public class MainApiManger {
 
     return message[0];
     }
-//work but dont have the displayname and prgofile pic on the sender
+//Todo dont get all date
     public void getMessgesByuser(String id) {
         api.getMessage(id,token).enqueue(new Callback<List<Message>>() {
             @Override
             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
                 messageDao.deleteAllMessages();
                 List<Message> messageList=response.body();
+
                 messageDao.insertAll(messageList);
                 if (messageList!=null){
-                for (Message message:messageList) {//add to the db connect table
-                    UserMessage userMessage = new UserMessage(id, message.getId());
-                    userMessageConnectDao.insert(userMessage);
-                }
+                    for (Message message:messageList) {//add to the db connect table
+                        UserMessage userMessage = new UserMessage(id, message.getId());
+                        userMessageConnectDao.insert(userMessage);
+                    }
                     List<Message> messageslist=messages.getValue();//add to main msg list
                     messageslist.addAll(messageList);
                     messages.setValue(messageslist);}
-
             }
 
             @Override
@@ -119,6 +144,7 @@ public class MainApiManger {
 
             }
         });
+
     }
 
     public CompletableFuture<Integer> trylogin(String username, String password) {

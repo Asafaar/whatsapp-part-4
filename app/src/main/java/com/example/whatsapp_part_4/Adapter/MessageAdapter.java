@@ -1,4 +1,4 @@
-package com.example.whatsapp_part_4;
+package com.example.whatsapp_part_4.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
