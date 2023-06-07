@@ -1,13 +1,19 @@
 package com.example.whatsapp_part_4.data;
 
+import android.content.Intent;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.whatsapp_part_4.Activty.friends;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class Repository {
-//    private UserDao userDao;
+    //    private UserDao userDao;
     private MessageDao messageDao;
     private String token;
     private ListUsers listusers;
@@ -33,23 +39,43 @@ public class Repository {
         listusers = new ListUsers();
         listmessages = new ListMessage();
         listUserGets = new ListUserGet();
-        mainApiManger = new MainApiManger(listusers,listUserGets, listmessages,  messageDao, null, userMessageConnectDao,useserGet);
+        mainApiManger = new MainApiManger(listusers, listUserGets, listmessages, messageDao, null, userMessageConnectDao, useserGet);
     }
 
     public MutableLiveData<List<Message>> getListmessages() {
         return listmessages;
     }
 
-    public void sendmsg(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
-        Message message = mainApiManger.sendmsg(idofFriend, msg, username, displayName, profilePic);
-        messageDao.insertMessage(message);
-        List<Message> myDataList = listmessages.getValue();//add to live data
-        myDataList.add(message);
-        listmessages.postValue(myDataList);
-        userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));//add to user message connect
-        lastMsgByuser.updateMessageById(idofFriend,message);//update last message
+    public int sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
+//        Message message = mainApiManger.sendMessage(idofFriend, msg, username, displayName, profilePic);
+//        messageDao.insertMessage(message);
+//        List<Message> myDataList = listmessages.getValue();//add to live data
+//        myDataList.add(message);
+//        listmessages.setValue(myDataList);
+//        userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));//add to user message connect
+//        lastMsgByuser.updateMessageById(idofFriend, message);//update last message
+        CompletableFuture<Message> future = mainApiManger.sendMessage(idofFriend, msg, username, displayName, profilePic);
+        future.thenApply(message -> {
+            if (message != null) {
+                Log.e("60", "sendMessage:work ");
+                mainApiManger.getfriends();//get all the data of the users from the web because we need his id
+                messageDao.insertMessage(message);
+                List<Message> myDataList = listmessages.getValue();//add to live data
+                myDataList.add(message);
+                listmessages.setValue(myDataList);
+                userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));//add to user message connect
+                lastMsgByuser.updateMessageById(idofFriend, message);//update last message
+                return 1;
+            } else {
+                Log.e("70", "sendMessage: dont work ");
 
+                return -1;
+            }
 
+        });
+        Log.e("60", "sendMessage:end send -1 ");
+
+        return 1;
     }
 
     public String getToken() {
@@ -64,15 +90,50 @@ public class Repository {
         return listusers;
     }
 
-    public void getMessgesByuser(String id) {
-        mainApiManger.getMessgesByuser(id);
+    public int getMessgesByuser(String id) {
+
+        List<Message> list = messageDao.getMessagesById(id);
+        listmessages.setValue(list);
+        CompletableFuture<List<Message>> future = mainApiManger.getMessgesByuser(id);
+        future.thenApply(messages -> {
+            if (messages != null) {
+                messageDao.deleteAllMessages();
+                messageDao.insertAll(messages);
+                userMessageConnectDao.deleteAllMessages();
+
+                for (Message message : messages) {//add to the db connect table
+                    UserMessage userMessage = new UserMessage(id, message.getId());
+                    userMessageConnectDao.insert(userMessage);
+
+                    listmessages.setValue(messages);
+                }
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        return 1;
     }
 
-    public void adduser(User user) {
+    public int adduser(String frienduser) {
 //        userDao.insertUser(user);
-        List<User> myDataList = listusers.getValue();//add to live data
-        myDataList.add(user);
-        listusers.postValue(myDataList);
+
+        CompletableFuture<Integer> future = mainApiManger.Addfriend(frienduser);
+        future.thenApply(statusCode -> {
+            if (statusCode == 200) {
+                Log.e("TAG", "adduser:load " );
+                mainApiManger.getfriends();//get all the data of the users from the web because we need his id
+            } else {
+                Log.e("TAG", "adduser: -1" );
+
+                return -1;
+            }
+            Log.e("TAG", "adduser: 1" );
+            return 1;
+        });
+        Log.e("TAG", "adduser: 1" );
+
+        return 1;
 
     }
 
@@ -97,6 +158,9 @@ public class Repository {
     }
 
     public void reloadusers() {
+
+        List<UserGet> userGetList = useserGet.getAllUsers();
+        listUserGets.setValue(userGetList);
         mainApiManger.getfriends();
     }
 
@@ -112,26 +176,46 @@ public class Repository {
 
     }
 
-    public int deleteFriend(User user) {
-        int statusapi = mainApiManger.deleteFriend(user.getId());
-        if (statusapi != 200) {//cant del from server
-            return -1;
-        }
+    public int deleteFriend(UserGet user) {
+        CompletableFuture<Integer> future = mainApiManger.deleteFriend(user.getId());
+        future.thenApply(statusCode -> {
+            if (statusCode == 200) {
+                List<String> list = userMessageConnectDao.getMessageIdsForUser(user.getId());
+                for (String id : list) {
+                    messageDao.deleteMessageById(id);
+                }
+                userMessageConnectDao.deleteMessagesForUser(user.getId());
+                List<UserGet> myDataList = listUserGets.getValue();
+                myDataList.remove(user);
+                listUserGets.setValue(myDataList);
+            } else {
+                return -1;
+            }
+            return 1;
+        });
 //        userDao.deleteUser(user);
-        List<String> list = userMessageConnectDao.getMessageIdsForUser(user.getId());
-        for (String id : list) {
-            messageDao.deleteMessageById(id);
-        }
-        userMessageConnectDao.deleteMessagesForUser(user.getId());
-
-        List<User> myDataList = listusers.getValue();
-        myDataList.remove(user);
-        listusers.postValue(myDataList);
-        lastMsgByuser.deleteMessageById(user.getId());
+//        List<String> list = userMessageConnectDao.getMessageIdsForUser(user.getId());
+//        for (String id : list) {
+//            messageDao.deleteMessageById(id);
+//        }
+//        userMessageConnectDao.deleteMessagesForUser(user.getId());
+//
+////        List<User> myDataList = listusers.getValue();
+////        myDataList.remove(user);
+////        listusers.postValue(myDataList);
+//        List<UserGet> myDataList = listUserGets.getValue();
+//        myDataList.remove(user);
+//        listUserGets.setValue(myDataList);
+//        lastMsgByuser.deleteMessageById(user.getId());
         return 1;
     }
 
     public LiveData<List<UserGet>> getListusersget() {
         return listUserGets;
+    }
+
+    public void reloadlastmsg() {
+        List<UserGet> userGetList = useserGet.getAllUsers();
+
     }
 }

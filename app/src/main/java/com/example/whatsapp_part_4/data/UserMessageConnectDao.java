@@ -14,6 +14,7 @@ public interface UserMessageConnectDao {
     void update(UserMessage userMessage);
     @Query("SELECT messageId FROM user_messages WHERE userId = :userId")
     List<String> getMessageIdsForUser(String userId);
+
     @Query("DELETE FROM user_messages WHERE userId = :userId")
     void deleteMessagesForUser(String userId);
     @Query("DELETE FROM user_messages")

@@ -1,4 +1,6 @@
-package com.example.whatsapp_part_4;
+package com.example.whatsapp_part_4.Model;
+
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -29,8 +31,14 @@ public class Model {
         repository.reloadusers();
     }
 
-    public synchronized void sendmsg(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
-        repository.sendmsg(idofFriend, msg, username, displayName, profilePic);
+    public synchronized void sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
+        int status= repository.sendMessage(idofFriend, msg, username, displayName, profilePic);
+        if (status==1){
+            Log.e("TAG", "sendMessage: sucss" );
+        }else{
+            Log.e("TAG", "sendMessage: fail" );
+
+        }
     }
 
     public synchronized CompletableFuture<Integer> trylogin(String username, String password) {
@@ -42,13 +50,24 @@ public class Model {
     }
 
     public synchronized void getMessgesByuser(String id) {
-        repository.getMessgesByuser(id);
+        int status=repository.getMessgesByuser(id);
+        if (status==1){
+            Log.e("TAG", "getMessgesByuser: sucss" );
+        }else{
+            Log.e("TAG", "getMessgesByuser: fail" );
+
+        }
     }
 
-    public synchronized void deleteFriend(User user) {
-        {
+    public synchronized void deleteFriend(UserGet user) {
+
             repository.deleteFriend(user);
-        }
+
+    }
+    public synchronized int addnewfriend(String Friend){
+       return repository.adduser(Friend);
+
+
     }
 
     public String gettoken() {
@@ -65,5 +84,9 @@ public class Model {
 
     public LiveData<List<UserGet>> getUsersget() {
         return usersget;
+    }
+
+    public void reloadlastmsg(){
+        repository.reloadlastmsg();
     }
 }

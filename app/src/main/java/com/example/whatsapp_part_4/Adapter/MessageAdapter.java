@@ -19,6 +19,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         this.messages = messages;
     }
 
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

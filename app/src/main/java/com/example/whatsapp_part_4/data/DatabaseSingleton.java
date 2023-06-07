@@ -4,7 +4,7 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import com.example.whatsapp_part_4.Model;
+import com.example.whatsapp_part_4.Model.Model;
 
 public class DatabaseSingleton {
     private static Appdb db;
@@ -12,7 +12,7 @@ public class DatabaseSingleton {
 
     public static synchronized Appdb getDatabase(Context context) {
         if (db == null) {
-            db = Room.databaseBuilder(context.getApplicationContext(), Appdb.class, "maind8")
+            db = Room.databaseBuilder(context.getApplicationContext(), Appdb.class, "maind11")
                     .allowMainThreadQueries().build();
         }
         return db;

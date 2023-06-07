@@ -21,8 +21,8 @@ public interface WebserviceApi {
     Call<String> getToken(@Body LoginRequest loginRequest);
 
     @Headers("Content-Type: application/json")
-    @GET("Users/{userid}")
-    Call<User> getUser(@Path("userid") String userid, @Header("Authorization") String authorization);
+    @POST("Chats")
+    Call<UserGet.User> addUserFrined(@Body FindFriendRequest findFriendRequest, @Header("Authorization") String authorization);
 
     @Headers("Content-Type: application/json")
     @GET("Chats")
@@ -30,15 +30,15 @@ public interface WebserviceApi {
 
     @Headers("Content-Type: application/json")
     @POST("Chats/{friendId}/Messages")
-    Call<Message> sendMessage(@Path("friendId") String friendId, @Body SendMsgRequest sendMsgRequest,@Header("Authorization") String authorization);
+    Call<Message> sendMessage(@Path("friendId") String friendId, @Body SendMessageRequest sendMsgRequest, @Header("Authorization") String authorization);
 
     @Headers("Content-Type: application/json")
     @GET("Chats/{friendId}/Messages")
-    Call<List<Message>> getMessage(@Path("friendId") String friendId,@Header("Authorization") String authorization);
+    Call<List<Message>> getMessage(@Path("friendId") String friendId, @Header("Authorization") String authorization);
 
     @Headers("Content-Type: application/json")
     @DELETE("Chats/{friendId}")
-    Call<Void> deleteFriend(@Path("friendId") String friendId,@Header("Authorization") String authorization);
+    Call<Void> deleteFriend(@Path("friendId") String friendId, @Header("Authorization") String authorization);
 
 
 }

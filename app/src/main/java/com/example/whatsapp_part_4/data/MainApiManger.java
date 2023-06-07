@@ -30,13 +30,13 @@ public class MainApiManger {
     private MutableLiveData<List<UserGet>> usersget;
     private Retrofit retrofit;
     private WebserviceApi api;
-//    private UserDao userDao;
+    //    private UserDao userDao;
     private MessageDao messageDao;
     private UserMessageConnectDao userMessageConnectDao;
     private String token;
     private UeserGet UeserGet;
 
-    public MainApiManger(MutableLiveData<List<User>> users,MutableLiveData<List<UserGet>> userget, MutableLiveData<List<Message>> messages, MessageDao messageDao, String token,UserMessageConnectDao userMessageConnectDao,UeserGet ueserGet) {
+    public MainApiManger(MutableLiveData<List<User>> users, MutableLiveData<List<UserGet>> userget, MutableLiveData<List<Message>> messages, MessageDao messageDao, String token, UserMessageConnectDao userMessageConnectDao, UeserGet ueserGet) {
         this.users = users;
         this.token = "bearer" + token;
         this.messages = messages;
@@ -60,10 +60,11 @@ public class MainApiManger {
             public void onResponse(Call<List<UserGet>> call, Response<List<UserGet>> response) {
 //                userDao.deleteAllUsers();
 //                userDao.insertAll(response.body());
-                UeserGet.insertAll(response.body());
-                List<UserGet> myDataList = usersget.getValue();
-                myDataList.addAll(response.body());
-                usersget.postValue(myDataList);
+                UeserGet.deleteAllUsers();
+                UeserGet.insertAll(response.body());//update db
+//                List<UserGet> myDataList = usersget.getValue();//update livedata
+//                myDataList.addAll(response.body());
+                usersget.setValue(response.body());
 
 
             }
@@ -75,68 +76,62 @@ public class MainApiManger {
         });
 
     }
+
     //   working
-    public Message sendmsg(String  idofFriend,String msg,String username, String displayName,  byte[] profilePic){
-        SendMsgRequest sendMsgRequest = new SendMsgRequest(msg,username,displayName,profilePic);
+    public CompletableFuture<Message> sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
+        SendMsgRequest sendMsgRequest = new SendMsgRequest(msg, username, displayName, profilePic);
+        SendMessageRequest sendMessageRequest = new SendMessageRequest(msg);
         final Message[] message = {null};
 //        final CountDownLatch latch = new CountDownLatch(1);
+        CompletableFuture<Message> future = new CompletableFuture<>();
+        api.sendMessage(idofFriend, sendMessageRequest, token).enqueue(new Callback<Message>() {
+            @Override
+            public void onResponse(Call<Message> call, Response<Message> response) {
+                if (response.code() == 200) {
+                    message[0] = response.body();
+                    future.complete(message[0]);
+//                 UserMessage userMessage = new UserMessage(idofFriend, message[0].getId());//TODO check if it works
+//                userMessageConnectDao.update(userMessage);
+//                List<UserGet> list=usersget.getValue();
+//                for (UserGet userGet:list) {
+//                    if(userGet.getId().equals(idofFriend)){
+//                        userGet.getLastMessage().setContent(message[0].getContent());
+//                        userGet.getLastMessage().setCreated(message[0].getCreated());
+//                        break;
+//                    }
+//                }
+//                usersget.setValue(list);
+//                messageDao.insertMessage(message[0]);
+//                List<Message> list1=messages.getValue();
+//                list1.add(message[0]);
+//                messages.setValue(list1);
 
-        api.sendMessage(idofFriend,sendMsgRequest,token).enqueue(new Callback<Message>() {
-        @Override
-        public void onResponse(Call<Message> call, Response<Message> response) {
-            if(response.code()==200){
-                     message[0] = response.body();
-                 UserMessage userMessage = new UserMessage(idofFriend, message[0].getId());//TODO check if it works
-                userMessageConnectDao.update(userMessage);
-                List<UserGet> list=usersget.getValue();
-                for (UserGet userGet:list) {
-                    if(userGet.getId().equals(idofFriend)){
-                        userGet.getLastMessage().setContent(message[0].getContent());
-                        userGet.getLastMessage().setCreated(message[0].getCreated());
-                        break;
-                    }
+                    Log.d("sendmsg", "send successfully");
+                } else {
+                    Log.d("sendmsg", "Error: " + response.code());
                 }
-                usersget.setValue(list);
-                messageDao.insertMessage(message[0]);
-                List<Message> list1=messages.getValue();
-                list1.add(message[0]);
-                messages.setValue(list1);
 
-                Log.d("sendmsg","send successfully");
-            }
-            else {
-                Log.d("sendmsg","Error: "+response.code());
+
             }
 
-
-        }
-
-        @Override
-        public void onFailure(Call<Message> call, Throwable t) {
+            @Override
+            public void onFailure(Call<Message> call, Throwable t) {
 
 
-        }
-    });
+            }
+        });
 
-    return message[0];
+        return future;
     }
-//Todo dont get all date
-    public void getMessgesByuser(String id) {
-        api.getMessage(id,token).enqueue(new Callback<List<Message>>() {
+
+    //Todo dont get all date
+    public CompletableFuture<List<Message>> getMessgesByuser(String id) {
+        CompletableFuture<List<Message>> future = new CompletableFuture<>();
+        api.getMessage(id, token).enqueue(new Callback<List<Message>>() {
             @Override
             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-                messageDao.deleteAllMessages();
-                List<Message> messageList=response.body();
-
-                messageDao.insertAll(messageList);
-                if (messageList!=null){
-                    for (Message message:messageList) {//add to the db connect table
-                        UserMessage userMessage = new UserMessage(id, message.getId());
-                        userMessageConnectDao.insert(userMessage);
-                    }
-                    List<Message> messageslist=messages.getValue();//add to main msg list
-                    messageslist.addAll(messageList);
-                    messages.setValue(messageslist);}
+                List<Message> messageList = response.body();
+                future.complete(messageList);
             }
 
             @Override
@@ -144,7 +139,35 @@ public class MainApiManger {
 
             }
         });
+        return future;
+    }
 
+    public CompletableFuture<Integer> Addfriend(String userfrined) {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+
+        Log.e("152", "Addfriend: " + userfrined);
+        Log.e("152", "Addfriend: " + token);
+        FindFriendRequest findFriendRequest = new FindFriendRequest(userfrined);
+        api.addUserFrined(findFriendRequest, token).enqueue(new Callback<UserGet.User>() {
+            @Override
+            public void onResponse(Call<UserGet.User> call, Response<UserGet.User> response) {
+                if (response.code() == 200) {
+                    Log.d("addfriend", "add successfully");
+                    future.complete(200);
+                } else {
+                    Log.d("addfriend", "Error: " + response.code());
+                    future.complete(404);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserGet.User> call, Throwable t) {
+                Log.d("addfriend", "Error: onFailure");
+                future.complete(404);
+            }
+        });
+
+        return future;
     }
 
     public CompletableFuture<Integer> trylogin(String username, String password) {
@@ -160,7 +183,7 @@ public class MainApiManger {
                 if (statusCode[0] == 200) {
                     Log.d("login", "login successfully");
                     token = response.body();
-                    token = "bearer"+" " + token;
+                    token = "bearer" + " " + token;
                     Log.d("token", token);
                 } else {
                     Log.d("login", "Error: " + statusCode[0]);
@@ -170,9 +193,10 @@ public class MainApiManger {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                statusCode[0]=-1;
+                statusCode[0] = -1;
                 Log.d("token", "fail");
-                future.complete(-1);            }
+                future.complete(-1);
+            }
         });
 //        try {
 //
@@ -183,9 +207,10 @@ public class MainApiManger {
 //        }
         return future;
     }
-    int makenewuser(String username,String password, String displayName,  byte[] profilePic){
 
-        UserRequest user = new UserRequest(username, password, displayName,  Base64.getEncoder().encodeToString(profilePic));
+    int makenewuser(String username, String password, String displayName, byte[] profilePic) {
+
+        UserRequest user = new UserRequest(username, password, displayName, Base64.getEncoder().encodeToString(profilePic));
         final CountDownLatch latch = new CountDownLatch(1);
         final int[] statusCode = new int[1];
         api.createUser(user).enqueue(new Callback<Void>() {
@@ -203,8 +228,8 @@ public class MainApiManger {
             }
 
             @Override
-            public void onFailure(Call<Void>call, Throwable t) {
-                statusCode[0]=-1;
+            public void onFailure(Call<Void> call, Throwable t) {
+                statusCode[0] = -1;
                 Log.d("token", "fail");
                 latch.countDown();
             }
@@ -212,35 +237,36 @@ public class MainApiManger {
         try {
 
             latch.await();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Log.d("token", "fail");
         }
         return statusCode[0];
     }
 
-    public int deleteFriend(String friendid) {
+    public CompletableFuture<Integer> deleteFriend(String friendid) {
         final int[] statusCode = new int[1];
-
-        api.deleteFriend(friendid,token).enqueue(new Callback<Void>() {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        api.deleteFriend(friendid, token).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if(response.code()==200){
-                    statusCode[0]=200;
-                    Log.d("deleteFriend","deleted successfully");
-                }
-                else {
-                    Log.d("deleteFriend","Error: "+response.code());
-                    statusCode[0]=response.code();
+                if (response.code() == 204) {
+                    statusCode[0] = 200;
+                    Log.d("deleteFriend", "deleted successfully");
+                    future.complete(200);
+                } else {
+                    Log.d("deleteFriend", "Error: " + response.code());
+                    statusCode[0] = response.code();
+                    future.complete(response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                statusCode[0]=-1;
+                statusCode[0] = -1;
+                future.complete(404);
             }
         });
-    return statusCode[0];
+        return future;
     }
 }
 

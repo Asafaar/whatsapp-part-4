@@ -24,6 +24,13 @@
         android:layout_height="wrap_content"
         android:textSize="12sp"
         android:textColor="@android:color/darker_gray" />
+    <Button
+        android:id="@+id/deletefriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:text="@string/delete"
+        android:textColor="@android:color/darker_gray" />
 
     <ImageView
         android:id="@+id/imagefrined"

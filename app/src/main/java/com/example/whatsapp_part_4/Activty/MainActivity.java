@@ -5,8 +5,7 @@ import static java.lang.Thread.sleep;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.whatsapp_part_4.Activty.Chat;
-import com.example.whatsapp_part_4.Model;
+import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.data.Appdb;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             future.thenApply(statusCode -> {
                 if (statusCode == 200) {
                     Intent intent = new Intent(this, friends.class);
-//                    intent.putExtra("username", username);
+                    intent.putExtra("username", username);
 //                    intent.putExtra("token", model.gettoken());
                     startActivity(intent);
 //                    model.getMessgesByuser("99");

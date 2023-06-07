@@ -1,29 +1,23 @@
 package com.example.whatsapp_part_4.Activty;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-import com.example.whatsapp_part_4.Adapter.MessageAdapter;
-import com.example.whatsapp_part_4.Adapter.UserAdapter;
 import com.example.whatsapp_part_4.Adapter.UserGetAdapter;
-import com.example.whatsapp_part_4.Model;
+import com.example.whatsapp_part_4.Dialog.AddFriendDialogFragment;
+import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
-import com.example.whatsapp_part_4.data.Message;
-import com.example.whatsapp_part_4.data.User;
 import com.example.whatsapp_part_4.data.UserGet;
 import com.example.whatsapp_part_4.databinding.ActivityFriendsBinding;
-import com.example.whatsapp_part_4.databinding.ActivityMainBinding;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
-import android.widget.ListView;
-
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,11 +26,12 @@ import com.example.whatsapp_part_4.R;
 
 import java.util.List;
 
-public class friends extends AppCompatActivity {
+public class friends extends AppCompatActivity implements AddFriendDialogFragment.AddFriendDialogListener {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityFriendsBinding binding;
     private Model model;
+    private String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,21 +39,61 @@ public class friends extends AppCompatActivity {
         setContentView(binding.getRoot());
         RecyclerView recyclerView = findViewById(R.id.list_item_text2);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         model= DatabaseSingleton.getModel(this);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
         model.reload();
         //add sychronized
         // Observe changes to the messages data
+        UserGetAdapter adapter = new UserGetAdapter(model.getUsersget().getValue(),username);
+        recyclerView.setAdapter(adapter);
         model.getUsersget().observe(this, new Observer<List<UserGet>>() {
             @Override
             public void onChanged(List<UserGet> users) {
                 // Update the adapter with the new messages data
-                UserGetAdapter adapter = new UserGetAdapter(users);
-                recyclerView.setAdapter(adapter);
+
+                adapter.setUserGetList(users);
+                adapter.notifyDataSetChanged();
             }
         });
 
 
 
-    }}
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                showAddFriendDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void showAddFriendDialog() {
+        AddFriendDialogFragment dialog = new AddFriendDialogFragment();
+        dialog.show(getSupportFragmentManager(), "AddFriendDialogFragment");
+    }
+
+    @Override
+    public void onAddFriendDialogPositiveClick(String friendName) {
+        // Handle adding the new friend here
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        model.reload();
+
+    }
+
+}
