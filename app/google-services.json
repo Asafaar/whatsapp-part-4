@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "613690260524",
+    "project_id": "whatsapp-part-4",
+    "storage_bucket": "whatsapp-part-4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613690260524:android:a1536a199d87ba71886589",
+        "android_client_info": {
+          "package_name": "com.example.whatsapp_part_4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613690260524-vrtiumnrhblpj1ets6g8lkpiunubjda4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoO_60ME-eYulfwKfXKAVAHudiA0dnLqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613690260524-vrtiumnrhblpj1ets6g8lkpiunubjda4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

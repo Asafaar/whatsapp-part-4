@@ -16,4 +16,6 @@
     <string name="friend_name_hint">add friend</string>
     <string name="add_new_friend">add new</string>
     <string name="delete">delete</string>
+    <string name="title_activity_register">Register</string>
+    <string name="default_notification_channel_id">channel_id</string>
 </resources>

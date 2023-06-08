@@ -31,8 +31,8 @@ public class Model {
         repository.reloadusers();
     }
 
-    public synchronized void sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
-        int status= repository.sendMessage(idofFriend, msg, username, displayName, profilePic);
+    public synchronized void sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic,String friendusername) {
+        int status= repository.sendMessage(idofFriend, msg, username, displayName, profilePic,friendusername);
         if (status==1){
             Log.e("TAG", "sendMessage: sucss" );
         }else{
@@ -40,6 +40,12 @@ public class Model {
 
         }
     }
+
+    public synchronized void sendMessageWithFirebase(Message message,String usernmaefirned) {
+        repository.sendMessageWithFirebase(message,usernmaefirned);
+    }
+
+
 
     public synchronized CompletableFuture<Integer> trylogin(String username, String password) {
         return repository.trylogin(username, password);
@@ -69,7 +75,12 @@ public class Model {
 
 
     }
-
+    public CompletableFuture<Integer> registerfirebase(String token,String username){
+      return   repository.registerfirebase(token,username);
+    }
+    public void addmessage(Message message) {
+        repository.addmessage(message);
+    }
     public String gettoken() {
         return repository.getToken();
     }

@@ -1,5 +1,9 @@
 package com.example.whatsapp_part_4.data;
 
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,6 +43,13 @@ public interface WebserviceApi {
     @Headers("Content-Type: application/json")
     @DELETE("Chats/{friendId}")
     Call<Void> deleteFriend(@Path("friendId") String friendId, @Header("Authorization") String authorization);
+
+    @POST("tokenfirebase")
+    Call<Void> sendTokenfirebase(@Body reqfirebase reqfirebase);
+
+    @POST("msgfirebase/{usernamefriend}")
+    @Headers("Content-Type: application/json")
+    Call<Void> sendMessageWithFirebase(@Path("usernamefriend") String usernamefriend,@Body Message message);
 
 
 }

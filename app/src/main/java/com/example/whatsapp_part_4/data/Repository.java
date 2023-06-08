@@ -46,7 +46,7 @@ public class Repository {
         return listmessages;
     }
 
-    public int sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
+    public int sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic,String friendusername) {
 //        Message message = mainApiManger.sendMessage(idofFriend, msg, username, displayName, profilePic);
 //        messageDao.insertMessage(message);
 //        List<Message> myDataList = listmessages.getValue();//add to live data
@@ -65,6 +65,7 @@ public class Repository {
                 listmessages.setValue(myDataList);
                 userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));//add to user message connect
                 lastMsgByuser.updateMessageById(idofFriend, message);//update last message
+                mainApiManger.sendMessageWithFirebase(message, friendusername);//send message to firebase
                 return 1;
             } else {
                 Log.e("70", "sendMessage: dont work ");
@@ -81,7 +82,9 @@ public class Repository {
     public String getToken() {
         return token;
     }
-
+    public void sendMessageWithFirebase(Message message,String friendusername){
+        mainApiManger.sendMessageWithFirebase(message,friendusername);
+    }
     public MutableLiveData<List<User>> getListusers() {
         return listusers;
     }
@@ -138,7 +141,7 @@ public class Repository {
     }
 
     public void addmessage(Message message) {
-
+        listmessages.getValue().add(message);
     }
 
     public void updateuser(User user) {
@@ -152,7 +155,9 @@ public class Repository {
     public void deleteuser(User user) {
 
     }
-
+    public CompletableFuture<Integer> registerfirebase(String token,String username){
+       return mainApiManger.registerfirebase(token,username);
+    }
     public void reloadmessg(String id) {
         mainApiManger.getMessgesByuser(id);
     }

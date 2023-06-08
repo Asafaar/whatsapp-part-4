@@ -38,6 +38,18 @@ public class Message {
         public String getProfilePic() {
             return profilePic;
         }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public void setProfilePic(String profilePic) {
+            this.profilePic = profilePic;
+        }
         // Getters and setters
     }
 

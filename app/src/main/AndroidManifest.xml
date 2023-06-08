@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />-->
+<!--    <uses-permission android:name="android.permission.VIBRATE" />-->
 
     <application
         android:allowBackup="true"
@@ -15,6 +17,23 @@
         android:theme="@style/Theme.Whatsapppart4"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="channel_id" />
+        <service
+            android:name=".Services.FireBaseMsg"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".Activty.Register"
+            android:exported="false"
+            android:label="@string/title_activity_register"
+            android:theme="@style/Theme.Whatsapppart4.NoActionBar" />
         <activity
             android:name=".Activty.friends"
             android:exported="false"

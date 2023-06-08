@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Base64;
@@ -79,7 +80,6 @@ public class MainApiManger {
 
     //   working
     public CompletableFuture<Message> sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
-        SendMsgRequest sendMsgRequest = new SendMsgRequest(msg, username, displayName, profilePic);
         SendMessageRequest sendMessageRequest = new SendMessageRequest(msg);
         final Message[] message = {null};
 //        final CountDownLatch latch = new CountDownLatch(1);
@@ -137,6 +137,29 @@ public class MainApiManger {
             @Override
             public void onFailure(Call<List<Message>> call, Throwable t) {
 
+            }
+        });
+        return future;
+    }
+
+    public CompletableFuture<Integer> registerfirebase(String token, String username) {
+        reqfirebase reqfirebase = new reqfirebase(token, username);
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        api.sendTokenfirebase(reqfirebase).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.code() == 200) {
+                    Log.d("firebase", "send successfully");
+                    future.complete(200);
+                } else {
+                    Log.d("firebase", "Error: " + response.code());
+                    future.complete(404);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                future.complete(404);
             }
         });
         return future;
@@ -208,6 +231,7 @@ public class MainApiManger {
         return future;
     }
 
+
     int makenewuser(String username, String password, String displayName, byte[] profilePic) {
 
         UserRequest user = new UserRequest(username, password, displayName, Base64.getEncoder().encodeToString(profilePic));
@@ -267,6 +291,25 @@ public class MainApiManger {
             }
         });
         return future;
+    }
+
+    public void sendMessageWithFirebase(Message message, String friendusername) {
+        api.sendMessageWithFirebase(friendusername,message).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.code()==200){
+                    Log.d("firebase","send successfully");
+                }
+                else {
+                    Log.d("firebase","Error: "+response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
     }
 }
 

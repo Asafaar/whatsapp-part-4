@@ -37,6 +37,8 @@ public class Chat extends AppCompatActivity {
     private String profilePic;
     private String userIdfriend;
 
+   static public String friendusername;
+
     private String username;
 
     private ActivityChatBinding binding;
@@ -71,13 +73,13 @@ public class Chat extends AppCompatActivity {
         profilePic = intent.getStringExtra("profilePic");
         userIdfriend = intent.getStringExtra("userId");
         username = intent.getStringExtra("username");
-
+        friendusername = intent.getStringExtra("friendusername");
         model.getMessgesByuser(userIdfriend);
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
             if (!message.isEmpty()) {
                 byte[] decodedString = Base64.decode(profilePic, Base64.DEFAULT);
-                model.sendMessage(userIdfriend, message,username, displayName, decodedString);
+                model.sendMessage(userIdfriend, message,username, displayName, decodedString,friendusername);
                 binding.inputField.setText("");
             }
         });

@@ -131,6 +131,8 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
                 intent.putExtra("displayName", userGet.getUser().getDisplayName());
                 intent.putExtra("profilePic", userGet.getUser().getProfilePic());
                 intent.putExtra("userId", userGet.getId());
+                intent.putExtra("friendusername", userGet.getUser().getUsername());
+
                 intent.putExtra("username", username);
                 view.getContext().startActivity(intent);
             }
