@@ -14,5 +14,6 @@ public interface LastMsgByuser {
     void updateMessageById(String id, Message newMessage);
     @Query("DELETE FROM LastmessgeByuser WHERE id = :id")
     void deleteMessageById(String id);
-
+    @Query("DELETE FROM LastmessgeByuser")
+    void deleteAllUsers();
 }

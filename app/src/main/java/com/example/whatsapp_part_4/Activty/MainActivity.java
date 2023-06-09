@@ -1,16 +1,27 @@
 package com.example.whatsapp_part_4.Activty;
 
+
 import static java.lang.Thread.sleep;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+
+import com.example.whatsapp_part_4.Dialog.NotificationPermissionHandler;
+import com.example.whatsapp_part_4.Dialog.OptionsDialog;
 import com.example.whatsapp_part_4.Model.Model;
+import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Appdb;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 
 import com.example.whatsapp_part_4.data.Message;
@@ -22,8 +33,12 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import java.util.concurrent.CompletableFuture;
+
 public class MainActivity extends AppCompatActivity {
 
     private Appdb db;
@@ -40,7 +55,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        Toolbar toolbar = findViewById(R.id.toolbarformainactivity);
+        setSupportActionBar(toolbar);
+
         model = DatabaseSingleton.getModel(this);
+        NotificationPermissionHandler notificationPermissionHandler = new NotificationPermissionHandler(this);
+        notificationPermissionHandler.checkAndRequestPermission();//check if can make notificationma
         loginButton();
 //        FirebaseMessaging.getInstance().sendToTopic("all", message);
 
@@ -96,14 +116,14 @@ public class MainActivity extends AppCompatActivity {
 //       model.reload();
 //        binding.passwordEditText.setText("asafaa");
 //        binding.usernameEditText.setText("asafaa");
-        password="asafaa";
-        username="asafaa";
-//        Registerfirebase();
+        password = "asafaa";
+        username = "asafaa";
+        Registerfirebase();
 
         binding.passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    password="asafaa";
+                password = "asafaa";
             }
 
             @Override
@@ -121,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         binding.usernameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                username="asafaa";
+                username = "asafaa";
             }
 
             @Override
@@ -138,33 +158,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
- public void Registerfirebase(){
-     FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-         @Override
-         public void onComplete(@NonNull Task<String> task) {
-             tokenfirebase=task.getResult();
-             System.out.println("token: "+task.getResult());
+    public void Registerfirebase() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                tokenfirebase = task.getResult();
+                System.out.println("token: " + task.getResult());
 
-//              model.registerfirebase(username,tokenfirebase);
-//             registerfirebase.thenApply(statusCode -> {
-//                 if (statusCode == 200) {
-////                     System.out.println("token: "+task.getResult());
-////                     Message.Sender sender = new Message.Sender();
-////                     sender.setUsername("asafaa");
-////                     sender.setDisplayName("asafaa");
-////                     sender.setProfilePic("asafaa");
-////                     Message message = new Message("5", sender, "1111111111111111", "asafaa2");
-////                     Log.e("TAG", "onComplete: "+username );
-////                     model.sendMessageWithFirebase(message,"asafaa2");
-//                 }
-//                 return null;
-//             });
+                model.registerfirebase(username, tokenfirebase).thenApply(statusCode -> {
+                    if (statusCode == 200) {
+                        System.out.println("token: " + task.getResult());
+                        Message.Sender sender = new Message.Sender();
+                        sender.setUsername("asafaa");
+                        sender.setDisplayName("asafaa");
+                        sender.setProfilePic("asafaa");
+                        Message message = new Message("116", sender, "asafaa", "asafaa");
+                        Log.e("TAG", "onComplete: " + username);
+                        model.sendMessageWithFirebase(message, "asafaa");
+                    }
+                    return null;
+                });
 
-         }
+            }
 
-     });
+        });
 
- }
+    }
+
     private void loginButton() {
 //        String username = binding.usernameEditText.getText().toString();
 //        String password = binding.passwordEditText.getText().toString();
@@ -175,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, friends.class);
                     intent.putExtra("username", username);
                     Registerfirebase();
-//                    intent.putExtra("token", model.gettoken());
+                    intent.putExtra("token", model.gettoken());
                     startActivity(intent);
 //                    model.getMessgesByuser("99");
                     // model.sendmsg("99", "asafaa222", "asafaa1", "asafaa", null);
@@ -185,4 +205,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main_mainactivty, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.options_menu:
+                String[] options={"1","2","3"};//TODO need to make this dialog
+                OptionsDialog optionsDialog = new OptionsDialog(this,options);
+                optionsDialog.show();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

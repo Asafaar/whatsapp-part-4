@@ -41,6 +41,7 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         model= DatabaseSingleton.getModel(this);
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
@@ -73,6 +74,10 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         switch (item.getItemId()) {
             case R.id.action_settings:
                 showAddFriendDialog();
+                return true;
+            case R.id.logout:
+                model.clearLogoutUser();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

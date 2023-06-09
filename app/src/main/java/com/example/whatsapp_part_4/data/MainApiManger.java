@@ -149,10 +149,10 @@ public class MainApiManger {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200) {
-                    Log.d("firebase", "send successfully");
+                    Log.d("firebase registerfirebase", "send successfully");
                     future.complete(200);
                 } else {
-                    Log.d("firebase", "Error: " + response.code());
+                    Log.d("firebase registerfirebase", "Error: " + response.code());
                     future.complete(404);
                 }
             }
@@ -163,6 +163,20 @@ public class MainApiManger {
             }
         });
         return future;
+    }
+
+    public void sendTokenfirebasedel(String username){
+        api.sendTokenfirebasedel(username).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.d("firebase", "send successfully");
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("firebase", "Error: " + t.getMessage());
+            }
+        });
     }
 
     public CompletableFuture<Integer> Addfriend(String userfrined) {
@@ -196,6 +210,13 @@ public class MainApiManger {
     public CompletableFuture<Integer> trylogin(String username, String password) {
 
         LoginRequest loginRequest = new LoginRequest(username, password);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("username", username);
+            jsonObject.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         CompletableFuture<Integer> future = new CompletableFuture<>();
         final int[] statusCode = new int[1];
         api.getToken(loginRequest).enqueue(new Callback<String>() {
@@ -218,6 +239,7 @@ public class MainApiManger {
             public void onFailure(Call<String> call, Throwable t) {
                 statusCode[0] = -1;
                 Log.d("token", "fail");
+                Log.e("TAG", "onFailure: "+t.getMessage() );
                 future.complete(-1);
             }
         });

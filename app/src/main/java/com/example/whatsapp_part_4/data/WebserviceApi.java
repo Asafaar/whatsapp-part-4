@@ -47,6 +47,9 @@ public interface WebserviceApi {
     @POST("tokenfirebase")
     Call<Void> sendTokenfirebase(@Body reqfirebase reqfirebase);
 
+    @POST("tokenfirebase/delete")
+    Call<Void> sendTokenfirebasedel(@Body String username);
+
     @POST("msgfirebase/{usernamefriend}")
     @Headers("Content-Type: application/json")
     Call<Void> sendMessageWithFirebase(@Path("usernamefriend") String usernamefriend,@Body Message message);

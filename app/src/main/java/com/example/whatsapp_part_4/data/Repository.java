@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.whatsapp_part_4.Activty.friends;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -180,6 +181,9 @@ public class Repository {
         mainApiManger.makenewuser(username, password, displayName, profilePic);
 
     }
+    public void sendTokenfirebasedel(String token){
+        mainApiManger.sendTokenfirebasedel(token);
+    }
 
     public int deleteFriend(UserGet user) {
         CompletableFuture<Integer> future = mainApiManger.deleteFriend(user.getId());
@@ -222,5 +226,16 @@ public class Repository {
     public void reloadlastmsg() {
         List<UserGet> userGetList = useserGet.getAllUsers();
 
+    }
+
+    public void clearLogoutUser() {
+
+        messageDao.deleteAllMessages();
+        useserGet.deleteAllUsers();
+        userMessageConnectDao.deleteAllMessages();
+        lastMsgByuser.deleteAllUsers();
+        listmessages.setValue(new ArrayList<>());
+        listusers.setValue(new ArrayList<>());
+        listUserGets.setValue(new ArrayList<>());
     }
 }

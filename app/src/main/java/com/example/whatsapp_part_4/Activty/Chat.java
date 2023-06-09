@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.example.whatsapp_part_4.Adapter.MessageAdapter;

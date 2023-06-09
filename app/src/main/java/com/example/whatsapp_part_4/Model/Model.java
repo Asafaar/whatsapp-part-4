@@ -64,6 +64,9 @@ public class Model {
 
         }
     }
+    public synchronized void sendTokenfirebasedel(String usernmae) {
+        repository.sendTokenfirebasedel(usernmae);
+    }
 
     public synchronized void deleteFriend(UserGet user) {
 
@@ -99,5 +102,9 @@ public class Model {
 
     public void reloadlastmsg(){
         repository.reloadlastmsg();
+    }
+
+    public void clearLogoutUser() {
+        repository.clearLogoutUser();
     }
 }
