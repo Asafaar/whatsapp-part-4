@@ -6,6 +6,10 @@ import androidx.room.Room;
 
 import com.example.whatsapp_part_4.Model.Model;
 
+/**
+ * DatabaseSingleton is a singleton class that creates a single instance of the database so from any
+ * place on the code we can get the database instance and use it.
+ */
 public class DatabaseSingleton {
     private static Appdb db;
     private static Model model;

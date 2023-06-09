@@ -12,6 +12,9 @@ import com.example.whatsapp_part_4.data.Message;
 
 import java.util.List;
 
+ /** MessageAdapter-get message object and set the message in the view
+ *
+ */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
     private List<Message> messages;
 

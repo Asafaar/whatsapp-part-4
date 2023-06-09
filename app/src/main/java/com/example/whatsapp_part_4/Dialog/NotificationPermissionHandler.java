@@ -8,6 +8,9 @@ import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
 
+/** notification permission handler-need the permission to send notification by firebase
+ *
+ */
 public class NotificationPermissionHandler {
     private static final int PERMISSION_REQUEST_CODE = 100;
 
