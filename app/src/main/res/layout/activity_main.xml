@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/back2">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarformainactivity"
         android:layout_width="match_parent"
@@ -35,10 +36,36 @@
         android:inputType="textPassword"
         android:hint="Enter your password" />
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+
+        <TextView
+            android:id="@+id/clickableText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:clickable="true"
+            android:text="Not registered? Click here register"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+
 
 </LinearLayout>

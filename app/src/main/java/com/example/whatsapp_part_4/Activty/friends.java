@@ -2,9 +2,12 @@ package com.example.whatsapp_part_4.Activty;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.whatsapp_part_4.Adapter.UserGetAdapter;
 import com.example.whatsapp_part_4.Dialog.AddFriendDialogFragment;
@@ -35,16 +38,24 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        model= DatabaseSingleton.getModel(this);
+        if (model.getTheme()!=null){
+            Log.e("TAG", "onCreate: "+model.getTheme().getTheme() );
+            setTheme(model.getTheme().getTheme());
+        }
+
         binding = ActivityFriendsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         RecyclerView recyclerView = findViewById(R.id.list_item_text2);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
+        TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
 
-        model= DatabaseSingleton.getModel(this);
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
+        displayNameTextView.setText(username);
         model.reload();
         //add sychronized
         // Observe changes to the messages data
@@ -66,13 +77,13 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_friends, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.add_new_friend:
                 showAddFriendDialog();
                 return true;
             case R.id.logout:

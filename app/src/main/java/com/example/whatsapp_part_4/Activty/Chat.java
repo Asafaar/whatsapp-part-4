@@ -46,14 +46,18 @@ public class Chat extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        model= DatabaseSingleton.getModel(this);
+        if (model.getTheme()!=null){
+            Log.e("TAG", "onCreate: "+model.getTheme().getTheme() );
+            setTheme(model.getTheme().getTheme());
+        }
         setContentView(R.layout.activity_chat);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
 //       String user= getIntent().getParcelableExtra("user");
 //        String token= getIntent().getParcelableExtra("token");
-        model= DatabaseSingleton.getModel(this);
+
 //        model.getMessgesByuser("99");
         RecyclerView recyclerView = findViewById(R.id.list_item_text);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

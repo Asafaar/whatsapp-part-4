@@ -92,7 +92,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         public TextView displayNameTextView;
         public TextView lastMessageTextView;
         public TextView lastMessagetimeTextView;
-        public Button deleteButton;
+        public ImageView deleteButton;
         private int position;
 
         Model model;

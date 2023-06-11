@@ -9,6 +9,7 @@
         android:id="@+id/sender_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -16,6 +17,8 @@
         android:id="@+id/content_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
+
         android:textSize="14sp" />
 
     <TextView
