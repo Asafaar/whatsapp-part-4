@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.983be938.css",
+    "main.js": "/static/js/main.bdb24673.js",
+    "static/js/787.86ebbb08.chunk.js": "/static/js/787.86ebbb08.chunk.js",
+    "static/media/2.jpg": "/static/media/2.0f384098ce298bac7a96.jpg",
+    "static/media/background.jpg": "/static/media/background.42bfda7ec465ebb4a603.jpg",
+    "static/media/1.jpg": "/static/media/1.8ed9b85e10ed02bc9d54.jpg",
+    "static/media/lebron.jpg": "/static/media/lebron.924c6a3246423a0ec219.jpg",
+    "index.html": "/index.html",
+    "main.983be938.css.map": "/static/css/main.983be938.css.map",
+    "main.bdb24673.js.map": "/static/js/main.bdb24673.js.map",
+    "787.86ebbb08.chunk.js.map": "/static/js/787.86ebbb08.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.983be938.css",
+    "static/js/main.bdb24673.js"
+  ]
+}
