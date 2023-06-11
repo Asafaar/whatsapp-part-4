@@ -21,6 +21,7 @@ import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.data.UserGet;
 
 import java.util.List;
+//todo make the list of friends more beautiful
 
 public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetViewHolder>  {
     private List<UserGet> userGetList;
@@ -92,7 +93,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         public TextView displayNameTextView;
         public TextView lastMessageTextView;
         public TextView lastMessagetimeTextView;
-        public Button deleteButton;
+        public ImageView deleteButton;
         private int position;
 
         Model model;

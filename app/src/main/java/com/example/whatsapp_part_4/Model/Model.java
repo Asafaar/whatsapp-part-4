@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.example.whatsapp_part_4.data.Appdb;
 import com.example.whatsapp_part_4.data.Message;
 import com.example.whatsapp_part_4.data.Repository;
+import com.example.whatsapp_part_4.data.ThemeString;
 import com.example.whatsapp_part_4.data.User;
 import com.example.whatsapp_part_4.data.UserGet;
 
@@ -62,6 +63,23 @@ public class Model {
         repository.sendMessageWithFirebase(message,usernmaefirned);
     }
 
+    public ThemeString getTheme(){
+        if (repository.getTheme()==null){
+            Log.e("TAG", "getTheme: " + "null" );
+           return null;
+        }else{
+
+            return  repository.getTheme();
+        }
+
+    }
+    public void setRetrofit(String url){
+        repository.setRetrofit(url);
+    }
+
+    public void setTheme(int Theme){
+         repository.setTheme(Theme);
+    }
 
     /**
      * trylogin to the server
@@ -80,8 +98,8 @@ public class Model {
      * @param displayName the display name
      * @param profilePic the profile pic
      */
-    public void makenewuser(String username, String password, String displayName, byte[] profilePic) {
-        repository.MakeNewUser(username, password, displayName, profilePic);
+    public int makenewuser(String username, String password, String displayName, String profilePic) {
+       return repository.MakeNewUser(username, password, displayName, profilePic);
     }
 
     /**

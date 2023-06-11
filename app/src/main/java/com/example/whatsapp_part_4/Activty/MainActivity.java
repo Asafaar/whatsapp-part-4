@@ -4,6 +4,7 @@ package com.example.whatsapp_part_4.Activty;
 import static java.lang.Thread.sleep;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 
 import com.example.whatsapp_part_4.Dialog.NotificationPermissionHandler;
 import com.example.whatsapp_part_4.Dialog.OptionsDialog;
+import com.example.whatsapp_part_4.Dialog.ThemeOption;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Appdb;
@@ -20,8 +22,10 @@ import com.example.whatsapp_part_4.data.DatabaseSingleton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
 import com.example.whatsapp_part_4.data.Message;
@@ -36,10 +40,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OptionsDialog.OnOptionSelectedListener {
 
     private Appdb db;
     private Model model;
@@ -53,15 +60,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+//        setTheme(R.style.AppThemeread);
+        model = DatabaseSingleton.getModel(this);
+        Log.e("TAG", "onCreate: "+model.getTheme() );
+        if (model.getTheme()!=null){
+            Log.e("TAG", "onCreate: "+model.getTheme().getTheme() );
+            setTheme(model.getTheme().getTheme());
+        }
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Toolbar toolbar = findViewById(R.id.toolbarformainactivity);
         setSupportActionBar(toolbar);
 
-        model = DatabaseSingleton.getModel(this);
+
         NotificationPermissionHandler notificationPermissionHandler = new NotificationPermissionHandler(this);
         notificationPermissionHandler.checkAndRequestPermission();//check if can make notificationma
         loginButton();
+        binding.clickableText.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Register.class);
+            startActivity(intent);
+        });
 //        FirebaseMessaging.getInstance().sendToTopic("all", message);
 
 //       FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
@@ -164,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<String> task) {
                 tokenfirebase = task.getResult();
                 System.out.println("token: " + task.getResult());
-
+                //todo print the errors
                 model.registerfirebase(username, tokenfirebase).thenApply(statusCode -> {
                     if (statusCode == 200) {
                         System.out.println("token: " + task.getResult());
@@ -211,12 +230,26 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu_main_mainactivty, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.options_menu:
-                String[] options={"1","2","3"};//TODO need to make this dialog
-                OptionsDialog optionsDialog = new OptionsDialog(this,options);
+
+                ThemeOption themeOptionsDialog = new ThemeOption("Purple Theme", ContextCompat.getColor(this, R.color.seed), R.style.AppThemeread);
+                ThemeOption themeOptionsDialog2 = new ThemeOption("Green Theme",  ContextCompat.getColor(this, R.color.sseed), R.style.AppThemeGree);
+                ThemeOption themeOptionsDialog3 = new ThemeOption("Red Theme",  ContextCompat.getColor(this, R.color.ssseed), R.style.AppThemeRed);
+                ThemeOption themeOptionsDialog4 = new ThemeOption("Blud Theme",  ContextCompat.getColor(this, R.color.sssseed), R.style.AppThemeBlue);
+                ThemeOption themeOptionsDialog5 = new ThemeOption("Dark Theme",  ContextCompat.getColor(this, R.color.ssssseed), R.style.AppThemeDark);
+                List<ThemeOption> themeOptions = new ArrayList<>();
+                themeOptions.add(themeOptionsDialog);
+                themeOptions.add(themeOptionsDialog2);
+                themeOptions.add(themeOptionsDialog3);
+                themeOptions.add(themeOptionsDialog4);
+                themeOptions.add(themeOptionsDialog5);
+                OptionsDialog optionsDialog = new OptionsDialog(this, themeOptions);
+                optionsDialog.setOnOptionSelectedListener(MainActivity.this);
+//                OptionsDialog optionsDialog = new OptionsDialog(this,options);
                 optionsDialog.show();
 
                 return true;
@@ -224,4 +257,35 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onOptionSelected(ThemeOption themeOption) {
+        setTheme(R.style.AppThemeread);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        model.setTheme(themeOption.getNameofres());
+//        Log.e("TAG", "onOptionSelected:+asdfasdf " + themeOption.getNameofres());
+//        recreate();
+        restartApp();
+    }
+    private void setAppTheme(int themeId) {
+        setTheme(themeId);
+        // Recreate all activities to apply the new theme
+        restartApp();
+    }
+    private void restartApp() {
+        Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+        System.exit(0);
+    }
+//    public void changeTheme(boolean isDarkMode) {
+//        if (isDarkMode) {
+//            setTheme(R.style.);
+//        } else {
+//            setTheme(R.style.AppTheme_Light);
+//        }
+//        setContentView(R.layout.activity_main);
+//        // Update any UI elements as necessary
+//    }
 }

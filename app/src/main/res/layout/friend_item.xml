@@ -2,9 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="16dp">
-
+    <ImageView
+        android:id="@+id/imagefrined"
+        android:layout_width="75dp"
+        android:onClick="onImageClicked"
+        android:layout_height="87dp"
+        android:src="@mipmap/ic_launcher"/>
     <TextView
         android:id="@+id/displayname"
         android:layout_width="wrap_content"
@@ -24,18 +29,19 @@
         android:layout_height="wrap_content"
         android:textSize="12sp"
         android:textColor="@android:color/darker_gray" />
-    <Button
-        android:id="@+id/deletefriend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:text="@string/delete"
-        android:textColor="@android:color/darker_gray" />
-
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
     <ImageView
-        android:id="@+id/imagefrined"
-        android:layout_width="75dp"
-        android:layout_height="87dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:id="@+id/deletefriend"
+        android:layout_width="48dp"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:src="@drawable/baseline_delete_24">
+
+    </ImageView>
+
+
 
 </LinearLayout>

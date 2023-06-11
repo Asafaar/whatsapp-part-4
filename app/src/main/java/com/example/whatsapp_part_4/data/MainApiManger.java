@@ -54,6 +54,13 @@ public class MainApiManger {
 
     }
 
+    public void setRetrofit(String url) {
+        this.retrofit =  new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
+                .build();
+    }
+
     public void getfriends() {
 
         api.getFriends(token).enqueue(new Callback<List<UserGet>>() {
@@ -62,10 +69,12 @@ public class MainApiManger {
 //                userDao.deleteAllUsers();
 //                userDao.insertAll(response.body());
                 UeserGet.deleteAllUsers();
-                UeserGet.insertAll(response.body());//update db
+                if (response.body() != null){
+                    UeserGet.insertAll(response.body());
+                   usersget.setValue(response.body());}
+//update db
 //                List<UserGet> myDataList = usersget.getValue();//update livedata
 //                myDataList.addAll(response.body());
-                usersget.setValue(response.body());
 
 
             }
@@ -254,11 +263,11 @@ public class MainApiManger {
     }
 
 
-    int makenewuser(String username, String password, String displayName, byte[] profilePic) {
+    public CompletableFuture<Integer> makenewuser(String username, String password, String displayName, String profilePic) {
 
-        UserRequest user = new UserRequest(username, password, displayName, Base64.getEncoder().encodeToString(profilePic));
-        final CountDownLatch latch = new CountDownLatch(1);
+        UserRequest user = new UserRequest(username, password, displayName, profilePic);
         final int[] statusCode = new int[1];
+        CompletableFuture<Integer> future = new CompletableFuture<>();
         api.createUser(user).enqueue(new Callback<Void>() {
 
 
@@ -266,27 +275,27 @@ public class MainApiManger {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 statusCode[0] = response.code();
                 if (statusCode[0] == 200) {
+                    future.complete(200);
                     Log.d("createUser", "User created successfully");
                 } else {
                     Log.d("createUser", "Error: " + statusCode[0]);
+                    future.complete(statusCode[0]);
                 }
-                latch.countDown();
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 statusCode[0] = -1;
                 Log.d("token", "fail");
-                latch.countDown();
+                future.complete(-1);
             }
         });
         try {
 
-            latch.await();
         } catch (Exception e) {
             Log.d("token", "fail");
         }
-        return statusCode[0];
+        return future;
     }
 
     public CompletableFuture<Integer> deleteFriend(String friendid) {

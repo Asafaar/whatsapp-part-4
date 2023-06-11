@@ -28,6 +28,7 @@ public class Repository {
     private LastMsgByuser lastMsgByuser;
 
     private UeserGet useserGet;
+    private ThemeSave themeSavedb;
 
 
     public Repository(Appdb db) {
@@ -37,6 +38,7 @@ public class Repository {
         userMessageConnectDao = db.userMessageConnectDao();
         lastMsgByuser = db.lastMsgByuser();
         useserGet = db.UeserGet();
+        themeSavedb = db.ThemeSave();
         listusers = new ListUsers();
         listmessages = new ListMessage();
         listUserGets = new ListUserGet();
@@ -47,7 +49,7 @@ public class Repository {
         return listmessages;
     }
 
-    public int sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic,String friendusername) {
+    public int sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic, String friendusername) {
 //        Message message = mainApiManger.sendMessage(idofFriend, msg, username, displayName, profilePic);
 //        messageDao.insertMessage(message);
 //        List<Message> myDataList = listmessages.getValue();//add to live data
@@ -79,13 +81,33 @@ public class Repository {
 
         return 1;
     }
-
+public void setRetrofit(String url){
+        mainApiManger.setRetrofit(url);
+}
     public String getToken() {
         return token;
     }
-    public void sendMessageWithFirebase(Message message,String friendusername){
-        mainApiManger.sendMessageWithFirebase(message,friendusername);
+
+    public void setTheme(int Theme) {
+        this.themeSavedb.deleteTheme();
+        this.themeSavedb.insertTheme(String.valueOf(Theme));
     }
+
+    public ThemeString getTheme() {
+//        Log.e("TAG", "getTheme: "+this.themeSavedb.getTheme().theme );
+        if (this.themeSavedb.getTheme() == null) {
+            Log.e("TAG", "getTheme: " );
+            return null;
+        } else{
+
+            return this.themeSavedb.getTheme();
+        }
+    }
+
+    public void sendMessageWithFirebase(Message message, String friendusername) {
+        mainApiManger.sendMessageWithFirebase(message, friendusername);
+    }
+
     public MutableLiveData<List<User>> getListusers() {
         return listusers;
     }
@@ -125,17 +147,17 @@ public class Repository {
         CompletableFuture<Integer> future = mainApiManger.Addfriend(frienduser);
         future.thenApply(statusCode -> {
             if (statusCode == 200) {
-                Log.e("TAG", "adduser:load " );
+                Log.e("TAG", "adduser:load ");
                 mainApiManger.getfriends();//get all the data of the users from the web because we need his id
             } else {
-                Log.e("TAG", "adduser: -1" );
+                Log.e("TAG", "adduser: -1");
 
                 return -1;
             }
-            Log.e("TAG", "adduser: 1" );
+            Log.e("TAG", "adduser: 1");
             return 1;
         });
-        Log.e("TAG", "adduser: 1" );
+        Log.e("TAG", "adduser: 1");
 
         return 1;
 
@@ -156,9 +178,11 @@ public class Repository {
     public void deleteuser(User user) {
 
     }
-    public CompletableFuture<Integer> registerfirebase(String token,String username){
-       return mainApiManger.registerfirebase(token,username);
+
+    public CompletableFuture<Integer> registerfirebase(String token, String username) {
+        return mainApiManger.registerfirebase(token, username);
     }
+
     public void reloadmessg(String id) {
         mainApiManger.getMessgesByuser(id);
     }
@@ -176,12 +200,26 @@ public class Repository {
 
     }
 
-    //when make register
-    public void MakeNewUser(String username, String password, String displayName, byte[] profilePic) {
-        mainApiManger.makenewuser(username, password, displayName, profilePic);
+    //when make register//TODO need to add the error by status code
+    public int MakeNewUser(String username, String password, String displayName, String profilePic) {
 
+        CompletableFuture<Integer> completableFuture=mainApiManger.makenewuser(username, password, displayName, profilePic);
+        Log.e("TAG", "MakeNewUser: "+completableFuture.toString() );
+        completableFuture.thenApply(statusCode -> {
+            if (statusCode == 201) {
+                Log.e("TAG", "MakeNewUser: 200");
+                return 201;
+
+            } else {
+                Log.e("TAG", "MakeNewUser: -1");
+                return statusCode;
+            }
+
+        });
+        return 201;
     }
-    public void sendTokenfirebasedel(String token){
+
+    public void sendTokenfirebasedel(String token) {
         mainApiManger.sendTokenfirebasedel(token);
     }
 
