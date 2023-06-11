@@ -73,6 +73,9 @@ public class Model {
         }
 
     }
+    public void getUserData(String username){
+        repository.getUserData(username);
+    }
     public void setRetrofit(String url){
         repository.setRetrofit(url);
     }

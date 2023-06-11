@@ -216,6 +216,29 @@ public class MainApiManger {
         return future;
     }
 
+    public CompletableFuture<DataUserRes> getUserData(String username){
+        CompletableFuture<DataUserRes> future = new CompletableFuture<>();
+        api.getUserData(username,token).enqueue(new Callback<DataUserRes>() {
+            @Override
+            public void onResponse(Call<DataUserRes> call, Response<DataUserRes> response) {
+                if (response.code() == 200) {
+                    Log.d("getUserData", "get successfully");
+                    future.complete(response.body());
+                } else {
+                    Log.d("getUserData", "Error: " + response.code());
+                    future.complete(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DataUserRes> call, Throwable t) {
+                Log.d("getUserData", "Error: onFailure");
+                future.complete(null);
+            }
+        });
+        return future;
+    }
+
     public CompletableFuture<Integer> trylogin(String username, String password) {
 
         LoginRequest loginRequest = new LoginRequest(username, password);

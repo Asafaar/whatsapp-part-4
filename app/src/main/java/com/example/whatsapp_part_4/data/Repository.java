@@ -29,7 +29,9 @@ public class Repository {
 
     private UeserGet useserGet;
     private ThemeSave themeSavedb;
-
+    private String username;
+    private String displayName;
+    private String profilePic;
 
     public Repository(Appdb db) {
         this.db = db;
@@ -104,6 +106,32 @@ public void setRetrofit(String url){
         }
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void getUserData(String username) {
+      CompletableFuture<DataUserRes> completableFuture=  mainApiManger.getUserData(username);
+      completableFuture.thenApply(dataUserRes -> {
+          if (dataUserRes != null) {
+              this.username = dataUserRes.getUsername();
+              this.displayName = dataUserRes.getDisplayName();
+              this.profilePic = dataUserRes.getProfilePic();
+              return 1;
+          } else {
+              return -1;
+          }
+      });
+
+    }
     public void sendMessageWithFirebase(Message message, String friendusername) {
         mainApiManger.sendMessageWithFirebase(message, friendusername);
     }

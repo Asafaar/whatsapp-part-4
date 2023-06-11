@@ -19,7 +19,9 @@ public interface WebserviceApi {
     @Headers("Content-Type: application/json")
     @POST("Users")
     Call<Void> createUser(@Body UserRequest userRequest);
-
+    @Headers("Content-Type: application/json")
+    @POST("Users/{username}}")
+    Call<DataUserRes> getUserData(@Path("username") String username,@Header("Authorization") String authorization);
     @Headers("Content-Type: application/json")
     @POST("Tokens")
     Call<String> getToken(@Body LoginRequest loginRequest);
