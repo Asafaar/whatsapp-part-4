@@ -11,7 +11,7 @@ import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Message;
 
 import java.util.List;
-
+//TODO make the message more beautiful
  /** MessageAdapter-get message object and set the message in the view
  *
  */

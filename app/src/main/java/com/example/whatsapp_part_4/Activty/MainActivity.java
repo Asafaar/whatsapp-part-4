@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
             public void onComplete(@NonNull Task<String> task) {
                 tokenfirebase = task.getResult();
                 System.out.println("token: " + task.getResult());
-
+                //todo print the errors
                 model.registerfirebase(username, tokenfirebase).thenApply(statusCode -> {
                     if (statusCode == 200) {
                         System.out.println("token: " + task.getResult());

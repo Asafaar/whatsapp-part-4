@@ -142,11 +142,12 @@ public class Register extends AppCompatActivity {
                 binding.msgnewuser.setText("Please fill all fields");
                 binding.msgnewuser.setVisibility(View.VISIBLE);
 
-            } else {
+            } else {//TODO
                int result= model.makenewuser(username, password, displayName, img);//TODO need to fix
                 if (result==201){
                     CompletableFuture<Integer>future= model.trylogin(username, password);
                     future.thenApply((res)->{
+                        Log.e("TAG", "onSubmitButtonClick: "+res );
                         if (res==200){
                             Intent intent = new Intent(this, friends.class);
                             intent.putExtra("username", username);
@@ -156,7 +157,7 @@ public class Register extends AppCompatActivity {
                         return null;
                     });
                 }
-                else if (result==404){
+                else if (result==409){
                     binding.msgnewuser.setText("Username already exists");
                     binding.msgnewuser.setVisibility(View.VISIBLE);
                 }

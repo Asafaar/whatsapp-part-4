@@ -21,6 +21,7 @@ import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.data.UserGet;
 
 import java.util.List;
+//todo make the list of friends more beautiful
 
 public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetViewHolder>  {
     private List<UserGet> userGetList;
