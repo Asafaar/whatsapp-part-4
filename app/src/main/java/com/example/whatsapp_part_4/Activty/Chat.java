@@ -60,7 +60,10 @@ public class Chat extends AppCompatActivity {
 
 //        model.getMessgesByuser("99");
         RecyclerView recyclerView = findViewById(R.id.list_item_text);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true); // Set stack from end to true
+
+        recyclerView.setLayoutManager(layoutManager);
         MessageAdapter adapter = new MessageAdapter(model.getMessages().getValue());
         recyclerView.setAdapter(adapter);
         //add sychronized

@@ -3,45 +3,55 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    >
+
     <ImageView
         android:id="@+id/imagefrined"
-        android:layout_width="75dp"
-        android:onClick="onImageClicked"
-        android:layout_height="87dp"
-        android:src="@mipmap/ic_launcher"/>
-    <TextView
-        android:id="@+id/displayname"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/circle_shape"
+        android:src="@drawable/anoymousavatar" />
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/lastmsg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/lastmsgsend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="@android:color/darker_gray" />
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/displayname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="displayname."
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/lastmsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This is a message."
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="timestamp"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+    </LinearLayout>
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
     <ImageView
         android:id="@+id/deletefriend"
         android:layout_width="48dp"
         android:clickable="true"
         android:layout_height="48dp"
-        android:src="@drawable/baseline_delete_24">
-
-    </ImageView>
-
+        android:src="@drawable/baseline_delete_24"/>
 
 
 </LinearLayout>
