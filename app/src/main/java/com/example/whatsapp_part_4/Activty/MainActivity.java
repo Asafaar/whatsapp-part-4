@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
             Intent intent = new Intent(this, Register.class);
             startActivity(intent);
         });
+
 //        FirebaseMessaging.getInstance().sendToTopic("all", message);
 
 //       FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
@@ -211,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
             CompletableFuture<Integer> future = model.trylogin(username, password);
             future.thenApply(statusCode -> {
                 if (statusCode == 200) {
+                    
                     Intent intent = new Intent(this, friends.class);
                     intent.putExtra("username", username);
                     Registerfirebase();

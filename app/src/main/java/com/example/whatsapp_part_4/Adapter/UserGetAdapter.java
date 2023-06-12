@@ -7,7 +7,8 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,12 +21,16 @@ import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.data.UserGet;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 //todo make the list of friends more beautiful
 
-public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetViewHolder>  {
+public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetViewHolder> {
     private List<UserGet> userGetList;
     private String username;
+
     public UserGetAdapter(List<UserGet> userGetList, String username) {
         this.userGetList = userGetList;
         this.username = username;
@@ -57,11 +62,11 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         }
         if (userGet.getLastMessage() == null) {
             holder.lastMessageTextView.setText("No message");
-            holder.lastMessagetimeTextView.setText("");
+//            holder.lastMessagetimeTextView.setText("");
             return;
         } else {
             holder.lastMessageTextView.setText(userGet.getLastMessage().getContent());
-            holder.lastMessagetimeTextView.setText(userGet.getLastMessage().getCreated());
+            holder.lastMessagetimeTextView.setText(fixtime(userGet.getLastMessage().getCreated()));
         }
 //        holder.itemView.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -87,8 +92,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
     }
 
 
-
-    public  class UserGetViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
+    public class UserGetViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public ImageView profilePicImageView;
         public TextView displayNameTextView;
         public TextView lastMessageTextView;
@@ -101,12 +105,12 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         public UserGetViewHolder(@NonNull View itemView, int position) {
             super(itemView);
             this.position = position;
-             model = DatabaseSingleton.getModel(itemView.getContext());
+            model = DatabaseSingleton.getModel(itemView.getContext());
             profilePicImageView = itemView.findViewById(R.id.imagefrined);
             displayNameTextView = itemView.findViewById(R.id.displayname);
             lastMessageTextView = itemView.findViewById(R.id.lastmsg);
-            lastMessagetimeTextView = itemView.findViewById(R.id.lastmsgsend);
-            deleteButton=itemView.findViewById(R.id.deletefriend);
+            lastMessagetimeTextView = itemView.findViewById(R.id.timestamp);
+            deleteButton = itemView.findViewById(R.id.deletefriend);
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -114,6 +118,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
                     if (position != RecyclerView.NO_POSITION) {
                         UserGet userGet = userGetList.get(position);
                         model.deleteFriend(userGet);
+
 
                     }
                 }
@@ -127,7 +132,8 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 UserGet userGet = userGetList.get(position);
-
+                Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.scale_animation);
+                view.setAnimation(animation);
                 Intent intent = new Intent(view.getContext(), Chat.class);
                 intent.putExtra("displayName", userGet.getUser().getDisplayName());
                 intent.putExtra("profilePic", userGet.getUser().getProfilePic());
@@ -150,4 +156,64 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
             return true;
         }
     }
+
+    public static String fixtime(String time) {
+        String createdTimestamp = time; // Replace with your timestamp
+
+        // Define the input format of the timestamp
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS", Locale.getDefault());
+
+        // Define the output format for time and date
+        SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm:ss MM/dd/yy", Locale.getDefault());
+
+        try {
+            // Parse the timestamp into a Date object
+            Date date = inputFormat.parse(createdTimestamp);
+
+            // Format the time and date using the output format
+            String formattedDateTime = outputFormat.format(date);
+
+            // Print the formatted time and date
+            System.out.println("Formatted DateTime: " + formattedDateTime);
+
+            // You can now use the formattedDateTime string as needed
+            // ...
+
+            return formattedDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return createdTimestamp;
+    }
+    public static String fixtimewithdata(String time) {
+        String createdTimestamp = time; // Replace with your timestamp
+
+        // Define the input format of the timestamp
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS", Locale.getDefault());
+
+        // Define the output format for time only
+        SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+        try {
+            // Parse the timestamp into a Date object
+            Date date = inputFormat.parse(createdTimestamp);
+
+            // Format the time using the output format
+            String formattedTime = outputFormat.format(date);
+
+            // Print the formatted time
+            System.out.println("Formatted Time: " + formattedTime);
+
+            // You can now use the formattedTime string as needed
+            // ...
+
+            return formattedTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return createdTimestamp;
+    }
+
+
+
 }

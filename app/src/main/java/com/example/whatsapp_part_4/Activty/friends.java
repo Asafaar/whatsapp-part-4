@@ -34,7 +34,8 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
     private AppBarConfiguration appBarConfiguration;
     private ActivityFriendsBinding binding;
     private Model model;
-    private String username;
+    public static String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
