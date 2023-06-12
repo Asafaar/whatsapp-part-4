@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.example.whatsapp_part_4.data.Appdb;
+import com.example.whatsapp_part_4.data.DataUserRes;
 import com.example.whatsapp_part_4.data.Message;
 import com.example.whatsapp_part_4.data.Repository;
 import com.example.whatsapp_part_4.data.ThemeString;
@@ -73,8 +74,8 @@ public class Model {
         }
 
     }
-    public void getUserData(String username){
-        repository.getUserData(username);
+    public CompletableFuture<DataUserRes> getUserData(String username){
+        return repository.getUserData(username);
     }
     public void setRetrofit(String url){
         repository.setRetrofit(url);
@@ -132,9 +133,7 @@ public class Model {
      * @param user the user we want to delete
      */
     public synchronized void deleteFriend(UserGet user) {
-
             repository.deleteFriend(user);
-
     }
 
     /**

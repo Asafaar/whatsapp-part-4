@@ -18,6 +18,7 @@ import com.example.whatsapp_part_4.Dialog.ThemeOption;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Appdb;
+import com.example.whatsapp_part_4.data.DataUserRes;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 
 import androidx.annotation.NonNull;
@@ -205,27 +206,56 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
 
     }
 
+//    private void loginButton() {
+////        String username = binding.usernameEditText.getText().toString();
+////        String password = binding.passwordEditText.getText().toString();
+//        binding.loginButton.setOnClickListener(view -> {
+//            CompletableFuture<Integer> future = model.trylogin(username, password);
+//            future.thenApply(statusCode -> {
+//                if (statusCode == 200) {
+//                    Intent intent = new Intent(this, friends.class);
+//                    intent.putExtra("username", username);
+//                    Registerfirebase();
+//                    intent.putExtra("token", model.gettoken());
+//                    startActivity(intent);
+//                }
+//                return null;
+//            });
+//        });
+//    }
+
+
     private void loginButton() {
-//        String username = binding.usernameEditText.getText().toString();
-//        String password = binding.passwordEditText.getText().toString();
+        // String username = binding.usernameEditText.getText().toString();
+        // String password = binding.passwordEditText.getText().toString();
         binding.loginButton.setOnClickListener(view -> {
             CompletableFuture<Integer> future = model.trylogin(username, password);
             future.thenApply(statusCode -> {
                 if (statusCode == 200) {
                     
-                    Intent intent = new Intent(this, friends.class);
-                    intent.putExtra("username", username);
-                    Registerfirebase();
-                    intent.putExtra("token", model.gettoken());
-                    startActivity(intent);
-//                    model.getMessgesByuser("99");
-                    // model.sendmsg("99", "asafaa222", "asafaa1", "asafaa", null);
+                    CompletableFuture<DataUserRes> future2 = model.getUserData(username);
+                    Log.i("future2", "first act");
+                    future2.thenApply(userData -> {
+                        if (userData != null) {
+                            Log.i("future2", "Is not null!");
+                            Intent intent = new Intent(this, friends.class);
+                            intent.putExtra("username", userData.getUsername());
+                            intent.putExtra("displayName", userData.getDisplayName());
+                            intent.putExtra("profilePic", userData.getProfilePic());
+                            Log.i("future2", "Registerfirebase");
+                            Registerfirebase();
+                            Log.i("future2", "after Registerfirebase");
+                            intent.putExtra("token", model.gettoken());
+                            Log.i("future2", "starting activity!");
+                            startActivity(intent);
+                        }
+                        return null;
+                    });
                 }
                 return null;
             });
         });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

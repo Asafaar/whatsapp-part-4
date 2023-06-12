@@ -9,23 +9,20 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.whatsapp_part_4.Adapter.UserGetAdapter;
-import com.example.whatsapp_part_4.Dialog.AddFriendDialogFragment;
-import com.example.whatsapp_part_4.Model.Model;
-import com.example.whatsapp_part_4.data.DatabaseSingleton;
-import com.example.whatsapp_part_4.data.UserGet;
-import com.example.whatsapp_part_4.databinding.ActivityFriendsBinding;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+import com.example.whatsapp_part_4.Adapter.UserGetAdapter;
+import com.example.whatsapp_part_4.Dialog.AddFriendDialogFragment;
+import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
+import com.example.whatsapp_part_4.data.DatabaseSingleton;
+import com.example.whatsapp_part_4.data.UserGet;
+import com.example.whatsapp_part_4.databinding.ActivityFriendsBinding;
 
 import java.util.List;
 
@@ -34,14 +31,14 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
     private AppBarConfiguration appBarConfiguration;
     private ActivityFriendsBinding binding;
     private Model model;
-    public static String username;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model= DatabaseSingleton.getModel(this);
-        if (model.getTheme()!=null){
-            Log.e("TAG", "onCreate: "+model.getTheme().getTheme() );
+        model = DatabaseSingleton.getModel(this);
+        if (model.getTheme() != null) {
+            Log.e("TAG", "onCreate: " + model.getTheme().getTheme());
             setTheme(model.getTheme().getTheme());
         }
 
@@ -55,12 +52,24 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
 
         Intent intent = getIntent();
+        if (intent != null) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                for (String key : extras.keySet()) {
+                    Object value = extras.get(key);
+                    Log.d("IntentExtra", "Key: " + key + ", Value: " + value);
+                }
+            }
+
+        }
+
+
         username = intent.getStringExtra("username");
         displayNameTextView.setText(username);
         model.reload();
         //add sychronized
         // Observe changes to the messages data
-        UserGetAdapter adapter = new UserGetAdapter(model.getUsersget().getValue(),username);
+        UserGetAdapter adapter = new UserGetAdapter(model.getUsersget().getValue(), username);
         recyclerView.setAdapter(adapter);
         model.getUsersget().observe(this, new Observer<List<UserGet>>() {
             @Override
@@ -75,12 +84,14 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
 
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_friends, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

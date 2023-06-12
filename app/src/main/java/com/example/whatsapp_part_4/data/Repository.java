@@ -1,34 +1,30 @@
 package com.example.whatsapp_part_4.data;
 
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.whatsapp_part_4.Activty.friends;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class Repository {
     //    private UserDao userDao;
-    private MessageDao messageDao;
+    private final MessageDao messageDao;
     private String token;
-    private ListUsers listusers;
+    private final ListUsers listusers;
 
-    private ListUserGet listUserGets;
-    private Appdb db;
-    private ListMessage listmessages;
-    private MainApiManger mainApiManger;
-    private UserMessageConnectDao userMessageConnectDao;
+    private final ListUserGet listUserGets;
+    private final Appdb db;
+    private final ListMessage listmessages;
+    private final MainApiManger mainApiManger;
+    private final UserMessageConnectDao userMessageConnectDao;
 
-    private LastMsgByuser lastMsgByuser;
+    private final LastMsgByuser lastMsgByuser;
 
-    private UeserGet useserGet;
-    private ThemeSave themeSavedb;
+    private final UeserGet useserGet;
+    private final ThemeSave themeSavedb;
     private String username;
     private String displayName;
     private String profilePic;
@@ -83,27 +79,29 @@ public class Repository {
 
         return 1;
     }
-public void setRetrofit(String url){
+
+    public void setRetrofit(String url) {
         mainApiManger.setRetrofit(url);
-}
-    public String getToken() {
-        return token;
     }
 
-    public void setTheme(int Theme) {
-        this.themeSavedb.deleteTheme();
-        this.themeSavedb.insertTheme(String.valueOf(Theme));
+    public String getToken() {
+        return token;
     }
 
     public ThemeString getTheme() {
 //        Log.e("TAG", "getTheme: "+this.themeSavedb.getTheme().theme );
         if (this.themeSavedb.getTheme() == null) {
-            Log.e("TAG", "getTheme: " );
+            Log.e("TAG", "getTheme: ");
             return null;
-        } else{
+        } else {
 
             return this.themeSavedb.getTheme();
         }
+    }
+
+    public void setTheme(int Theme) {
+        this.themeSavedb.deleteTheme();
+        this.themeSavedb.insertTheme(String.valueOf(Theme));
     }
 
     public String getUsername() {
@@ -118,19 +116,23 @@ public void setRetrofit(String url){
         return profilePic;
     }
 
-    public void getUserData(String username) {
-      CompletableFuture<DataUserRes> completableFuture=  mainApiManger.getUserData(username);
-      completableFuture.thenApply(dataUserRes -> {
-          if (dataUserRes != null) {
-              this.username = dataUserRes.getUsername();
-              this.displayName = dataUserRes.getDisplayName();
-              this.profilePic = dataUserRes.getProfilePic();
-              return 1;
-          } else {
-              return -1;
-          }
-      });
+//    public void getUserData(String username) {
+//        CompletableFuture<DataUserRes> completableFuture = mainApiManger.getUserData(username);
+//        completableFuture.thenApply(dataUserRes -> {
+//            if (dataUserRes != null) {
+//                this.username = dataUserRes.getUsername();
+//                this.displayName = dataUserRes.getDisplayName();
+//                this.profilePic = dataUserRes.getProfilePic();
+//                return 1;
+//            } else {
+//                return -1;
+//            }
+//        });
+//
+//    }
 
+    public CompletableFuture<DataUserRes> getUserData(String username) {
+        return mainApiManger.getUserData(username);
     }
     public void sendMessageWithFirebase(Message message, String friendusername) {
         mainApiManger.sendMessageWithFirebase(message, friendusername);
@@ -216,7 +218,6 @@ public void setRetrofit(String url){
     }
 
     public void reloadusers() {
-
         List<UserGet> userGetList = useserGet.getAllUsers();
         listUserGets.setValue(userGetList);
         mainApiManger.getfriends();
@@ -224,15 +225,13 @@ public void setRetrofit(String url){
 
     public CompletableFuture<Integer> trylogin(String username, String password) {
         return mainApiManger.trylogin(username, password);
-
-
     }
 
     //when make register//TODO need to add the error by status code
     public int MakeNewUser(String username, String password, String displayName, String profilePic) {
 
-        CompletableFuture<Integer> completableFuture=mainApiManger.makenewuser(username, password, displayName, profilePic);
-        Log.e("TAG", "MakeNewUser: "+completableFuture.toString() );
+        CompletableFuture<Integer> completableFuture = mainApiManger.makenewuser(username, password, displayName, profilePic);
+        Log.e("TAG", "MakeNewUser: " + completableFuture.toString());
         completableFuture.thenApply(statusCode -> {
             if (statusCode == 201) {
                 Log.e("TAG", "MakeNewUser: 200");
