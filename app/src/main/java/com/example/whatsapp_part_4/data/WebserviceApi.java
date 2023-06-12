@@ -20,7 +20,7 @@ public interface WebserviceApi {
     @POST("Users")
     Call<Void> createUser(@Body UserRequest userRequest);
     @Headers("Content-Type: application/json")
-    @POST("Users/{username}}")
+    @GET("Users/{username}}")
     Call<DataUserRes> getUserData(@Path("username") String username,@Header("Authorization") String authorization);
     @Headers("Content-Type: application/json")
     @POST("Tokens")

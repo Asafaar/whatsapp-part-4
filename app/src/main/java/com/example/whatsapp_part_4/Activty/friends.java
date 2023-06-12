@@ -31,7 +31,7 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
     private AppBarConfiguration appBarConfiguration;
     private ActivityFriendsBinding binding;
     private Model model;
-    private String username;
+    public static String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +48,6 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
-        TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
-
         Intent intent = getIntent();
         if (intent != null) {
             Bundle extras = intent.getExtras();
@@ -65,7 +62,20 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
 
 
         username = intent.getStringExtra("username");
-        displayNameTextView.setText(username);
+
+        int result =model.getMessgesByuser(username);
+        if (result==1){
+            Log.e("TAG", "onCreate: "+result );
+            ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
+            TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
+            Log.e("TAG", "onCreate: "+username );
+            displayNameTextView.setText(username);
+            Log.e("TAG", "onCreate: "+model.getUserDisplayname()+model.getUserDisplayname() );
+
+        }
+
+
+
         model.reload();
         //add sychronized
         // Observe changes to the messages data

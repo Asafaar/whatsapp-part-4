@@ -217,6 +217,7 @@ public class MainApiManger {
     }
 
     public CompletableFuture<DataUserRes> getUserData(String username){
+        Log.e("TAG", "getUserData: "+username );
         CompletableFuture<DataUserRes> future = new CompletableFuture<>();
         api.getUserData(username,token).enqueue(new Callback<DataUserRes>() {
             @Override
@@ -251,6 +252,7 @@ public class MainApiManger {
         }
         CompletableFuture<Integer> future = new CompletableFuture<>();
         final int[] statusCode = new int[1];
+        Log.e("TAG", "trylogin: " + loginRequest.getUsername() + " " + loginRequest.getPassword());
         api.getToken(loginRequest).enqueue(new Callback<String>() {
 
             @Override
@@ -261,6 +263,7 @@ public class MainApiManger {
                     token = response.body();
                     token = "bearer" + " " + token;
                     Log.d("token", token);
+                    future.complete(statusCode[0]);
                 } else {
                     Log.d("login", "Error: " + statusCode[0]);
                 }

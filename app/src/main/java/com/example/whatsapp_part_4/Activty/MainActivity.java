@@ -236,17 +236,19 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                     CompletableFuture<DataUserRes> future2 = model.getUserData(username);
                     Log.i("future2", "first act");
                     future2.thenApply(userData -> {
-                        if (userData != null) {
+                        if (userData == null) {
                             Log.i("future2", "Is not null!");
                             Intent intent = new Intent(this, friends.class);
-                            intent.putExtra("username", userData.getUsername());
-                            intent.putExtra("displayName", userData.getDisplayName());
-                            intent.putExtra("profilePic", userData.getProfilePic());
-                            Log.i("future2", "Registerfirebase");
-                            Registerfirebase();
-                            Log.i("future2", "after Registerfirebase");
-                            intent.putExtra("token", model.gettoken());
-                            Log.i("future2", "starting activity!");
+//                            model.setdisplayname(userData.getDisplayName());
+//                            model.setprofilepic(userData.getProfilePic());
+                            intent.putExtra("username", username);
+//                            intent.putExtra("displayName", userData.getDisplayName());
+//                            intent.putExtra("profilePic", userData.getProfilePic());
+//                            Log.i("future2", "Registerfirebase");
+//                            Registerfirebase();
+//                            Log.i("future2", "after Registerfirebase");
+//                            intent.putExtra("token", model.gettoken());
+//                            Log.i("future2", "starting activity!");
                             startActivity(intent);
                         }
                         return null;

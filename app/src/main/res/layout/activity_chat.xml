@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/input_layout"
         android:padding="16dp"
+        android:scrollbars="vertical"
         android:textSize="18sp" />
 
     <!-- The layout that contains the input field and send button -->

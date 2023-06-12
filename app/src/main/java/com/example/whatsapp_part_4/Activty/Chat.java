@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.example.whatsapp_part_4.Adapter.MessageAdapter;
+import com.example.whatsapp_part_4.Adapter.SpaceItemDecoration;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Appdb;
@@ -62,6 +63,9 @@ public class Chat extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.list_item_text);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true); // Set stack from end to true
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        SpaceItemDecoration itemDecoration = new SpaceItemDecoration(spacingInPixels);
+        recyclerView.addItemDecoration(itemDecoration);
 
         recyclerView.setLayoutManager(layoutManager);
         MessageAdapter adapter = new MessageAdapter(model.getMessages().getValue());
@@ -86,7 +90,13 @@ public class Chat extends AppCompatActivity {
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
             if (!message.isEmpty()) {
-                byte[] decodedString = Base64.decode(profilePic, Base64.DEFAULT);
+                byte[] decodedString=null;
+                try {
+                    decodedString = Base64.decode(profilePic, Base64.DEFAULT);
+                }
+                catch (Exception e){
+                    Log.e("TAG", "onCreate: "+e.getMessage() );
+                }
                 model.sendMessage(userIdfriend, message,username, displayName, decodedString,friendusername);
                 binding.inputField.setText("");
             }

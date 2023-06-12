@@ -29,6 +29,19 @@ public class Model {
         usersget = repository.getListusersget();
     }
 
+    public String getUserDisplayname(){
+        return  repository.getDisplayName();
+    }
+    public String getUserimg(){
+        return  repository.getProfilePic();
+    }
+
+    public void setdisplayname(String displayname){
+        repository.setDisplayName(displayname);
+    }
+    public void setprofilepic(String profilepic){
+        repository.setProfilePic(profilepic);
+    }
     /**reload
      * @return reload the users from the db and from the server to the livedata
      */
@@ -102,7 +115,7 @@ public class Model {
      * @param displayName the display name
      * @param profilePic the profile pic
      */
-    public int makenewuser(String username, String password, String displayName, String profilePic) {
+    public CompletableFuture<Integer> makenewuser(String username, String password, String displayName, String profilePic) {
        return repository.MakeNewUser(username, password, displayName, profilePic);
     }
 
@@ -110,12 +123,14 @@ public class Model {
      * getMessgesByuser
      * @param id the id of the user we want to get the messages
      */
-    public synchronized void getMessgesByuser(String id) {
+    public synchronized int getMessgesByuser(String id) {
         int status=repository.getMessgesByuser(id);
         if (status==1){
             Log.e("TAG", "getMessgesByuser: sucss" );
+            return 1;
         }else{
             Log.e("TAG", "getMessgesByuser: fail" );
+            return -1;
 
         }
     }

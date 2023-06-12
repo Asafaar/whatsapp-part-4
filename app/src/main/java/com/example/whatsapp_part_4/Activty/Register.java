@@ -10,9 +10,7 @@ import android.os.Bundle;
 
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
-import com.example.whatsapp_part_4.databinding.ActivityMainBinding;
 import com.example.whatsapp_part_4.databinding.ActivityRegisterBinding;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -22,14 +20,9 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 
 import com.example.whatsapp_part_4.R;
@@ -38,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Register extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -143,30 +137,41 @@ public class Register extends AppCompatActivity {
                 binding.msgnewuser.setVisibility(View.VISIBLE);
 
             } else {//TODO
-               int result= model.makenewuser(username, password, displayName, img);//TODO need to fix
-                if (result==201){
-                    CompletableFuture<Integer>future= model.trylogin(username, password);
-                    future.thenApply((res)->{
-                        Log.e("TAG", "onSubmitButtonClick: "+res );
-                        if (res==200){
-                            Intent intent = new Intent(this, friends.class);
-                            intent.putExtra("username", username);
-                            startActivity(intent);
-                            finish();
+                AtomicInteger resulsave= new AtomicInteger();
+                CompletableFuture<Integer> integerCompletableFuture = model.makenewuser(username, password, displayName, img);//TODO need to fix
+                integerCompletableFuture.thenCompose((result) -> {
+                    resulsave.set(result);
+                    if (result == 200) {
+                        return model.trylogin(username, password);
+                    } else {
+                        // Handle the case where creating a new user was not successful
+                        return CompletableFuture.completedFuture(-1); // Return a completed future with an error code (-1)
+                    }
+                }).thenApply((res) -> {
+                    Log.e("TAG", "onSubmitButtonClick: " + res);
+                    if (res == 200) {
+                        Intent intent = new Intent(this, friends.class);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+                        finish();
+                    } else if (res == -1) {
+                        // Handle the case where creating a new user was not successful
+                        if (resulsave.get() == 409) {
+                            binding.msgnewuser.setText("Username already exists");
+                        } else if (resulsave.get() == 400) {
+                            binding.msgnewuser.setText("Invalid request");
                         }
-                        return null;
-                    });
-                }
-                else if (result==409){
-                    binding.msgnewuser.setText("Username already exists");
-                    binding.msgnewuser.setVisibility(View.VISIBLE);
-                }
-                else if (result==400){
-                    binding.msgnewuser.setText("Username already exists");
-                    binding.msgnewuser.setVisibility(View.VISIBLE);
-                }
+                        binding.msgnewuser.setVisibility(View.VISIBLE);
+                    } else {
+                        // Handle the case where login was not successful
+                    }
+                    return null;
+                });
+                Log.e("TAG", "onSubmitButtonClick: " + username + password + displayName);
             }
-        }
+
+
+     }
 
 
     }
