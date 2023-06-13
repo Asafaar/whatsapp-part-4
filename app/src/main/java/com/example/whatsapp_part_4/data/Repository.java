@@ -73,30 +73,38 @@ public class Repository {
 //        userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));//add to user message connect
 //        lastMsgByuser.updateMessageById(idofFriend, message);//update last message
         CompletableFuture<Message> future = mainApiManger.sendMessage(idofFriend, msg, username, displayName, profilePic);
-        future.thenApply(message -> {
+        future.thenCompose(message -> {
             if (message != null) {
                 Log.e("60", "sendMessage:work ");
-                mainApiManger.getfriends();//get all the data of the users from the web because we need his id
-                messageDao.insertMessage(message);
-                List<Message> myDataList = listmessages.getValue();//add to live data
-                myDataList.add(message);
-//                listmessages.getValue().add(message);
-                Log.e("TAG", "sendMessage: "+listmessages.getValue().size() );
+                List<Message> myDataList = listmessages.getValue();
+                myDataList.add(0, message);
                 listmessages.setValue(myDataList);
-                userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));//add to user message connect
-                lastMsgByuser.updateMessageById(idofFriend, message);//update last message
-                mainApiManger.sendMessageWithFirebase(message, friendusername);//send message to firebase
-                return 1;
+
+                CompletableFuture<Integer> completableFuture = mainApiManger.sendMessageWithFirebase(message, friendusername);
+                return completableFuture.thenApply(integer -> {
+                    if (integer == 200) {
+                        Log.e("70", "sendMessage: work ");
+//                        userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));
+//                        lastMsgByuser.updateMessageById(idofFriend, message);
+                        return 1;
+                    } else {
+                        Log.e("70", "sendMessage: dont work ");
+                        return -1;
+                    }
+                });
             } else {
                 Log.e("70", "sendMessage: dont work ");
-
-                return -1;
+                return CompletableFuture.completedFuture(-1);
             }
-
+        }).exceptionally(throwable -> {
+            Log.e("TAG", "sendMessage: Exception occurred: " + throwable.getMessage());
+            return -1;
         });
+
         Log.e("60", "sendMessage:end send -1 ");
 
         return 1;
+
     }
     public void setRetrofit(String url){
         mainApiManger.setRetrofit(url);
@@ -160,9 +168,6 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
 
     return future;
 }
-    public void sendMessageWithFirebase(Message message, String friendusername) {
-        mainApiManger.sendMessageWithFirebase(message, friendusername);
-    }
 
     public MutableLiveData<List<User>> getListusers() {
         return listusers;
@@ -246,7 +251,10 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
     }
 
     public void addmessage(Message message) {
-        listmessages.getValue().add(message);
+        List<Message> myDataList = listmessages.getValue();//add to live data
+        myDataList.add(0, message);
+        listmessages.postValue(myDataList);
+//        listmessages.notify();
     }
 
     public void updateuser(User user) {

@@ -73,6 +73,7 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
 
         String displayName = intent.getStringExtra("displayName");
         String profilePic = intent.getStringExtra("profilePic");
+         username = intent.getStringExtra("username");
 
         ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
         TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);

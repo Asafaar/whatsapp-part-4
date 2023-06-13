@@ -31,6 +31,9 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+
+import java.util.Objects;
+
 //todo firebase msg
 public class FireBaseMsg extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "channel_id";
@@ -62,8 +65,10 @@ public class FireBaseMsg extends FirebaseMessagingService {
             Gson gson = new Gson();
             Message.Sender senderObject = gson.fromJson(sender, Message.Sender.class);
 
+            Log.e("TAG", "onMessageReceived: "+ senderObject.getUsername() + " " + Chat.friendusername);
+            if (Objects.equals(Chat.friendusername, senderObject.getUsername())) {
+                Log.e("TAG", "onMessageReceived: "+ senderObject.getUsername() + " " + Chat.friendusername);
 
-            if (Chat.friendusername == senderObject.getUsername()) {
                 Model model = DatabaseSingleton.getModel(this);
                 model.addmessage(new Message(id, senderObject, content, created));
 
@@ -77,10 +82,8 @@ public class FireBaseMsg extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Create a notification channel for Android 8.0 and higher
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Channel Name", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Channel Name", NotificationManager.IMPORTANCE_DEFAULT);
+        notificationManager.createNotificationChannel(channel);
 
         // Create the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -95,13 +98,11 @@ public class FireBaseMsg extends FirebaseMessagingService {
 
 
     private void crete() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int impo = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("MyNotification", "MyNotification", impo);
-            channel.setDescription("MyNotification");
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+        int impo = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel("MyNotification", "MyNotification", impo);
+        channel.setDescription("MyNotification");
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "MyNotification")
                 .setContentTitle("Friend Request")
                 .setSmallIcon(R.drawable.ic_launcher_background)

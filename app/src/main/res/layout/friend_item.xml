@@ -13,7 +13,6 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
-            android:background="@drawable/trash_can_background"
             android:src="@drawable/anoymousavatar" />
 
         <LinearLayout

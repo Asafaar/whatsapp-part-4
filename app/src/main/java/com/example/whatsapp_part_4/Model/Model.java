@@ -68,15 +68,6 @@ public class Model {
         }
     }
 
-    /**
-     * sendMessageWithFirebase
-     * @param message the message
-     * @param usernmaefirned the username of the friend
-     */
-    public synchronized void sendMessageWithFirebase(Message message,String usernmaefirned) {
-        repository.sendMessageWithFirebase(message,usernmaefirned);
-    }
-
     public ThemeString getTheme(){
         if (repository.getTheme()==null){
             Log.e("TAG", "getTheme: " + "null" );

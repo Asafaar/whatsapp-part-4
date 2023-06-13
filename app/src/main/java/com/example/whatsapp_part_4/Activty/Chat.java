@@ -62,13 +62,14 @@ public class Chat extends AppCompatActivity {
 //        model.getMessgesByuser("99");
         RecyclerView recyclerView = findViewById(R.id.list_item_text);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true); // Set stack from end to true
+//        layoutManager.setStackFromEnd(true); // Set stack from end to true
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration(spacingInPixels);
         recyclerView.addItemDecoration(itemDecoration);
 
         recyclerView.setLayoutManager(layoutManager);
         MessageAdapter adapter = new MessageAdapter(model.getMessages().getValue());
+        layoutManager.setReverseLayout(true);
         recyclerView.setAdapter(adapter);
         //add sychronized
         // Observe changes to the messages data
@@ -76,7 +77,7 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onChanged(List<Message> messages) {
                 // Update the adapter with the new messages data
-                Log.e("TAG", "onChanged: "+messages.size() );
+                Log.e("TAG", "onChanged:model.getMessages().observe "+messages.size() );
                 adapter.setMessages(messages);
                 adapter.notifyDataSetChanged();
             }
