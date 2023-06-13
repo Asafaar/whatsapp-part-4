@@ -93,7 +93,7 @@ public class MainApiManger {
     //   working
     public CompletableFuture<Message> sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic) {
         SendMessageRequest sendMessageRequest = new SendMessageRequest(msg);
-        final Message[] message = {null};
+         Message[] message = {null};
 //        final CountDownLatch latch = new CountDownLatch(1);
         CompletableFuture<Message> future = new CompletableFuture<>();
         api.sendMessage(idofFriend, sendMessageRequest, token).enqueue(new Callback<Message>() {
@@ -103,6 +103,7 @@ public class MainApiManger {
                 if (response.code() == 200) {
                     Log.e("TAG", "onResponse: " + 200);
                     message[0] = response.body();
+                    Log.e("TAG", "onResponse: "+message[0].getCreated() );
                     future.complete(message[0]);
 //                 UserMessage userMessage = new UserMessage(idofFriend, message[0].getId());//TODO check if it works
 //                userMessageConnectDao.update(userMessage);
@@ -361,22 +362,29 @@ public class MainApiManger {
         return future;
     }
 
-    public void sendMessageWithFirebase(Message message, String friendusername) {
+    public CompletableFuture<Integer> sendMessageWithFirebase(Message message, String friendusername) {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        Log.e("TAG", "sendMessageWithFirebase: " +friendusername+message.getContent() );
         api.sendMessageWithFirebase(friendusername, message).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200) {
                     Log.d("firebase", "send successfully");
+                    future.complete(200);
                 } else {
                     Log.d("firebase", "Error: " + response.code());
+                    future.complete(404);
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("onFailure", "onFailure");
+                future.complete(404);
 
             }
         });
+        return future;
     }
 }
 

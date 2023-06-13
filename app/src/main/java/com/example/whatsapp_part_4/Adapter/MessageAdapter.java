@@ -81,13 +81,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
          RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
          if (message.getSender().getUsername().equals(friends.username)) {
              // User-sent message on the right
-             params.addRule(RelativeLayout.ALIGN_PARENT_END);
-             params.removeRule(RelativeLayout.ALIGN_PARENT_START);
-             holder.linearLayout.setBackgroundResource(R.drawable.sender_bubble);
-         } else {
-             // Friend-received message on the left
              params.addRule(RelativeLayout.ALIGN_PARENT_START);
              params.removeRule(RelativeLayout.ALIGN_PARENT_END);
+             holder.linearLayout.setBackgroundResource(R.drawable.sender_bubble);
+         } else {
+             Log.e("TAG", "onBindViewHolder: "+message.getSender().getUsername()+" "+friends.username );
+             // Friend-received message on the left
+             params.addRule(RelativeLayout.ALIGN_PARENT_END);
+             params.removeRule(RelativeLayout.ALIGN_PARENT_START);
              holder.linearLayout.setBackgroundResource(R.drawable.receiver_bubble);
          }
 

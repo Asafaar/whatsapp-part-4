@@ -124,14 +124,14 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
 //       model.reload();
 //        binding.passwordEditText.setText("asafaa");
 //        binding.usernameEditText.setText("asafaa");
-        password = "asafaa";
+        password = "asafaaasafaa";
         username = "asafaa";
         Registerfirebase();
 
         binding.passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                password = "asafaa";
+                password = "asafaaasafaa";
             }
 
             @Override
@@ -175,14 +175,14 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                 //todo print the errorse
                 model.registerfirebase(username, tokenfirebase).thenApply(statusCode -> {
                     if (statusCode == 200) {
-                        System.out.println("token: " + task.getResult());
-                        Message.Sender sender = new Message.Sender();
-                        sender.setUsername("asafaa");
-                        sender.setDisplayName("asafaa");
-                        sender.setProfilePic("asafaa");
-                        Message message = new Message("116", sender, "asafaa", "asafaa");
-                        Log.e("TAG", "onComplete: " + username);
-                        model.sendMessageWithFirebase(message, "asafaa");
+//                        System.out.println("token: " + task.getResult());
+//                        Message.Sender sender = new Message.Sender();
+//                        sender.setUsername("asafaa2");
+//                        sender.setDisplayName("asafaa");
+//                        sender.setProfilePic("asafaa");
+//                        Message message = new Message("116", sender, "asafaa", "asafaa2");
+//                        Log.e("TAG", "onComplete: " + username);
+//                        model.sendMessageWithFirebase(message, "asafaa2");
                     }
                     return null;
                 });
