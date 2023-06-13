@@ -52,7 +52,7 @@ public class FireBaseMsg extends FirebaseMessagingService {
             String body = remoteMessage.getData().get("content");
             Log.e("TAG", "onMessageReceived:showNotification(title, body); ");
             showNotification(title, body);
-            crete();
+            //create();
         }
 
         if (remoteMessage.getData().size() > 0) {
@@ -89,7 +89,7 @@ public class FireBaseMsg extends FirebaseMessagingService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setAutoCancel(false);
 
         // Show the notification
@@ -97,7 +97,7 @@ public class FireBaseMsg extends FirebaseMessagingService {
     }
 
 
-    private void crete() {
+    private void create() {
         int impo = NotificationManager.IMPORTANCE_DEFAULT;
         NotificationChannel channel = new NotificationChannel("MyNotification", "MyNotification", impo);
         channel.setDescription("MyNotification");
@@ -110,7 +110,7 @@ public class FireBaseMsg extends FirebaseMessagingService {
                 .setContentText("You have a new friend request");
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            Log.e("TAG", "crete: cant " );
+            Log.e("TAG", "create: cant " );
             return;
         }
         notificationManagerCompat.notify(1, builder.build());

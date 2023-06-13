@@ -9,11 +9,13 @@ const key = "whatsappSecretKey";
 const createMessage = async (req, res) => {
     const me = await userService.getUserByUsername(res.locals.username);
     if (!me) {
+        console.log("createMessage - 404 - 0");
         return res.status(404).json({ error: ['Error!'] });
     }
     const messageId = req.params.id;
     const message = await messageService.CreateMessage(req.body, messageId, me);
     if (!message) {
+        console.log("createMessage - 404 - 1");
         return res.status(404).json({ error: ['User doesn\'t exist'] });
     }
     // Get the chats model for the current user
@@ -22,6 +24,7 @@ const createMessage = async (req, res) => {
     const friendChat = await Chats.findOne({ 'username': friend.username });
 
     if (!myChat || !friendChat || !friend) {
+        console.log("createMessage - 404 - 2");
         return res.status(404).json({ error: ['Chats not found'] });
     }
 

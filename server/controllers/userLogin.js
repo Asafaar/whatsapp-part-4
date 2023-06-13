@@ -6,6 +6,7 @@ const createUser = async (req, res) => {
     res.status(200);
     const user = await userService.getUserByUsername(req.body.username);
     if(user) {
+        console.log("createuser - 404");
         return res.status(404).json({ error: ['User already exists'] });
     }
     await userService.CreateUser(req.body);
@@ -13,6 +14,7 @@ const createUser = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
+    console.log(req.body);
     res.status(200);
     const user = await userService.getUser(req.body);
     if (!user) {
@@ -24,7 +26,6 @@ const getUser = async (req, res) => {
     const token = jwt.sign(payload, key, { algorithm: 'HS256' });
     console.log("token - ", token, "\n");
     return res.status(200).send(token);
-    res.end();
 };
 
 const isLoggedIn = async (req, res, next) => {
@@ -32,8 +33,7 @@ const isLoggedIn = async (req, res, next) => {
     if (req.headers.authorization) {
         // Extract the token from that header
         const token = req.headers.authorization.split(" ")[1];
-        //const tokenObject = JSON.parse(token);
-        //const extractedToken = tokenObject.token;
+
         const extractedToken = token;
         try {
             // Verify the token is valid
@@ -56,6 +56,7 @@ const getUserDetails = async (req, res) => {
         console.log("err - getdetails");
         return res.status(404).json({ error: ['User not found'] });
     }
+    console.log("get user data - ", user);
 
     // Return the user details
     res.status(200).json(user);

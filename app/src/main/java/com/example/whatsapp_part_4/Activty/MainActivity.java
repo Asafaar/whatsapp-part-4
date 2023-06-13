@@ -241,9 +241,9 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                             Log.d("model", "Received object is null");
                         }
                     });
+                } else {
+                    Toast.makeText(this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
-
                 return null;
             });
         });

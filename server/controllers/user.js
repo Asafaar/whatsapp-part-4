@@ -9,11 +9,13 @@ const getFriend = async (req, res) => {
     console.log("get friend - ", req.body);
     const friend = await userService.getUserByUsername(req.body.username);
     if (!friend) {
+        console.log("getFriend - 404 - 0");
         return res.status(404).json({ error: ['User doesn\'t exist'] });
     }
     // Get the chats model for the current user
     const chats = await Chats.findOne({ 'username': res.locals.username });
     if (!chats) {
+        console.log("getFriend - 404 - 1");
         return res.status(404).json({ error: ['Chats not found'] });
     }
 
@@ -24,7 +26,7 @@ const getFriend = async (req, res) => {
     }
 
     if (friend.username === chats.username) {
-        return res.status(400).json({ error: ['Can\'t add yourself!'] });
+        return res.status(401).json({ error: ['Can\'t add yourself!'] });
     }
     // Add the friend to the users array
     chats.users.push(friend);
@@ -39,8 +41,6 @@ const isLoggedIn = async (req, res, next) => {
     if (req.headers.authorization) {
         // Extract the token from that header
         const token = req.headers.authorization.split(" ")[1];
-        //const tokenObject = JSON.parse(token);
-        //const extractedToken = tokenObject.token;
         const extractedToken = token;
         try {
             // Verify the token is valid
