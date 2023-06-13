@@ -7,9 +7,14 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.whatsapp_part_4.Adapter.MessageAdapter;
 import com.example.whatsapp_part_4.Adapter.SpaceItemDecoration;
+import com.example.whatsapp_part_4.Async.AsyncTaskMessege;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Appdb;
@@ -21,6 +26,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,7 +61,8 @@ public class Chat extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 //       String user= getIntent().getParcelableExtra("user");
 //        String token= getIntent().getParcelableExtra("token");
 
@@ -88,8 +95,19 @@ public class Chat extends AppCompatActivity {
         userIdfriend = intent.getStringExtra("userId");
         username = intent.getStringExtra("username");
         friendusername = intent.getStringExtra("friendusername");
+        ImageView profileImageView = findViewById(R.id.profileImageView);
+        TextView textView= findViewById(R.id.displayNameTextView);
+        textView.setText(displayName);
+        Log.e("TAG", "onCreate: " + model.getUserDisplayname() + model.getUserDisplayname());
+        //Picasso.get().load(profilePic).into(profileImageView);
+        Glide.with(this)
+                .load(profilePic)
+                .apply(RequestOptions.circleCropTransform())
+                .into(profileImageView);
         Log.e("TAG", "onCreate: "+userIdfriend );
-        model.getMessgesByuser(userIdfriend);
+//        model.getMessgesByuser(userIdfriend);
+        AsyncTaskMessege asyncTaskMesseges=new AsyncTaskMessege(model,userIdfriend);
+        asyncTaskMesseges.execute();
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
             if (!message.isEmpty()) {

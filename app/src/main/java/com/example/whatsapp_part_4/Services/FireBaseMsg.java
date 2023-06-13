@@ -64,12 +64,12 @@ public class FireBaseMsg extends FirebaseMessagingService {
             Log.e("TAG", "onMessageReceived: " + content + " " + created + " " + id + " " + sender);
             Gson gson = new Gson();
             Message.Sender senderObject = gson.fromJson(sender, Message.Sender.class);
-
+            Model model = DatabaseSingleton.getModel(this);
+            model.reloadusersOntheback();//update the users time
             Log.e("TAG", "onMessageReceived: "+ senderObject.getUsername() + " " + Chat.friendusername);
             if (Objects.equals(Chat.friendusername, senderObject.getUsername())) {
                 Log.e("TAG", "onMessageReceived: "+ senderObject.getUsername() + " " + Chat.friendusername);
 
-                Model model = DatabaseSingleton.getModel(this);
                 model.addmessage(new Message(id, senderObject, content, created));
 
             }

@@ -40,7 +40,7 @@ public class MainApiManger {
 //        this.userDao = userDao;
         this.messageDao = messageDao;
         retrofit = new Retrofit.Builder()
-                .baseUrl(ConstantData.BASE_URL)
+                .baseUrl(ConstantData.BASE_URL3)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                 .build();
         api = retrofit.create(WebserviceApi.class);
@@ -66,7 +66,7 @@ public class MainApiManger {
                     UeserGet.deleteAllUsers();
                     if (response.body() != null) {
                         UeserGet.insertAll(response.body());
-                        usersget.setValue(response.body());
+//                        usersget.setValue(response.body());
                     }
                     integerCompletableFuture.complete(200);
                 }

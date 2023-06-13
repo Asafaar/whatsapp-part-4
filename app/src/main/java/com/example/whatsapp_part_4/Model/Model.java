@@ -23,7 +23,7 @@ public class Model {
     private Repository repository;
 
     public Model(Appdb db) {
-        this.repository = new Repository(db);
+        this.repository = new Repository(db,this);
         messages = repository.getListmessages();
         users = repository.getListusers();
         usersget = repository.getListusersget();
@@ -47,6 +47,12 @@ public class Model {
      */
     public void reload() {
         repository.reloadusers();
+    }
+    public void reloadusersOntheback() {
+        repository.reloadusersOntheback();
+    }
+    public void reloadusergetfromdb() {
+        repository.reloadusergetfromdb();
     }
 
     /** sendMessage to the server
@@ -135,6 +141,12 @@ public class Model {
             return -1;
 
         }
+    }
+    public void loadMsgOfUserfromDb(String id) {
+        repository.loadMsgOfUserfromDb(id);
+    }
+    public void loadMsgOfUserfromapi(String id) {
+        repository.loadMsgOfUserfromapi(id);
     }
 
 //    /**

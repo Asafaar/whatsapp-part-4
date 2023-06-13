@@ -16,7 +16,7 @@ public class DatabaseSingleton {
 
     public static synchronized Appdb getDatabase(Context context) {
         if (db == null) {
-            db = Room.databaseBuilder(context.getApplicationContext(), Appdb.class, "maind12")
+            db = Room.databaseBuilder(context.getApplicationContext(), Appdb.class, "maind14")
                     .allowMainThreadQueries().build();
         }
         return db;

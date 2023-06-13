@@ -28,6 +28,8 @@ import com.example.whatsapp_part_4.data.UserGet;
 import com.example.whatsapp_part_4.databinding.ActivityFriendsBinding;
 import com.squareup.picasso.Picasso;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class friends extends AppCompatActivity implements AddFriendDialogFragment.AddFriendDialogListener {
@@ -95,6 +97,37 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
             @Override
             public void onChanged(List<UserGet> users) {
                 // Update the adapter with the new messages data
+                users.sort( new Comparator<UserGet>() {
+                    @Override
+                    public int compare(UserGet user1, UserGet user2) {
+                        String created1 = null;
+                        String created2 = null;
+
+                        if (user1.getLastMessage() != null) {
+                            created1 = user1.getLastMessage().getCreated();
+                            Log.e("TAG", "compare:1 " +created1);
+
+                        }
+                        if (user2.getLastMessage() != null) {
+                            created2 = user2.getLastMessage().getCreated();
+                            Log.e("TAG", "compare:2 " +created2);
+                        }
+
+                        // Handle null values
+                        if (created1 == null && created2 == null) {
+                            return 0;
+                        } else if (created1 == null) {
+                            return 1; // Place null values at the end
+                        } else if (created2 == null) {
+                            return -1; // Place null values at the end
+                        }
+
+                        // Compare the created dates
+                        return created2.compareTo(created1); // Use created1.compareTo(created2) for ascending order
+                    }
+                });
+
+                Log.e("TAG", "onChanged:model.getUsersget().observe " + "users" );
                 adapter.setUserGetList(users);
                 adapter.notifyDataSetChanged();
             }

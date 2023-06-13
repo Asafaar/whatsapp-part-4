@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.whatsapp_part_4.Activty.friends;
+import com.example.whatsapp_part_4.Async.AsyncTaskUsers;
+import com.example.whatsapp_part_4.Model.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +35,11 @@ public class Repository {
     private String username;
     private String displayName;
     private String profilePic;
+    private Model model;
 
-    public Repository(Appdb db) {
+    public Repository(Appdb db, Model model) {
+        this.model = model;
+
         this.db = db;
 //        userDao = db.userDao();
         messageDao = db.messageDao();
@@ -176,7 +181,39 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
     public LiveData<List<User>> getfriendslist() {
         return listusers;
     }
+    public void loadMsgOfUserfromDb(String id) {
+        List<String> list=userMessageConnectDao.getMessageIdsForUser(id);
+        List<Message> list1=new ArrayList<>();
+        for (String s : list) {
+         List<Message> list2=  messageDao.getMessagesById(s);
+            list1.add(list2.get(0));
+        }
+        listmessages.postValue(list1);
+    }
+    public void loadMsgOfUserfromapi(String id) {
+        CompletableFuture<List<Message>> future = mainApiManger.getMessgesByuser(id);
+        future.thenApply(messages -> {
+            if (messages != null) {
+//                messageDao.deleteAllMessages();
+//                messageDao.insertAll(messages);
+//                userMessageConnectDao.deleteAllMessages();\
+                List<Message> list=messageDao.getAllMessages();
+                for (Message message : messages) {
+                    if (!list.contains(message)){
+                        messageDao.insertMessage(message);
+                        UserMessage userMessage = new UserMessage(id, message.getId());
+                        userMessageConnectDao.insert(userMessage);
 
+                    }
+                }
+                loadMsgOfUserfromDb(id);
+
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+    }
     public int getMessgesByuser(String id) {
 
         List<Message> list = messageDao.getMessagesById(id);
@@ -184,9 +221,9 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
         CompletableFuture<List<Message>> future = mainApiManger.getMessgesByuser(id);
         future.thenApply(messages -> {
             if (messages != null) {
-                messageDao.deleteAllMessages();
+//                messageDao.deleteAllMessages();
                 messageDao.insertAll(messages);
-                userMessageConnectDao.deleteAllMessages();
+//                userMessageConnectDao.deleteAllMessages();
 
                 for (Message message : messages) {//add to the db connect table
                     UserMessage userMessage = new UserMessage(id, message.getId());
@@ -230,18 +267,21 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
 
     public synchronized CompletableFuture<Integer> addNewFriend(String Friend) {
         return mainApiManger.Addfriend(Friend)
-                .thenApply(statusCode -> {
+                .thenCompose(statusCode -> {
                     if (statusCode == 200) {
                         Log.e("TAG", "addnewfriend:load ");
-                        mainApiManger.getfriends();
-                        return 1; // Success
+                        return mainApiManger.getfriends()
+                                .thenApply(response -> {
+                                    // Process the response here
+                                    return 1; // Success
+                                });
                     } else if (statusCode == 401) {
-                        return -2; // Unauthorized
+                        return CompletableFuture.completedFuture(-2); // Unauthorized
                     } else if (statusCode == 400) {
-                        return -3; // Bad Request
+                        return CompletableFuture.completedFuture(-3); // Bad Request
                     } else {
                         Log.e("TAG", "addnewfriend: -1");
-                        return -1; // Unknown error
+                        return CompletableFuture.completedFuture(-1); // Unknown error
                     }
                 })
                 .exceptionally(throwable -> {
@@ -249,11 +289,11 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
                     return -1; // Unknown error
                 });
     }
-
     public void addmessage(Message message) {
         List<Message> myDataList = listmessages.getValue();//add to live data
         myDataList.add(0, message);
         listmessages.postValue(myDataList);
+
 //        listmessages.notify();
     }
 
@@ -278,14 +318,34 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
     }
 
     public void reloadusers() {
+        AsyncTaskUsers messageLoader = new AsyncTaskUsers(model);
+        messageLoader.execute();
 
-        List<UserGet> userGetList = useserGet.getAllUsers();
-        listUserGets.setValue(userGetList);
+//        List<UserGet> userGetList = useserGet.getAllUsers();
+//        listUserGets.setValue(userGetList);
+//        CompletableFuture<Integer> future= mainApiManger.getfriends();
+//        future.thenApply(statusCode -> {
+//            if (statusCode == 200) {
+//                Log.e("TAG", "reloadusers: " + "load" );
+//                List<UserGet> userGetList1 = useserGet.getAllUsers();
+//                listUserGets.setValue(userGetList1);
+//                return 1;
+//            } else {
+//                return -1;
+//            }
+//        });
+    }
+
+    public void reloadusersOntheback() {
+
+
         CompletableFuture<Integer> future= mainApiManger.getfriends();
         future.thenApply(statusCode -> {
             if (statusCode == 200) {
+                Log.e("TAG", "reloadusers: " + "load" );
                 List<UserGet> userGetList1 = useserGet.getAllUsers();
-                listUserGets.setValue(userGetList1);
+                listUserGets.postValue(userGetList1);
+
                 return 1;
             } else {
                 return -1;
@@ -349,6 +409,11 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
 
     public void reloadlastmsg() {
         List<UserGet> userGetList = useserGet.getAllUsers();
+
+    }
+
+    public void reloadusergetfromdb() {
+        listUserGets.postValue(useserGet.getAllUsers());
 
     }
 
