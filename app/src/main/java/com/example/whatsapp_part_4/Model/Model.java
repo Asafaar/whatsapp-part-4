@@ -164,13 +164,12 @@ public class Model {
 
     /**
      * addnewfriend- add new friend to the server search if the friend is in the server
+     *
      * @param Friend the friend we want to add
      * @return if the friend is in the server and can be added
      */
-    public synchronized int addnewfriend(String Friend){
-       return repository.adduser(Friend);
-
-
+    public synchronized CompletableFuture<Integer> addNewFriend(String Friend){
+       return repository.addNewFriend(Friend);
     }
 
     /**

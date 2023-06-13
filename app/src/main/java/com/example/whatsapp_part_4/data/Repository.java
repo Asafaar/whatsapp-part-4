@@ -2,6 +2,7 @@ package com.example.whatsapp_part_4.data;
 
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -196,26 +197,52 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
         return 1;
     }
 
-    public int adduser(String frienduser) {
-//        userDao.insertUser(user);
+//    public synchronized CompletableFuture<Integer> adduser(String Friend) {
+//        CompletableFuture<Integer> future = new CompletableFuture<>();
+//        mainApiManger.Addfriend(Friend)
+//                .thenAccept(statusCode -> {
+//                    if (statusCode == 200) {
+//                        Log.e("TAG", "addnewfriend:load ");
+//                        mainApiManger.getfriends();
+//                        future.complete(1); // Complete with status 1 (success)
+//                    } else if (statusCode == 401) {
+//                        Log.e("TAG", "addnewfriend: -1");
+//                        future.complete(-2); // Complete with status -2 (Unauthorized)
+//                    } else if (statusCode == 400) {
+//                        Log.e("TAG", "addnewfriend: -1");
+//                        future.complete(-3); // Complete with status -3 (Bad Request)
+//                    } else {
+//                        future.complete(-1); // Complete with status -1 (Unknown error)
+//                    }
+//                })
+//                .exceptionally(throwable -> {
+//                    future.complete(-1); // Complete with status -1 (Unknown error)
+//                    return null;
+//                });
+//        return future;
+//    }
 
-        CompletableFuture<Integer> future = mainApiManger.Addfriend(frienduser);
-        future.thenApply(statusCode -> {
-            if (statusCode == 200) {
-                Log.e("TAG", "adduser:load ");
-                mainApiManger.getfriends();//get all the data of the users from the web because we need his id
-            } else {
-                Log.e("TAG", "adduser: -1");
 
-                return -1;
-            }
-            Log.e("TAG", "adduser: 1");
-            return 1;
-        });
-        Log.e("TAG", "adduser: 1");
-
-        return 1;
-
+    public synchronized CompletableFuture<Integer> addNewFriend(String Friend) {
+        return mainApiManger.Addfriend(Friend)
+                .thenApply(statusCode -> {
+                    if (statusCode == 200) {
+                        Log.e("TAG", "addnewfriend:load ");
+                        mainApiManger.getfriends();
+                        return 1; // Success
+                    } else if (statusCode == 401) {
+                        return -2; // Unauthorized
+                    } else if (statusCode == 400) {
+                        return -3; // Bad Request
+                    } else {
+                        Log.e("TAG", "addnewfriend: -1");
+                        return -1; // Unknown error
+                    }
+                })
+                .exceptionally(throwable -> {
+                    Log.e("TAG", "addnewfriend: -1");
+                    return -1; // Unknown error
+                });
     }
 
     public void addmessage(Message message) {

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -219,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
             CompletableFuture<Integer> future = model.trylogin(username, password);
             future.thenApply(statusCode -> {
                 if (statusCode == 200) {
-
                     CompletableFuture<DataUserRes> future2 = model.getUserData(username);
                     future2.thenAccept(userData -> {
                         if (userData != null) {
@@ -242,6 +242,8 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                         }
                     });
                 }
+                Toast.makeText(this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
+
                 return null;
             });
         });
@@ -263,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                 ThemeOption themeOptionsDialog = new ThemeOption("Purple Theme", ContextCompat.getColor(this, R.color.seed), R.style.AppThemeread);
                 ThemeOption themeOptionsDialog2 = new ThemeOption("Green Theme", ContextCompat.getColor(this, R.color.sseed), R.style.AppThemeGree);
                 ThemeOption themeOptionsDialog3 = new ThemeOption("Red Theme", ContextCompat.getColor(this, R.color.ssseed), R.style.AppThemeRed);
-                ThemeOption themeOptionsDialog4 = new ThemeOption("Blud Theme", ContextCompat.getColor(this, R.color.sssseed), R.style.AppThemeBlue);
+                ThemeOption themeOptionsDialog4 = new ThemeOption("Blue Theme", ContextCompat.getColor(this, R.color.sssseed), R.style.AppThemeBlue);
                 ThemeOption themeOptionsDialog5 = new ThemeOption("Dark Theme", ContextCompat.getColor(this, R.color.ssssseed), R.style.AppThemeDark);
                 List<ThemeOption> themeOptions = new ArrayList<>();
                 themeOptions.add(themeOptionsDialog);

@@ -40,7 +40,7 @@ public class MainApiManger {
 //        this.userDao = userDao;
         this.messageDao = messageDao;
         retrofit = new Retrofit.Builder()
-                .baseUrl(ConstantData.BASE_URL3)
+                .baseUrl(ConstantData.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                 .build();
         api = retrofit.create(WebserviceApi.class);
@@ -202,13 +202,7 @@ public class MainApiManger {
         api.addUserFrined(findFriendRequest, token).enqueue(new Callback<UserGet.User>() {
             @Override
             public void onResponse(Call<UserGet.User> call, Response<UserGet.User> response) {
-                if (response.code() == 200) {
-                    Log.d("addfriend", "add successfully");
-                    future.complete(200);
-                } else {
-                    Log.d("addfriend", "Error: " + response.code());
-                    future.complete(404);
-                }
+                future.complete(response.code());
             }
 
             @Override
