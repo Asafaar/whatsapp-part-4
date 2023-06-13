@@ -1,5 +1,7 @@
 package com.example.whatsapp_part_4.Activty;
 
+import static com.example.whatsapp_part_4.Activty.MainActivity.Registerfirebase;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -76,7 +78,7 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         String displayName = intent.getStringExtra("displayName");
         String profilePic = intent.getStringExtra("profilePic");
          username = intent.getStringExtra("username");
-
+        Registerfirebase(username,model);
         ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
         TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
         Log.e("TAG", "onCreate: " + username);
@@ -151,6 +153,7 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
                 return true;
             case R.id.logout:
                 model.clearLogoutUser();
+                model.sendTokenfirebasedel(username);
                 finish();
                 return true;
             default:

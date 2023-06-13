@@ -365,8 +365,17 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
         return mainApiManger.makenewuser(username, password, displayName, profilePic);
     }
 
-    public void sendTokenfirebasedel(String token) {
-        mainApiManger.sendTokenfirebasedel(token);
+    public void sendTokenfirebasedel(String username) {
+
+        CompletableFuture<Integer> future= mainApiManger.sendTokenfirebasedel(username);
+        future.thenApply(statusCode -> {
+            if (statusCode == 200) {
+                Log.e("TAG", "sendTokenfirebasedel: " + "load" );
+                return 1;
+            } else {
+                return -1;
+            }
+        });
     }
 
     public int deleteFriend(UserGet user) {

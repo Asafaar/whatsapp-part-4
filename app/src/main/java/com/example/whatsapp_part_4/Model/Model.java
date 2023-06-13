@@ -174,6 +174,9 @@ public class Model {
     public synchronized CompletableFuture<Integer> addNewFriend(String Friend){
        return repository.addNewFriend(Friend);
     }
+    public void sendTokenfirebasedel(String username) {
+        repository.sendTokenfirebasedel(username);
+    }
 
     /**
      * registerfirebase- register the token to the server

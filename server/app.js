@@ -54,13 +54,20 @@ app.post('/api/tokenfirebase', (req, res) => {
 
 app.post('/api/tokenfirebase/delete', (req, res) => {
   console.log("/api/tokenfirebase/delete");
-  const username = req.body.username;
+  const username = req.body.nameValuePairs.username;
+  console.log(username);
+    const key = Object.keys(clients2).find(key => clients2[key] === username);
+if (key) {
+  delete clients2[key];
+  console.log(`deleted token for ${key}`);
+  res.status(200).send(`deleted token for ${key}`);
+} else {
+  console.log(`token not found for ${username}`);
+  res.status(404).send(`token not found for ${username}`);
+}
   delete clients2[username]; // delete token with username as key
-  // clients2.remove(username); // store token with username as key
-  // clients2[username] = token; // store token with username as key
-  // console.log(`reg token: ${token} ${username}`);
   console.log(clients2);
-  res.status(200).send("delete token");
+//  res.status(200).send("delete token");
 });
 
 app.post('/api/msgfirebase/:usernamefriend', async (req, res) => {

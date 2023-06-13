@@ -180,18 +180,29 @@ public class MainApiManger {
         return future;
     }
 
-    public void sendTokenfirebasedel(String username) {
-        api.sendTokenfirebasedel(username).enqueue(new Callback<Void>() {
+    public CompletableFuture<Integer> sendTokenfirebasedel(String username) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("username", username);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.e("TAG", "sendTokenfirebasedel: "+username );
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        api.sendTokenfirebasedel(json).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 Log.d("firebase", "send successfully");
+                future.complete(200);
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Log.d("firebase", "Error: " + t.getMessage());
+                future.complete(404);
             }
         });
+        return future;
     }
 
     public CompletableFuture<Integer> Addfriend(String userfrined) {

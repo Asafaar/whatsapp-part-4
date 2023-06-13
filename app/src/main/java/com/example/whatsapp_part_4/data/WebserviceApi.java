@@ -50,7 +50,7 @@ public interface WebserviceApi {
     Call<Void> sendTokenfirebase(@Body reqfirebase reqfirebase);
 
     @POST("tokenfirebase/delete")
-    Call<Void> sendTokenfirebasedel(@Body String username);
+    Call<Void> sendTokenfirebasedel(@Body JSONObject username);
 
     @POST("msgfirebase/{usernamefriend}")
     @Headers("Content-Type: application/json")

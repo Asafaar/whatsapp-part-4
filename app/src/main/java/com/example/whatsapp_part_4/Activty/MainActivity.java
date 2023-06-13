@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
 //        binding.usernameEditText.setText("asafaa");
         password = "asafaaasafaa";
         username = "asafaa";
-        Registerfirebase();
+//        Registerfirebase();
 
         binding.passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -167,11 +167,11 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         });
     }
 
-    public void Registerfirebase() {
+    public static   void Registerfirebase(String username, Model model) {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
             public void onComplete(@NonNull Task<String> task) {
-                tokenfirebase = task.getResult();
+               String tokenfirebase = task.getResult();
                 System.out.println("token: " + task.getResult());
                 //todo print the errorse
                 model.registerfirebase(username, tokenfirebase).thenApply(statusCode -> {
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                             intent.putExtra("displayName", userData.getDisplayName());
                             intent.putExtra("profilePic", userData.getProfilePic());
                             Log.i("future2", "Registerfirebase");
-                            Registerfirebase();
+//                            Registerfirebase();
                             Log.i("future2", "after Registerfirebase");
                             intent.putExtra("token", model.gettoken());
                             Log.i("future2", "starting activity!");
