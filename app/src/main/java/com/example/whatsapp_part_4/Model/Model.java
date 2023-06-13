@@ -88,8 +88,19 @@ public class Model {
 
     }
     public CompletableFuture<DataUserRes> getUserData(String username){
-        return repository.getUserData(username);
+        CompletableFuture<DataUserRes> future = repository.getUserData(username);
+
+        future.thenAccept(userData -> {
+            if (userData != null) {
+                Log.d("model", "Received object: " + userData.toString());
+            } else {
+                Log.d("model", "Received object is null");
+            }
+        });
+
+        return future;
     }
+
     public void setRetrofit(String url){
         repository.setRetrofit(url);
     }

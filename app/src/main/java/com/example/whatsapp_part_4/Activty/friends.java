@@ -48,8 +48,14 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Log.d("friends", "first act");
+
         Intent intent = getIntent();
+        Log.d("friends", "2nd act");
+
         if (intent != null) {
+            Log.d("friends", "3rd act");
+
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 for (String key : extras.keySet()) {
@@ -71,7 +77,6 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
             Log.e("TAG", "onCreate: "+username );
             displayNameTextView.setText(username);
             Log.e("TAG", "onCreate: "+model.getUserDisplayname()+model.getUserDisplayname() );
-
         }
 
 

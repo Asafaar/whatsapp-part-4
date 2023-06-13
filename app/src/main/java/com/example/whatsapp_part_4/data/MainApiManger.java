@@ -4,21 +4,14 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,16 +19,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainApiManger {
-    private MutableLiveData<List<User>> users;
-    private MutableLiveData<List<Message>> messages;
-    private MutableLiveData<List<UserGet>> usersget;
+    private final MutableLiveData<List<User>> users;
+    private final MutableLiveData<List<Message>> messages;
+    private final MutableLiveData<List<UserGet>> usersget;
     private Retrofit retrofit;
-    private WebserviceApi api;
+    private final WebserviceApi api;
     //    private UserDao userDao;
-    private MessageDao messageDao;
-    private UserMessageConnectDao userMessageConnectDao;
+    private final MessageDao messageDao;
+    private final UserMessageConnectDao userMessageConnectDao;
     private String token;
-    private UeserGet UeserGet;
+    private final UeserGet UeserGet;
 
     public MainApiManger(MutableLiveData<List<User>> users, MutableLiveData<List<UserGet>> userget, MutableLiveData<List<Message>> messages, MessageDao messageDao, String token, UserMessageConnectDao userMessageConnectDao, UeserGet ueserGet) {
         this.users = users;
@@ -55,7 +48,7 @@ public class MainApiManger {
     }
 
     public void setRetrofit(String url) {
-        this.retrofit =  new Retrofit.Builder()
+        this.retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                 .build();
@@ -69,9 +62,10 @@ public class MainApiManger {
 //                userDao.deleteAllUsers();
 //                userDao.insertAll(response.body());
                 UeserGet.deleteAllUsers();
-                if (response.body() != null){
+                if (response.body() != null) {
                     UeserGet.insertAll(response.body());
-                   usersget.setValue(response.body());}
+                    usersget.setValue(response.body());
+                }
 //update db
 //                List<UserGet> myDataList = usersget.getValue();//update livedata
 //                myDataList.addAll(response.body());
@@ -174,7 +168,7 @@ public class MainApiManger {
         return future;
     }
 
-    public void sendTokenfirebasedel(String username){
+    public void sendTokenfirebasedel(String username) {
         api.sendTokenfirebasedel(username).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -216,15 +210,21 @@ public class MainApiManger {
         return future;
     }
 
-    public CompletableFuture<DataUserRes> getUserData(String username){
-        Log.e("TAG", "getUserData: "+username );
+    public CompletableFuture<DataUserRes> getUserData(String username) {
+        Log.e("TAG", "getUserData: " + username);
         CompletableFuture<DataUserRes> future = new CompletableFuture<>();
-        api.getUserData(username,token).enqueue(new Callback<DataUserRes>() {
+        api.getUserData(username, token).enqueue(new Callback<DataUserRes>() {
             @Override
             public void onResponse(Call<DataUserRes> call, Response<DataUserRes> response) {
                 if (response.code() == 200) {
                     Log.d("getUserData", "get successfully");
-                    future.complete(response.body());
+                    DataUserRes userData = response.body();
+                    if (userData != null) {
+                        Log.d("getUserData", "Response body: " + userData.displayName);
+                    } else {
+                        Log.d("getUserData", "Response body is null");
+                    }
+                    future.complete(userData);
                 } else {
                     Log.d("getUserData", "Error: " + response.code());
                     future.complete(null);
@@ -274,7 +274,7 @@ public class MainApiManger {
             public void onFailure(Call<String> call, Throwable t) {
                 statusCode[0] = -1;
                 Log.d("token", "fail");
-                Log.e("TAG", "onFailure: "+t.getMessage() );
+                Log.e("TAG", "onFailure: " + t.getMessage());
                 future.complete(-1);
             }
         });
@@ -351,14 +351,13 @@ public class MainApiManger {
     }
 
     public void sendMessageWithFirebase(Message message, String friendusername) {
-        api.sendMessageWithFirebase(friendusername,message).enqueue(new Callback<Void>() {
+        api.sendMessageWithFirebase(friendusername, message).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if(response.code()==200){
-                    Log.d("firebase","send successfully");
-                }
-                else {
-                    Log.d("firebase","Error: "+response.code());
+                if (response.code() == 200) {
+                    Log.d("firebase", "send successfully");
+                } else {
+                    Log.d("firebase", "Error: " + response.code());
                 }
             }
 

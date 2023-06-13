@@ -145,7 +145,17 @@ public class Repository {
 //
 //    }
 public CompletableFuture<DataUserRes> getUserData(String username) {
-    return mainApiManger.getUserData(username);
+    CompletableFuture<DataUserRes> future = mainApiManger.getUserData(username);
+
+    future.thenAccept(userData -> {
+        if (userData != null) {
+            Log.d("repository", "Received object: " + userData.toString());
+        } else {
+            Log.d("repository", "Received object is null");
+        }
+    });
+
+    return future;
 }
     public void sendMessageWithFirebase(Message message, String friendusername) {
         mainApiManger.sendMessageWithFirebase(message, friendusername);

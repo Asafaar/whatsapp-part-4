@@ -1,16 +1,20 @@
 package com.example.whatsapp_part_4.Activty;
 
 
-import static java.lang.Thread.sleep;
-
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.example.whatsapp_part_4.Dialog.NotificationPermissionHandler;
 import com.example.whatsapp_part_4.Dialog.OptionsDialog;
@@ -20,28 +24,11 @@ import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Appdb;
 import com.example.whatsapp_part_4.data.DataUserRes;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-
 import com.example.whatsapp_part_4.data.Message;
 import com.example.whatsapp_part_4.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
-
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,9 +50,9 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         super.onCreate(savedInstanceState);
 //        setTheme(R.style.AppThemeread);
         model = DatabaseSingleton.getModel(this);
-        Log.e("TAG", "onCreate: "+model.getTheme() );
-        if (model.getTheme()!=null){
-            Log.e("TAG", "onCreate: "+model.getTheme().getTheme() );
+        Log.e("TAG", "onCreate: " + model.getTheme());
+        if (model.getTheme() != null) {
+            Log.e("TAG", "onCreate: " + model.getTheme().getTheme());
             setTheme(model.getTheme().getTheme());
         }
 
@@ -232,32 +219,35 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
             CompletableFuture<Integer> future = model.trylogin(username, password);
             future.thenApply(statusCode -> {
                 if (statusCode == 200) {
-                    
+
                     CompletableFuture<DataUserRes> future2 = model.getUserData(username);
-                    Log.i("future2", "first act");
-                    future2.thenApply(userData -> {
-                        if (userData == null) {
+                    future2.thenAccept(userData -> {
+                        if (userData != null) {
+                            Log.d("model", "Received object: " + userData);
                             Log.i("future2", "Is not null!");
                             Intent intent = new Intent(this, friends.class);
 //                            model.setdisplayname(userData.getDisplayName());
 //                            model.setprofilepic(userData.getProfilePic());
                             intent.putExtra("username", username);
-//                            intent.putExtra("displayName", userData.getDisplayName());
-//                            intent.putExtra("profilePic", userData.getProfilePic());
-//                            Log.i("future2", "Registerfirebase");
-//                            Registerfirebase();
-//                            Log.i("future2", "after Registerfirebase");
-//                            intent.putExtra("token", model.gettoken());
-//                            Log.i("future2", "starting activity!");
+                            intent.putExtra("displayName", userData.getDisplayName());
+                            intent.putExtra("profilePic", userData.getProfilePic());
+                            Log.i("future2", "Registerfirebase");
+                            Registerfirebase();
+                            Log.i("future2", "after Registerfirebase");
+                            intent.putExtra("token", model.gettoken());
+                            Log.i("future2", "starting activity!");
                             startActivity(intent);
+                        } else {
+                            Log.d("model", "Received object is null");
                         }
-                        return null;
                     });
                 }
                 return null;
             });
         });
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -271,10 +261,10 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
             case R.id.options_menu:
 
                 ThemeOption themeOptionsDialog = new ThemeOption("Purple Theme", ContextCompat.getColor(this, R.color.seed), R.style.AppThemeread);
-                ThemeOption themeOptionsDialog2 = new ThemeOption("Green Theme",  ContextCompat.getColor(this, R.color.sseed), R.style.AppThemeGree);
-                ThemeOption themeOptionsDialog3 = new ThemeOption("Red Theme",  ContextCompat.getColor(this, R.color.ssseed), R.style.AppThemeRed);
-                ThemeOption themeOptionsDialog4 = new ThemeOption("Blud Theme",  ContextCompat.getColor(this, R.color.sssseed), R.style.AppThemeBlue);
-                ThemeOption themeOptionsDialog5 = new ThemeOption("Dark Theme",  ContextCompat.getColor(this, R.color.ssssseed), R.style.AppThemeDark);
+                ThemeOption themeOptionsDialog2 = new ThemeOption("Green Theme", ContextCompat.getColor(this, R.color.sseed), R.style.AppThemeGree);
+                ThemeOption themeOptionsDialog3 = new ThemeOption("Red Theme", ContextCompat.getColor(this, R.color.ssseed), R.style.AppThemeRed);
+                ThemeOption themeOptionsDialog4 = new ThemeOption("Blud Theme", ContextCompat.getColor(this, R.color.sssseed), R.style.AppThemeBlue);
+                ThemeOption themeOptionsDialog5 = new ThemeOption("Dark Theme", ContextCompat.getColor(this, R.color.ssssseed), R.style.AppThemeDark);
                 List<ThemeOption> themeOptions = new ArrayList<>();
                 themeOptions.add(themeOptionsDialog);
                 themeOptions.add(themeOptionsDialog2);
@@ -301,11 +291,13 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
 //        recreate();
         restartApp();
     }
+
     private void setAppTheme(int themeId) {
         setTheme(themeId);
         // Recreate all activities to apply the new theme
         restartApp();
     }
+
     private void restartApp() {
         Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
