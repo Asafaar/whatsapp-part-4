@@ -104,7 +104,7 @@ console.log(token);
   // Send the message to the user's token using Firebase Cloud Messaging
   const messagePayload = {
     notification: {
-      title: 'New Message',
+      title: 'New Message from ' + message.sender.displayName + ':',
     },
     data: {
       content: message.content,
@@ -113,7 +113,7 @@ console.log(token);
       sender: JSON.stringify({
         username: message.sender.username,
         displayName: message.sender.displayName,
-        profilePic: null,//the data to much big
+        profilePic: null, //the data is too big
       }),
     },
     token: token,
@@ -161,7 +161,7 @@ io.on('connection', (socket) => {// send to web to web
         console.log("//send to web to andriod");
         const messagePayload = {
           notification: {
-            title: 'New Message',
+            title: 'New Message from ' +  data.bubbleObjects.sender.displayName + ':',
           },
           data: {
             content: data.bubbleObjects.content,
