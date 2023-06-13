@@ -45,20 +45,37 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = DatabaseSingleton.getModel(this);
+        Intent intent = getIntent();
+
+        username = intent.getStringExtra("username");
+
         if (model.getTheme() != null) {
             Log.e("TAG", "onCreate: " + model.getTheme().getTheme());
             setTheme(model.getTheme().getTheme());
         }
+        Log.e("TAG", "onCreate: " + model.getTheme());
+        if (model.getlstuserlogin() != null) {
+            String usernamelast = model.getlstuserlogin();
+            if (usernamelast.equals(username)){
 
+            }
+            else{
+                model.clearLogoutUser();
+                model.setlstuserlogin(username);
+            }
+        }
+        else {
+            model.setlstuserlogin(username);
+        }
         binding = ActivityFriendsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         RecyclerView recyclerView = findViewById(R.id.list_item_text2);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         Log.d("friends", "first act");
 
-        Intent intent = getIntent();
         Log.d("friends", "2nd act");
 
         if (intent != null) {
@@ -77,7 +94,6 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
 
         String displayName = intent.getStringExtra("displayName");
         String profilePic = intent.getStringExtra("profilePic");
-         username = intent.getStringExtra("username");
         Registerfirebase(username,model);
         ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
         TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
@@ -152,7 +168,6 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
                 showAddFriendDialog();
                 return true;
             case R.id.logout:
-                model.clearLogoutUser();
                 model.sendTokenfirebasedel(username);
                 finish();
                 return true;

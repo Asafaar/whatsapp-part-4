@@ -32,6 +32,7 @@ public class Repository {
 
     private UeserGet useserGet;
     private ThemeSave themeSavedb;
+    private LastUserLogin lastUserLogin;
     private String username;
     private String displayName;
     private String profilePic;
@@ -47,6 +48,7 @@ public class Repository {
         lastMsgByuser = db.lastMsgByuser();
         useserGet = db.UeserGet();
         themeSavedb = db.ThemeSave();
+        lastUserLogin=db.LastUserLogin();
         listusers = new ListUsers();
         listmessages = new ListMessage();
         listUserGets = new ListUserGet();
@@ -272,7 +274,9 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
                         Log.e("TAG", "addnewfriend:load ");
                         return mainApiManger.getfriends()
                                 .thenApply(response -> {
-                                    // Process the response here
+                                    Log.e("TAG", "addNewFriend: "+response.toString() );
+                                    List<UserGet> userGetList1 = useserGet.getAllUsers();
+                                    listUserGets.postValue(userGetList1);
                                     return 1; // Success
                                 });
                     } else if (statusCode == 401) {
@@ -435,5 +439,15 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
         listmessages.setValue(new ArrayList<>());
         listusers.setValue(new ArrayList<>());
         listUserGets.setValue(new ArrayList<>());
+    }
+
+    public String getlstuserlogin() {
+        return lastUserLogin.getlastUserLogin();
+    }
+
+    public void setlstuserlogin(String username) {
+        lastUserLogin.deleteAllUsers();
+        lastUserLogin.insertUser(username);
+
     }
 }

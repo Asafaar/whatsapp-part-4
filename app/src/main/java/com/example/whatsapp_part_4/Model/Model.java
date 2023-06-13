@@ -84,6 +84,9 @@ public class Model {
         }
 
     }
+    public String getlstuserlogin(){
+        return repository.getlstuserlogin();
+    }
     public CompletableFuture<DataUserRes> getUserData(String username){
         CompletableFuture<DataUserRes> future = repository.getUserData(username);
 
@@ -240,5 +243,9 @@ public class Model {
      */
     public void clearLogoutUser() {
         repository.clearLogoutUser();
+    }
+
+    public void setlstuserlogin(String username) {
+        repository.setlstuserlogin(username);
     }
 }

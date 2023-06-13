@@ -62,7 +62,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
             holder.profilePicImageView.setImageBitmap(decodedByte);
         }
         if (userGet.getLastMessage() == null) {
-            holder.lastMessageTextView.setText("No message");
+            holder.lastMessageTextView.setText("");
 //            holder.lastMessagetimeTextView.setText("");
             return;
         } else {
