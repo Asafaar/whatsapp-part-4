@@ -11,8 +11,6 @@ const isLoggedIn = async (req, res, next) => {
   if (req.headers.authorization) {
     // Extract the token from that header
     const token = req.headers.authorization.split(" ")[1];
-    //const tokenObject = token;
-    //const extractedToken = tokenObject.token;
     const extractedToken = token;
     try {
       // Verify the token is valid
@@ -55,9 +53,10 @@ const getChatUsers = async (req, res) => {
 const getChatMessages = async (req, res) => {
   const chat = await chatsService.getChatByUsername(res.locals.username);
   const me = await User.getUserByUsername(res.locals.username);
+  console.log("getChatMessages - ", req.params.id);
   const friend = await User.getUserByUserId(req.params.id);
 
-  if (!chat || !me) {
+  if (!chat || !me || !friend) {
     console.log("err - getdetails");
     return res.status(404).json({ error: ['User not found'] });
   }
