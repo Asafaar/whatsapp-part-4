@@ -14,6 +14,7 @@
     <EditText
         android:id="@+id/editTextIP"
         android:layout_width="match_parent"
+        android:textColor="@color/black"
         android:layout_height="match_parent">
     </EditText>
     <TextView
@@ -21,6 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select a Theme"
+        android:textColor="@color/black"
+
         android:textSize="18sp"
         android:textStyle="bold" />
 

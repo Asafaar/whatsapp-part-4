@@ -116,6 +116,9 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
+                    Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.open_trash_can);
+                    view.startAnimation(animation);
+
                     if (position != RecyclerView.NO_POSITION) {
                         UserGet userGet = userGetList.get(position);
                         model.deleteFriend(userGet);

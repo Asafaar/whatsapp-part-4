@@ -13,7 +13,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
-            android:background="@drawable/circle_shape"
+            android:background="@drawable/trash_can_background"
             android:src="@drawable/anoymousavatar" />
 
         <LinearLayout
@@ -68,6 +68,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:clickable="true"
+            android:background="@drawable/trash_can_background"
             android:src="@drawable/baseline_delete_24" />
 
 

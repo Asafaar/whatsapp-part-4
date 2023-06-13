@@ -110,19 +110,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             contentTextView = itemView.findViewById(R.id.message);
             createdTextView = itemView.findViewById(R.id.timestamp);
             linearLayout = itemView.findViewById(R.id.layout);
-            if (viewType == USER_SENT) {
-                linearLayout.setBackgroundResource(R.drawable.sender_bubble2);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) linearLayout.getLayoutParams();
-                params.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
-                params.addRule(RelativeLayout.END_OF, 0);
-                linearLayout.setLayoutParams(params);
-            } else {
-                linearLayout.setBackgroundResource(R.drawable.receiver_bubble2);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) linearLayout.getLayoutParams();
-                params.addRule(RelativeLayout.ALIGN_PARENT_END, 1);
-                params.addRule(RelativeLayout.END_OF, 0);
-                linearLayout.setLayoutParams(params);
-            }
+//            if (viewType == USER_SENT) {
+//                linearLayout.setBackgroundResource(R.drawable.sender_bubble2);
+//                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) linearLayout.getLayoutParams();
+//                params.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
+//                params.addRule(RelativeLayout.END_OF, 0);
+//                linearLayout.setLayoutParams(params);
+//            } else {
+//                linearLayout.setBackgroundResource(R.drawable.receiver_bubble2);
+//                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) linearLayout.getLayoutParams();
+//                params.addRule(RelativeLayout.ALIGN_PARENT_END, 1);
+//                params.addRule(RelativeLayout.END_OF, 0);
+//                linearLayout.setLayoutParams(params);
+//            }
         }
     }
 }
