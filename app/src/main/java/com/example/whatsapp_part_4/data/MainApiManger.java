@@ -40,7 +40,7 @@ public class MainApiManger {
 //        this.userDao = userDao;
         this.messageDao = messageDao;
         retrofit = new Retrofit.Builder()
-                .baseUrl(ConstantData.BASE_URL)
+                .baseUrl(ConstantData.BASE_URL3)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                 .build();
         api = retrofit.create(WebserviceApi.class);
@@ -54,17 +54,25 @@ public class MainApiManger {
                 .build();
     }
 
-    public void getfriends() {
-
+    public CompletableFuture<Integer> getfriends() {//TODO add check
+        CompletableFuture<Integer> integerCompletableFuture = new CompletableFuture<>();
+        Log.e("TAG", "getfriends: "+token );
         api.getFriends(token).enqueue(new Callback<List<UserGet>>() {
             @Override
             public void onResponse(Call<List<UserGet>> call, Response<List<UserGet>> response) {
 //                userDao.deleteAllUsers();
 //                userDao.insertAll(response.body());
-                UeserGet.deleteAllUsers();
-                if (response.body() != null) {
-                    UeserGet.insertAll(response.body());
-                    usersget.setValue(response.body());
+                if (response.code() == 200) {
+                    UeserGet.deleteAllUsers();
+                    if (response.body() != null) {
+                        UeserGet.insertAll(response.body());
+                        usersget.setValue(response.body());
+                    }
+                    integerCompletableFuture.complete(200);
+                }
+                else {
+                    Log.e("TAG", "onResponse: getfriends"+response.code() );
+                    integerCompletableFuture.complete(response.code());
                 }
 //update db
 //                List<UserGet> myDataList = usersget.getValue();//update livedata
@@ -75,10 +83,11 @@ public class MainApiManger {
 
             @Override
             public void onFailure(Call<List<UserGet>> call, Throwable t) {
-//                Log.e(TAG, "onFailure: "call failed", );
+                Log.e("TAG", "onFailure: "+t.getMessage() );
+                                integerCompletableFuture.complete(-1);
             }
         });
-
+        return integerCompletableFuture;
     }
 
     //   working
@@ -90,7 +99,9 @@ public class MainApiManger {
         api.sendMessage(idofFriend, sendMessageRequest, token).enqueue(new Callback<Message>() {
             @Override
             public void onResponse(Call<Message> call, Response<Message> response) {
+                Log.e("TAG", "onResponse: "+response.code() );
                 if (response.code() == 200) {
+                    Log.e("TAG", "onResponse: " + 200);
                     message[0] = response.body();
                     future.complete(message[0]);
 //                 UserMessage userMessage = new UserMessage(idofFriend, message[0].getId());//TODO check if it works

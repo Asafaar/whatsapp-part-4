@@ -69,15 +69,14 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
 
         username = intent.getStringExtra("username");
 
-        int result =model.getMessgesByuser(username);
-        if (result==1){
-            Log.e("TAG", "onCreate: "+result );
+
+
             ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
             TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
             Log.e("TAG", "onCreate: "+username );
             displayNameTextView.setText(username);
             Log.e("TAG", "onCreate: "+model.getUserDisplayname()+model.getUserDisplayname() );
-        }
+
 
 
 

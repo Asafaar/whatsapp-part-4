@@ -79,6 +79,8 @@ public class Repository {
                 messageDao.insertMessage(message);
                 List<Message> myDataList = listmessages.getValue();//add to live data
                 myDataList.add(message);
+//                listmessages.getValue().add(message);
+                Log.e("TAG", "sendMessage: "+listmessages.getValue().size() );
                 listmessages.setValue(myDataList);
                 userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));//add to user message connect
                 lastMsgByuser.updateMessageById(idofFriend, message);//update last message
@@ -244,7 +246,16 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
 
         List<UserGet> userGetList = useserGet.getAllUsers();
         listUserGets.setValue(userGetList);
-        mainApiManger.getfriends();
+        CompletableFuture<Integer> future= mainApiManger.getfriends();
+        future.thenApply(statusCode -> {
+            if (statusCode == 200) {
+                List<UserGet> userGetList1 = useserGet.getAllUsers();
+                listUserGets.setValue(userGetList1);
+                return 1;
+            } else {
+                return -1;
+            }
+        });
     }
 
     public CompletableFuture<Integer> trylogin(String username, String password) {

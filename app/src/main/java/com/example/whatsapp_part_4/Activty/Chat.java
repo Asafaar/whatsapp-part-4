@@ -76,6 +76,7 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onChanged(List<Message> messages) {
                 // Update the adapter with the new messages data
+                Log.e("TAG", "onChanged: "+messages.size() );
                 adapter.setMessages(messages);
                 adapter.notifyDataSetChanged();
             }
@@ -86,6 +87,7 @@ public class Chat extends AppCompatActivity {
         userIdfriend = intent.getStringExtra("userId");
         username = intent.getStringExtra("username");
         friendusername = intent.getStringExtra("friendusername");
+        Log.e("TAG", "onCreate: "+userIdfriend );
         model.getMessgesByuser(userIdfriend);
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();

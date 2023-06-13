@@ -80,17 +80,17 @@ public class UserGet {
     }
 
     public static class Message {
-        private int id;
+        private String id;
         private String created;
         private String content;
 
-        public Message(int id, String created, String content) {
+        public Message(String id, String created, String content) {
             this.id = id;
             this.created = created;
             this.content = content;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
@@ -102,7 +102,7 @@ public class UserGet {
             return content;
         }
 
-        public void setId(int id) {
+        public void setId(String id) {
             this.id = id;
         }
 
