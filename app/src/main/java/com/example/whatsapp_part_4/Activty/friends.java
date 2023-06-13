@@ -3,6 +3,7 @@ package com.example.whatsapp_part_4.Activty;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +17,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.whatsapp_part_4.Adapter.UserGetAdapter;
 import com.example.whatsapp_part_4.Dialog.AddFriendDialogFragment;
 import com.example.whatsapp_part_4.Model.Model;
@@ -23,15 +26,16 @@ import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.data.UserGet;
 import com.example.whatsapp_part_4.databinding.ActivityFriendsBinding;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class friends extends AppCompatActivity implements AddFriendDialogFragment.AddFriendDialogListener {
 
+    public static String username;
     private AppBarConfiguration appBarConfiguration;
     private ActivityFriendsBinding binding;
     private Model model;
-    public static String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,19 +71,19 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         }
 
 
-        username = intent.getStringExtra("username");
+        String displayName = intent.getStringExtra("displayName");
+        String profilePic = intent.getStringExtra("profilePic");
 
-        int result =model.getMessgesByuser(username);
-        if (result==1){
-            Log.e("TAG", "onCreate: "+result );
-            ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
-            TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
-            Log.e("TAG", "onCreate: "+username );
-            displayNameTextView.setText(username);
-            Log.e("TAG", "onCreate: "+model.getUserDisplayname()+model.getUserDisplayname() );
-        }
-
-
+        ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
+        TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
+        Log.e("TAG", "onCreate: " + username);
+        displayNameTextView.setText(displayName);
+        Log.e("TAG", "onCreate: " + model.getUserDisplayname() + model.getUserDisplayname());
+        //Picasso.get().load(profilePic).into(profileImageView);
+        Glide.with(this)
+                .load(profilePic)
+                .apply(RequestOptions.circleCropTransform())
+                .into(profileImageView);
 
         model.reload();
         //add sychronized
@@ -90,12 +94,10 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
             @Override
             public void onChanged(List<UserGet> users) {
                 // Update the adapter with the new messages data
-
                 adapter.setUserGetList(users);
                 adapter.notifyDataSetChanged();
             }
         });
-
 
 
     }
