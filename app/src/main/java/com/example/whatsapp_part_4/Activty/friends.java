@@ -3,7 +3,10 @@ package com.example.whatsapp_part_4.Activty;
 import static com.example.whatsapp_part_4.Activty.MainActivity.Registerfirebase;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -101,11 +104,19 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         displayNameTextView.setText(displayName);
         Log.e("TAG", "onCreate: " + model.getUserDisplayname() + model.getUserDisplayname());
         //Picasso.get().load(profilePic).into(profileImageView);
-        Glide.with(this)
-                .load(profilePic)
-                .apply(RequestOptions.circleCropTransform())
-                .into(profileImageView);
-
+//        Glide.with(this)
+//                .load(profilePic)
+//                .apply(RequestOptions.circleCropTransform())
+//                .into(profileImageView);
+        String[] parts = profilePic.split(",");
+        if (parts.length > 1) {
+            String imageString = parts[1];
+            byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            Log.e("TAG", "onCreate: "+"adsfadsfadsf"  );
+//            Log.e("TAG", "onCreate: "+imageString );
+            profileImageView.setImageBitmap(decodedByte);
+        }
         model.reload();
         //add sychronized
         // Observe changes to the messages data

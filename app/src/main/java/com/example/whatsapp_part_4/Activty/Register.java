@@ -69,7 +69,6 @@ public class Register extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         byte[] imageBytes = outputStream.toByteArray();
         img = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-
         binding.clickableText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,9 +117,14 @@ public class Register extends AppCompatActivity {
     // Handle submit button click event
     public void onSubmitButtonClick(View view) {
      {
+//         String sendformat=null;
             if (true==isImageSelected){
 
                 img = convertImageToBase64(selectedImageUri);
+                img = "data:image/jpeg;base64," + img;
+            }
+            else {
+                img = "data:image/jpeg;base64," + img;
             }
             username = binding.usernameEditText.getText().toString();
             password = binding.passwordEditText.getText().toString();
@@ -152,6 +156,9 @@ public class Register extends AppCompatActivity {
                     if (res == 200) {
                         Intent intent = new Intent(this, friends.class);
                         intent.putExtra("username", username);
+                        intent.putExtra("displayName", displayName);
+                        intent.putExtra("profilePic", img);
+
                         startActivity(intent);
                         finish();
                     } else if (res == -1) {
