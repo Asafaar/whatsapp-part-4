@@ -25,7 +25,6 @@ import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Appdb;
 import com.example.whatsapp_part_4.data.DataUserRes;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
-import com.example.whatsapp_part_4.data.Message;
 import com.example.whatsapp_part_4.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,17 +42,13 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
     private String username;
     private ActivityMainBinding binding;
 
-    private String tokenfirebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-//        setTheme(R.style.AppThemeread);
         model = DatabaseSingleton.getModel(this);
-        Log.e("TAG", "onCreate: " + model.getTheme());
-        if (model.getTheme() != null) {
-            Log.e("TAG", "onCreate: " + model.getTheme().getTheme());
+        if (model.getTheme() != null) {//get theme from db dynamic by id
             setTheme(model.getTheme().getTheme());
         }
 
@@ -65,74 +60,16 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
 
         NotificationPermissionHandler notificationPermissionHandler = new NotificationPermissionHandler(this);
         notificationPermissionHandler.checkAndRequestPermission();//check if can make notificationma
-        loginButton();
+        loginButton();//login button
         binding.clickableText.setOnClickListener(v -> {
             Intent intent = new Intent(this, Register.class);
             startActivity(intent);
         });
 
-//        FirebaseMessaging.getInstance().sendToTopic("all", message);
-
-//       FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-//           @Override
-//           public void onComplete(@NonNull Task<String> task) {
-//               tokenfirebase=task.getResult();
-//                System.out.println("token: "+task.getResult());
-//           }
-//       });
-
-
-//        FireBaseMsg fireBaseMsg = new FireBaseMsg();
-//        fireBaseMsg.sendMessageToServer("asafaa");
-//        RemoteMessage.Builder builder = new RemoteMessage.Builder("your-topic")
-//                .setMessageId(Integer.toString(5))
-//                .addData("score", "850")
-//                .addData("time", "2:45");
-//// Send a message to the devices subscribed to the provided topic.
-//        try {
-//            FirebaseMessaging.getInstance().send(builder.build());
-//            System.out.println("Message sent successfully.");
-//        } catch (Exception e) {
-//            System.out.println("Error sending message: " + e.getMessage());
-//        }
-// Response is a message ID string.
-//        System.out.println("Successfully sent message: " + response);
-//        db = Room.databaseBuilder(getApplicationContext(), Appdb.class, "maindb2")
-//                .allowMainThreadQueries().build();
-//        model = new Model(db);
-
-//        model.trylogin("asafaa", "asafaa");
-//
-//        synchronized (model) {
-//            model.trylogin("asafaa", "asafaa");
-//            model.sendmsg("1", "asafaa222", "asafaa1", "asafaa", null);
-//        }
-//        CompletableFuture<Integer> future = model.trylogin("asafaa", "asafaa");
-//        future.thenApply(statusCode -> {
-//            if (statusCode == 200) {
-//                model.getMessgesByuser("99");
-////                model.sendmsg("99", "asafaa222", "asafaa1", "asafaa", null);
-//            }
-//            return null;
-//        });
-//        try {
-//            sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        model.sendmsg("1","asafaa222","asafaa1","asafaa",null);
-//        model.makenewuser("asafaa4","asafaa4","asafaa",null);
-//       model.reload();
-//        binding.passwordEditText.setText("asafaa");
-//        binding.usernameEditText.setText("asafaa");
-        password = "asafaaasafaa";
-        username = "asafaa";
-//        Registerfirebase();
 
         binding.passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                password = "asafaaasafaa";
             }
 
             @Override
@@ -150,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         binding.usernameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                username = "asafaa";
             }
 
             @Override
@@ -167,23 +103,19 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         });
     }
 
-    public static   void Registerfirebase(String username, Model model) {
+    /**
+     * Registerfirebase function-for real time notification and msg. register the user to server
+     * @param username ther username of the user
+     * @param model the model
+     */
+    public static void Registerfirebase(String username, Model model) {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
             public void onComplete(@NonNull Task<String> task) {
-               String tokenfirebase = task.getResult();
-                System.out.println("token: " + task.getResult());
-                //todo print the errorse
+                String tokenfirebase = task.getResult();
                 model.registerfirebase(username, tokenfirebase).thenApply(statusCode -> {
                     if (statusCode == 200) {
-//                        System.out.println("token: " + task.getResult());
-//                        Message.Sender sender = new Message.Sender();
-//                        sender.setUsername("asafaa2");
-//                        sender.setDisplayName("asafaa");
-//                        sender.setProfilePic("asafaa");
-//                        Message message = new Message("116", sender, "asafaa", "asafaa2");
-//                        Log.e("TAG", "onComplete: " + username);
-//                        model.sendMessageWithFirebase(message, "asafaa2");
+
                     }
                     return null;
                 });
@@ -194,28 +126,10 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
 
     }
 
-//    private void loginButton() {
-////        String username = binding.usernameEditText.getText().toString();
-////        String password = binding.passwordEditText.getText().toString();
-//        binding.loginButton.setOnClickListener(view -> {
-//            CompletableFuture<Integer> future = model.trylogin(username, password);
-//            future.thenApply(statusCode -> {
-//                if (statusCode == 200) {
-//                    Intent intent = new Intent(this, friends.class);
-//                    intent.putExtra("username", username);
-//                    Registerfirebase();
-//                    intent.putExtra("token", model.gettoken());
-//                    startActivity(intent);
-//                }
-//                return null;
-//            });
-//        });
-//    }
+
 
 
     private void loginButton() {
-        // String username = binding.usernameEditText.getText().toString();
-        // String password = binding.passwordEditText.getText().toString();
         binding.loginButton.setOnClickListener(view -> {
             CompletableFuture<Integer> future = model.trylogin(username, password);
             future.thenApply(statusCode -> {
@@ -223,22 +137,14 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                     CompletableFuture<DataUserRes> future2 = model.getUserData(username);
                     future2.thenAccept(userData -> {
                         if (userData != null) {
-                            Log.d("model", "Received object: " + userData);
-                            Log.i("future2", "Is not null!");
-                            Intent intent = new Intent(this, friends.class);
-//                            model.setdisplayname(userData.getDisplayName());
-//                            model.setprofilepic(userData.getProfilePic());
+                            Intent intent = new Intent(this, Friends.class);
                             intent.putExtra("username", username);
                             intent.putExtra("displayName", userData.getDisplayName());
                             intent.putExtra("profilePic", userData.getProfilePic());
-                            Log.i("future2", "Registerfirebase");
-//                            Registerfirebase();
-                            Log.i("future2", "after Registerfirebase");
                             intent.putExtra("token", model.gettoken());
-                            Log.i("future2", "starting activity!");
                             startActivity(intent);
                         } else {
-                            Log.d("model", "Received object is null");
+                            Toast.makeText(this, "Error server", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -275,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                 themeOptions.add(themeOptionsDialog5);
                 OptionsDialog optionsDialog = new OptionsDialog(this, themeOptions);
                 optionsDialog.setOnOptionSelectedListener(MainActivity.this);
-//                OptionsDialog optionsDialog = new OptionsDialog(this,options);
                 optionsDialog.show();
 
                 return true;
@@ -288,18 +193,14 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
     public void onOptionSelected(ThemeOption themeOption) {
         setTheme(R.style.AppThemeread);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        model.setTheme(themeOption.getNameofres());
-//        Log.e("TAG", "onOptionSelected:+asdfasdf " + themeOption.getNameofres());
-//        recreate();
-        restartApp();
+        model.setTheme(themeOption.getNameofres());//set theme in db
+        restartApp();//restart app
     }
 
-    private void setAppTheme(int themeId) {
-        setTheme(themeId);
-        // Recreate all activities to apply the new theme
-        restartApp();
-    }
 
+    /***
+     * restart app function when change theme
+     */
     private void restartApp() {
         Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -307,13 +208,5 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         finish();
         System.exit(0);
     }
-//    public void changeTheme(boolean isDarkMode) {
-//        if (isDarkMode) {
-//            setTheme(R.style.);
-//        } else {
-//            setTheme(R.style.AppTheme_Light);
-//        }
-//        setContentView(R.layout.activity_main);
-//        // Update any UI elements as necessary
-//    }
+
 }

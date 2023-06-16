@@ -19,13 +19,11 @@ public class AsyncTaskMessege extends AsyncTask<Void, Void,Void> {
     }
     @Override
     protected Void doInBackground(Void... voids) {
-        Log.e("TAG", "doInBackground:AsyncTaskMessege "+userid );
         model.loadMsgOfUserfromDb(userid);
         return null;
     }
     @Override
     protected void onPostExecute(Void aVoid) {
-        Log.e("TAG", "onPostExecute:AsyncTaskMessege "+model.getUsers().getValue().size() );
         model.loadMsgOfUserfromapi(userid);
     }
 }

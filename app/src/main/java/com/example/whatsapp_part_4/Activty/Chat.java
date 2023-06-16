@@ -37,25 +37,23 @@ import java.util.List;
 
 public class Chat extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
 
-    private Appdb db;
     private Model model;
     private String displayName;
     private String profilePic;
     private String userIdfriend;
 
-   static public String friendusername;
+    static public String friendusername;
 
     private String username;
 
     private ActivityChatBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model= DatabaseSingleton.getModel(this);
-        if (model.getTheme()!=null){
-            Log.e("TAG", "onCreate: "+model.getTheme().getTheme() );
+        model = DatabaseSingleton.getModel(this);//get model
+        if (model.getTheme() != null) { //get theme from db dynamic by id
             setTheme(model.getTheme().getTheme());
         }
         setContentView(R.layout.activity_chat);
@@ -63,32 +61,25 @@ public class Chat extends AppCompatActivity {
         setContentView(binding.getRoot());
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//       String user= getIntent().getParcelableExtra("user");
-//        String token= getIntent().getParcelableExtra("token");
-
-//        model.getMessgesByuser("99");
-        RecyclerView recyclerView = findViewById(R.id.list_item_text);
+        RecyclerView recyclerView = findViewById(R.id.list_item_text);//the list of messages
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-//        layoutManager.setStackFromEnd(true); // Set stack from end to true
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing); //space between messages
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration(spacingInPixels);
         recyclerView.addItemDecoration(itemDecoration);
-
-        recyclerView.setLayoutManager(layoutManager);
-        MessageAdapter adapter = new MessageAdapter(model.getMessages().getValue());
-        layoutManager.setReverseLayout(true);
+        recyclerView.setLayoutManager(layoutManager);//
+        MessageAdapter adapter = new MessageAdapter(model.getMessages().getValue());//the livedata of messages
+        layoutManager.setReverseLayout(true);//the messages will be from the bottom to the top
         recyclerView.setAdapter(adapter);
-        //add sychronized
-        // Observe changes to the messages data
+        // Update the cached copy of the messages in the adapter.
         model.getMessages().observe(this, new Observer<List<Message>>() {
             @Override
             public void onChanged(List<Message> messages) {
                 // Update the adapter with the new messages data
-                Log.e("TAG", "onChanged:model.getMessages().observe "+messages.size() );
                 adapter.setMessages(messages);
                 adapter.notifyDataSetChanged();
             }
         });
+        //when get from friends activity
         Intent intent = getIntent();
         displayName = intent.getStringExtra("displayName");
         profilePic = intent.getStringExtra("profilePic");
@@ -96,29 +87,28 @@ public class Chat extends AppCompatActivity {
         username = intent.getStringExtra("username");
         friendusername = intent.getStringExtra("friendusername");
         ImageView profileImageView = findViewById(R.id.profileImageView);
-        TextView textView= findViewById(R.id.displayNameTextView);
+        TextView textView = findViewById(R.id.displayNameTextView);
         textView.setText(displayName);
-        Log.e("TAG", "onCreate: " + model.getUserDisplayname() + model.getUserDisplayname());
-        //Picasso.get().load(profilePic).into(profileImageView);
-        Glide.with(this)
-                .load(profilePic)
-                .apply(RequestOptions.circleCropTransform())
-                .into(profileImageView);
-        Log.e("TAG", "onCreate: "+userIdfriend );
-//        model.getMessgesByuser(userIdfriend);
-        AsyncTaskMessege asyncTaskMesseges=new AsyncTaskMessege(model,userIdfriend);
+        String[] parts = profilePic.split(",");
+        if (parts.length > 1) {
+            String imageString = parts[1];
+            byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            profileImageView.setImageBitmap(decodedByte);
+        }
+        //get messages from db and from server with async task
+        AsyncTaskMessege asyncTaskMesseges = new AsyncTaskMessege(model, userIdfriend);
         asyncTaskMesseges.execute();
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
             if (!message.isEmpty()) {
-                byte[] decodedString=null;
+                byte[] decodedString = null;
                 try {
                     decodedString = Base64.decode(profilePic, Base64.DEFAULT);
+                } catch (Exception e) {
                 }
-                catch (Exception e){
-                    Log.e("TAG", "onCreate: "+e.getMessage() );
-                }
-                model.sendMessage(userIdfriend, message,username, displayName, decodedString,friendusername);
+                //send message to friend to server
+                model.sendMessage(userIdfriend, message, username, displayName, decodedString, friendusername);
                 binding.inputField.setText("");
             }
         });

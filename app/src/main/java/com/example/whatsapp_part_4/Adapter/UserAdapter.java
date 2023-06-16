@@ -35,8 +35,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         User user = users.get(position);
         holder.displayNameTextView.setText(user.getDisplayName());
 
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(user.getProfilePic(), 0, user.getProfilePic().length);
-//        holder.imageuser.setImageBitmap(bitmap);
     }
 
     @Override
@@ -45,8 +43,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
-        public TextView lastmsg;
-        public TextView lastmsgsend;//TODO: add last message send
+
         public ImageView imageuser;
         public TextView displayNameTextView;
 

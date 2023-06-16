@@ -1,20 +1,16 @@
 package com.example.whatsapp_part_4.data;
 
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.whatsapp_part_4.Activty.friends;
 import com.example.whatsapp_part_4.Async.AsyncTaskUsers;
 import com.example.whatsapp_part_4.Model.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class Repository {
     //    private UserDao userDao;

@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,8 +21,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.whatsapp_part_4.Adapter.UserGetAdapter;
 import com.example.whatsapp_part_4.Dialog.AddFriendDialogFragment;
 import com.example.whatsapp_part_4.Model.Model;
@@ -31,16 +28,13 @@ import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.data.UserGet;
 import com.example.whatsapp_part_4.databinding.ActivityFriendsBinding;
-import com.squareup.picasso.Picasso;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class friends extends AppCompatActivity implements AddFriendDialogFragment.AddFriendDialogListener {
+public class Friends extends AppCompatActivity implements AddFriendDialogFragment.AddFriendDialogListener {
 
     public static String username;
-    private AppBarConfiguration appBarConfiguration;
     private ActivityFriendsBinding binding;
     private Model model;
 
@@ -51,23 +45,20 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         Intent intent = getIntent();
 
         username = intent.getStringExtra("username");
-
+        //get theme from db dynamic by id
         if (model.getTheme() != null) {
-            Log.e("TAG", "onCreate: " + model.getTheme().getTheme());
             setTheme(model.getTheme().getTheme());
         }
-        Log.e("TAG", "onCreate: " + model.getTheme());
+        //check if the user is the same user that login last time, if not clear the db
         if (model.getlstuserlogin() != null) {
             String usernamelast = model.getlstuserlogin();
-            if (usernamelast.equals(username)){
+            if (usernamelast.equals(username)) {
 
-            }
-            else{
+            } else {
                 model.clearLogoutUser();
                 model.setlstuserlogin(username);
             }
-        }
-        else {
+        } else {
             model.setlstuserlogin(username);
         }
         binding = ActivityFriendsBinding.inflate(getLayoutInflater());
@@ -77,44 +68,18 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Log.d("friends", "first act");
-
-        Log.d("friends", "2nd act");
-
-        if (intent != null) {
-            Log.d("friends", "3rd act");
-
-            Bundle extras = intent.getExtras();
-            if (extras != null) {
-                for (String key : extras.keySet()) {
-                    Object value = extras.get(key);
-                    Log.d("IntentExtra", "Key: " + key + ", Value: " + value);
-                }
-            }
-
-        }
-
 
         String displayName = intent.getStringExtra("displayName");
         String profilePic = intent.getStringExtra("profilePic");
-        Registerfirebase(username,model);
+        Registerfirebase(username, model);
         ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);//todo need to add the image and the name
         TextView displayNameTextView = toolbar.findViewById(R.id.displayNameTextView);
-        Log.e("TAG", "onCreate: " + username);
         displayNameTextView.setText(displayName);
-        Log.e("TAG", "onCreate: " + model.getUserDisplayname() + model.getUserDisplayname());
-        //Picasso.get().load(profilePic).into(profileImageView);
-//        Glide.with(this)
-//                .load(profilePic)
-//                .apply(RequestOptions.circleCropTransform())
-//                .into(profileImageView);
-        String[] parts = profilePic.split(",");
+       String[] parts = profilePic.split(",");
         if (parts.length > 1) {
             String imageString = parts[1];
             byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            Log.e("TAG", "onCreate: "+"adsfadsfadsf"  );
-//            Log.e("TAG", "onCreate: "+imageString );
             profileImageView.setImageBitmap(decodedByte);
         }
         model.reload();
@@ -126,20 +91,19 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
             @Override
             public void onChanged(List<UserGet> users) {
                 // Update the adapter with the new messages data
-                users.sort( new Comparator<UserGet>() {
+                users.sort(new Comparator<UserGet>() {
                     @Override
+                    //compare the last message of the user
                     public int compare(UserGet user1, UserGet user2) {
                         String created1 = null;
                         String created2 = null;
 
                         if (user1.getLastMessage() != null) {
                             created1 = user1.getLastMessage().getCreated();
-                            Log.e("TAG", "compare:1 " +created1);
 
                         }
                         if (user2.getLastMessage() != null) {
                             created2 = user2.getLastMessage().getCreated();
-                            Log.e("TAG", "compare:2 " +created2);
                         }
 
                         // Handle null values
@@ -156,7 +120,6 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
                     }
                 });
 
-                Log.e("TAG", "onChanged:model.getUsersget().observe " + "users" );
                 adapter.setUserGetList(users);
                 adapter.notifyDataSetChanged();
             }
@@ -179,7 +142,7 @@ public class friends extends AppCompatActivity implements AddFriendDialogFragmen
                 showAddFriendDialog();
                 return true;
             case R.id.logout:
-                model.sendTokenfirebasedel(username);
+                model.sendTokenfirebasedel(username);//delete the token from firebase
                 finish();
                 return true;
             default:

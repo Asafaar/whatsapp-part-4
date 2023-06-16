@@ -46,22 +46,20 @@ public class Register extends AppCompatActivity {
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     ActivityRegisterBinding binding;
-    private AppBarConfiguration appBarConfiguration;
-//    private ActivityRegisterBinding binding;
 
     @SuppressLint("WrongThread")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = DatabaseSingleton.getModel(this);
-        if (model.getTheme() != null) {
-            Log.e("TAG", "onCreate: " + model.getTheme().getTheme());
+        if (model.getTheme() != null) {//get theme from db dynamic by id
             setTheme(model.getTheme().getTheme());
         }
         setContentView(R.layout.activity_register);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         profileImageButton = binding.profileImageView;
         setContentView(binding.getRoot());
+        // make the defult image
         profileImageButton.setImageResource(R.drawable.anoymousavatar);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.anoymousavatar);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -88,13 +86,13 @@ public class Register extends AppCompatActivity {
                 onSubmitButtonClick(view);
             }
         });
+        // the user upload image
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Intent data = result.getData();
                         selectedImageUri = data.getData();
-                        Log.e("TAG", "onCreate: " + selectedImageUri);
                         if (profileImageButton != null&& isImageSizeValid(selectedImageUri, 200 * 1024)) {
                             profileImageButton.setImageURI(selectedImageUri);
                         }else {
@@ -107,17 +105,21 @@ public class Register extends AppCompatActivity {
 
     }
 
+    /**
+     * file chooser from gallery
+     */
     private void openFileChooser() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
     }
 
 
-
-    // Handle submit button click event
+    /**
+     * the theuser when he click on submit button
+     * @param view the view
+     */
     public void onSubmitButtonClick(View view) {
      {
-//         String sendformat=null;
             if (true==isImageSelected){
 
                 img = convertImageToBase64(selectedImageUri);
@@ -140,9 +142,10 @@ public class Register extends AppCompatActivity {
                 binding.msgnewuser.setText("Please fill all fields");
                 binding.msgnewuser.setVisibility(View.VISIBLE);
 
-            } else {//TODO
+            } else {
+                // make new user on update the server, if can make new user then login by get trylogin
                 AtomicInteger resulsave= new AtomicInteger();
-                CompletableFuture<Integer> integerCompletableFuture = model.makenewuser(username, password, displayName, img);//TODO need to fix
+                CompletableFuture<Integer> integerCompletableFuture = model.makenewuser(username, password, displayName, img);
                 integerCompletableFuture.thenCompose((result) -> {
                     resulsave.set(result);
                     if (result == 200) {
@@ -152,9 +155,9 @@ public class Register extends AppCompatActivity {
                         return CompletableFuture.completedFuture(-1); // Return a completed future with an error code (-1)
                     }
                 }).thenApply((res) -> {
-                    Log.e("TAG", "onSubmitButtonClick: " + res);
+                    //after trylogin go to friends
                     if (res == 200) {
-                        Intent intent = new Intent(this, friends.class);
+                        Intent intent = new Intent(this, Friends.class);
                         intent.putExtra("username", username);
                         intent.putExtra("displayName", displayName);
                         intent.putExtra("profilePic", img);
@@ -174,7 +177,6 @@ public class Register extends AppCompatActivity {
                     }
                     return null;
                 });
-                Log.e("TAG", "onSubmitButtonClick: " + username + password + displayName);
             }
 
 
@@ -183,6 +185,11 @@ public class Register extends AppCompatActivity {
 
     }
 
+    /**
+     * convert image to base64
+     * @param imageUri the image uri
+     * @return the image in base64 jpeg format
+     */
     private String convertImageToBase64(Uri imageUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
@@ -196,6 +203,13 @@ public class Register extends AppCompatActivity {
         }
         return null;
     }
+
+    /**
+     * check if the image size is valid
+     * @param imageUri the image uri
+     * @param maxSizeInBytes the max size in bytes
+     * @return true if the image size is valid
+     */
     private boolean isImageSizeValid(Uri imageUri, long maxSizeInBytes) {
         try {
             ContentResolver contentResolver = getContentResolver();

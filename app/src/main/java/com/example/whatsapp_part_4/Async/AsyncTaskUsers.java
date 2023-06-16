@@ -23,14 +23,12 @@ public class AsyncTaskUsers extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        Log.e("TAG", "doInBackground: " );
          loadMessagesFromDatabase();
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        Log.e("TAG", "onPostExecute: "+model.getUsers().getValue().size() );
         model.reloadusersOntheback();
 
     }
@@ -39,8 +37,6 @@ public class AsyncTaskUsers extends AsyncTask<Void, Void, Void> {
 
         model.reloadusergetfromdb();
 
-        // Implement your database loading logic here
-        // Return a list of messages from the database
     }
 
 

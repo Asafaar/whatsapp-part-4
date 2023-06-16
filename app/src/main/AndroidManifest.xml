@@ -38,7 +38,7 @@
             android:label="@string/title_activity_register"
             android:theme="@style/Theme.Whatsapppart4.NoActionBar" />
         <activity
-            android:name=".Activty.friends"
+            android:name=".Activty.Friends"
             android:exported="false"
             android:label="@string/title_activity_friends"
             android:theme="@style/Theme.Whatsapppart4.NoActionBar" />

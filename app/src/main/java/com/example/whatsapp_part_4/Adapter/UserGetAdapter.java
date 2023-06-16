@@ -63,27 +63,11 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         }
         if (userGet.getLastMessage() == null) {
             holder.lastMessageTextView.setText("");
-//            holder.lastMessagetimeTextView.setText("");
             return;
         } else {
             holder.lastMessageTextView.setText(userGet.getLastMessage().getContent());
             holder.lastMessagetimeTextView.setText(fixtime(userGet.getLastMessage().getCreated()));
         }
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d("UserGetAdapter", "onClick");
-//                int position = holder.getAdapterPosition();
-//                Log.e("TAG", "onClick: "+position );
-//                UserGet userGet = userGetList.get(position);
-//
-//                Intent intent = new Intent(view.getContext(), Chat.class);
-//                intent.putExtra("displayName", userGet.getUser().getDisplayName());
-//                intent.putExtra("profilePic", userGet.getUser().getProfilePic());
-//                intent.putExtra("userId", userGet.getId());
-//                view.getContext().startActivity(intent);
-//            }
-//        });
 
     }
 
@@ -161,6 +145,11 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         }
     }
 
+    /** fixtime
+     * make the time on format of time and without date
+     * @param time the time string from the server
+     * @return the time on format of time and date
+     */
     public static String fixtime(String time) {
         String createdTimestamp = time; // Replace with your timestamp
 
@@ -189,6 +178,12 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         }
         return createdTimestamp;
     }
+
+    /**
+     * fixtimewithdata - make the time on format of time with date
+     * @param time the time string from the server
+     * @return the time on format of time with date
+     */
     public static String fixtimewithdata(String time) {
         String createdTimestamp = time; // Replace with your timestamp
 

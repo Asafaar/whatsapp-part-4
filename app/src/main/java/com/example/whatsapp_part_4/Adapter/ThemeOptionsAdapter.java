@@ -84,12 +84,6 @@ public class ThemeOptionsAdapter extends RecyclerView.Adapter<ThemeOptionsAdapte
 
                         notifyDataSetChanged();
 
-//                        // Notify the listener of the theme option click
-//                        Log.e("TAG", "onClick: " + "selectedOption" );
-//                        if (themeOptionClickListener != null) {
-//                            Log.e("TAG", "onClick: " + "selectedOption2" );
-//                            themeOptionClickListener.onThemeOptionClick(selectedOption);
-//                        }
                     }
                 }
             });
@@ -100,7 +94,6 @@ public class ThemeOptionsAdapter extends RecyclerView.Adapter<ThemeOptionsAdapte
             nameTextView.setText(themeOption.getName());
             iconImageView.setImageResource(R.drawable.baseline_radio_button_unchecked_24);
 
-//            iconImageView.setBackgroundColor(themeOption.getColorResId());
             // Customize the color of the theme icon background
             GradientDrawable drawable = (GradientDrawable) iconImageView.getBackground();
             drawable.setColor(themeOption.getColorResId());

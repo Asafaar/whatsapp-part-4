@@ -16,26 +16,21 @@ public class Converters {
 
     @TypeConverter
     public static Message.Sender fromJson(String json) {
-//        Log.e("19", "fromJson: "+json );
         return gson.fromJson(json, Message.Sender.class);
     }
 
     @TypeConverter
     public static String toJson(Message.Sender sender) {
-//        Log.e("25", "toJson:Message.Sender "+sender.getProfilePic() );
-//        Log.e("26", "toJson:Message.Sender "+sender.getDisplayName() );
 
         return gson.toJson(sender);
     }
     @TypeConverter
     public static Message fromJsonm2(String json) {
-//        Log.e("32", "fromJsonm:Message "+json );
         return gson.fromJson(json, Message.class);
     }
 
     @TypeConverter
     public static String toJsonm(Message message) {
-//        Log.e("38", "toJsonm: "+message );
         return gson.toJson(message);
     }
     @TypeConverter
