@@ -115,8 +115,8 @@ public class Model {
      * @param password the password
      * @return if the login is sucsses
      */
-    public synchronized CompletableFuture<Integer> trylogin(String username, String password) {
-        return repository.trylogin(username, password);
+    public synchronized CompletableFuture<Integer> tryLogin(String username, String password) {
+        return repository.tryLogin(username, password);
     }
 
     /**
@@ -129,36 +129,6 @@ public class Model {
     public CompletableFuture<Integer> makenewuser(String username, String password, String displayName, String profilePic) {
        return repository.MakeNewUser(username, password, displayName, profilePic);
     }
-
-    /**
-     * getMessgesByuser
-     * @param id the id of the user we want to get the messages
-     */
-    public synchronized int getMessgesByuser(String id) {
-        int status=repository.getMessgesByuser(id);
-        if (status==1){
-            Log.e("TAG", "getMessgesByuser: sucss" );
-            return 1;
-        }else{
-            Log.e("TAG", "getMessgesByuser: fail" );
-            return -1;
-
-        }
-    }
-    public void loadMsgOfUserfromDb(String id) {
-        repository.loadMsgOfUserfromDb(id);
-    }
-    public void loadMsgOfUserfromapi(String id) {
-        repository.loadMsgOfUserfromapi(id);
-    }
-
-//    /**
-//     * sendTokenfirebasedel- register the token to the server
-//     * @param usernmae the username
-//     */
-//    public synchronized void sendTokenfirebasedel(String usernmae) {
-//        repository.sendTokenfirebasedel(usernmae);
-//    }
 
     /**
      * deleteFriend-frm the server ,db and livedata
@@ -177,8 +147,8 @@ public class Model {
     public synchronized CompletableFuture<Integer> addNewFriend(String Friend){
        return repository.addNewFriend(Friend);
     }
-    public void sendTokenfirebasedel(String username) {
-        repository.sendTokenfirebasedel(username);
+    public void sendTokenFireBaseDel(String username) {
+        repository.sendTokenFireBaseDel(username);
     }
 
     /**
@@ -187,8 +157,8 @@ public class Model {
      * @param username the username
      * @return if the register is sucsses
      */
-    public CompletableFuture<Integer> registerfirebase(String token,String username){
-      return   repository.registerfirebase(token,username);
+    public CompletableFuture<Integer> registerFireBase(String token,String username){
+      return   repository.registerFireBase(token,username);
     }
 
     /**
@@ -215,13 +185,6 @@ public class Model {
         return messages;
     }
 
-    /**
-     * getUsers
-     * @return the users
-     */
-    public LiveData<List<User>> getUsers() {
-        return users;
-    }
 
     /**
      * getUsersget
@@ -229,13 +192,6 @@ public class Model {
      */
     public LiveData<List<UserGet>> getUsersget() {
         return usersget;
-    }
-
-    /**
-     * getlastmsg
-     */
-    public void reloadlastmsg(){
-        repository.reloadlastmsg();
     }
 
     /**

@@ -29,17 +29,30 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-//todo make the list of friends more beautiful
 
+/**
+ * UserGetAdapter is a RecyclerView adapter that displays a list of UserGet items.
+ */
 public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetViewHolder> {
     private List<UserGet> userGetList;
     private String username;
 
+    /**
+     * Constructs a UserGetAdapter with the specified list of UserGet items and username.
+     *
+     * @param userGetList The list of UserGet items to display.
+     * @param username    The username.
+     */
     public UserGetAdapter(List<UserGet> userGetList, String username) {
         this.userGetList = userGetList;
         this.username = username;
     }
 
+    /**
+     * Sets the list of UserGet items to display.
+     *
+     * @param userGetList The list of UserGet items.
+     */
     public void setUserGetList(List<UserGet> userGetList) {
         this.userGetList = userGetList;
     }
@@ -69,9 +82,8 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
             return;
         } else {
             holder.lastMessageTextView.setText(userGet.getLastMessage().getContent());
-            holder.lastMessagetimeTextView.setText(fixtime(userGet.getLastMessage().getCreated()));
+            holder.lastMessagetimeTextView.setText(fixTime(userGet.getLastMessage().getCreated()));
         }
-
     }
 
     @Override
@@ -79,20 +91,23 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         return userGetList.size();
     }
 
-
     public class UserGetViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public ImageView profilePicImageView;
         public TextView displayNameTextView;
         public TextView lastMessageTextView;
         public TextView lastMessagetimeTextView;
         public ImageView deleteButton;
-        private int position;
 
         Model model;
 
+        /**
+         * Constructs a UserGetViewHolder with the specified itemView and position.
+         *
+         * @param itemView The itemView for the UserGetViewHolder.
+         * @param position The position of the UserGetViewHolder.
+         */
         public UserGetViewHolder(@NonNull View itemView, int position) {
             super(itemView);
-            this.position = position;
             model = DatabaseSingleton.getModel(itemView.getContext());
             profilePicImageView = itemView.findViewById(R.id.imagefrined);
             displayNameTextView = itemView.findViewById(R.id.displayname);
@@ -109,13 +124,10 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
                     if (position != RecyclerView.NO_POSITION) {
                         UserGet userGet = userGetList.get(position);
                         model.deleteFriend(userGet);
-
-
                     }
                 }
             });
             itemView.setOnClickListener(this);
-
         }
 
         @Override
@@ -130,7 +142,6 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
                 intent.putExtra("profilePic", userGet.getUser().getProfilePic());
                 intent.putExtra("userId", userGet.getId());
                 intent.putExtra("friendusername", userGet.getUser().getUsername());
-
                 intent.putExtra("username", username);
                 view.getContext().startActivity(intent);
             }
@@ -142,21 +153,18 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
             if (position != RecyclerView.NO_POSITION) {
                 UserGet userGet = userGetList.get(position);
                 model.deleteFriend(userGet);
-
             }
             return true;
         }
     }
 
     /**
-     * fixtime
-     * make the time on format of time and without date
+     * Converts the time string from the server into a formatted time with date.
      *
-     * @param time the time string from the server
-     * @return the time on format of time and date
+     * @param time The time string from the server.
+     * @return The formatted time with date.
      */
-    public static String fixtime(String time) {
-        String createdTimestamp = time; // Replace with your timestamp
+    public static String fixTime(String time) {
 
         // Define the input format of the timestamp
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS", Locale.getDefault());
@@ -167,36 +175,29 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         try {
             // Parse the timestamp into a Date object
             inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-            Date date = inputFormat.parse(createdTimestamp);
+            Date date = inputFormat.parse(time);
 
             // Format the time and date using the output format
             String formattedDateTime = outputFormat.format(date);
 
             outputFormat.setTimeZone(TimeZone.getTimeZone(ConstantData.TimeZoneId));
 
-            // Print the formatted time and date
-            System.out.println("Formatted DateTime: " + formattedDateTime);
-
-            // You can now use the formattedDateTime string as needed
-            // ...
-
             return formattedDateTime;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return createdTimestamp;
+        return time;
     }
 
     /**
-     * fixtimewithdata - make the time on format of time with date
+     * Converts the time string from the server into a formatted time without date.
      *
-     * @param time the time string from the server
-     * @return the time on format of time with date
+     * @param time The time string from the server.
+     * @return The formatted time without date.
      */
     public static String fixtimewithdata(String time) {
-        String createdTimestamp = time; // Replace with your timestamp
-        Log.e("TAG", "fixtimewithdata: " + createdTimestamp);
+        String createdTimestamp = time;
+
         // Define the input format of the timestamp
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS", Locale.getDefault());
 
@@ -205,9 +206,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
 
         try {
             // Parse the timestamp into a Date object
-
             inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
             Date date = inputFormat.parse(createdTimestamp);
 
             // Format the time using the output format
@@ -227,6 +226,4 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         }
         return createdTimestamp;
     }
-
-
 }

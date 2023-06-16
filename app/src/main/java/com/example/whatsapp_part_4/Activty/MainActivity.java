@@ -1,11 +1,9 @@
 package com.example.whatsapp_part_4.Activty;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +34,9 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The main activity of the WhatsApp-like application.
+ */
 public class MainActivity extends AppCompatActivity implements OptionsDialog.OnOptionSelectedListener {
 
     private Appdb db;
@@ -44,13 +45,18 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
     private String username;
     private ActivityMainBinding binding;
 
-
+    /**
+     * Called when the activity is starting.
+     *
+     * @param savedInstanceState The saved instance state Bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         model = DatabaseSingleton.getModel(this);
-        if (model.getTheme() != null) {//get theme from db dynamic by id
+
+        // Set the activity theme based on the theme stored in the database
+        if (model.getTheme() != null) {
             setTheme(model.getTheme().getTheme());
         }
 
@@ -59,16 +65,20 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         Toolbar toolbar = findViewById(R.id.toolbarformainactivity);
         setSupportActionBar(toolbar);
 
-
+        // Check and request notification permission
         NotificationPermissionHandler notificationPermissionHandler = new NotificationPermissionHandler(this);
-        notificationPermissionHandler.checkAndRequestPermission();//check if can make notificationma
-        loginButton();//login button
+        notificationPermissionHandler.checkAndRequestPermission();
+
+        // Set up login button
+        loginButton();
+
+        // Set up click listener for the clickable text
         binding.clickableText.setOnClickListener(v -> {
             Intent intent = new Intent(this, Register.class);
             startActivity(intent);
         });
 
-
+        // Set up text change listeners for username and password EditText fields
         binding.passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -86,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                 // Do nothing
             }
         });
+
         binding.usernameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -106,34 +117,32 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
     }
 
     /**
-     * Registerfirebase function-for real time notification and msg. register the user to server
-     * @param username ther username of the user
-     * @param model the model
+     * Register the user to Firebase for real-time notifications and messages.
+     *
+     * @param username The username of the user.
+     * @param model    The model instance.
      */
     public static void Registerfirebase(String username, Model model) {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
             public void onComplete(@NonNull Task<String> task) {
                 String tokenfirebase = task.getResult();
-                model.registerfirebase(username, tokenfirebase).thenApply(statusCode -> {
+                model.registerFireBase(username, tokenfirebase).thenApply(statusCode -> {
                     if (statusCode == 200) {
-
+                        // Registration successful
                     }
                     return null;
                 });
-
             }
-
         });
-
     }
 
-
-
-
+    /**
+     * Set up the login button click listener.
+     */
     private void loginButton() {
         binding.loginButton.setOnClickListener(view -> {
-            CompletableFuture<Integer> future = model.trylogin(username, password);
+            CompletableFuture<Integer> future = model.tryLogin(username, password);
             future.thenApply(statusCode -> {
                 if (statusCode == 200) {
                     CompletableFuture<DataUserRes> future2 = model.getUserData(username);
@@ -158,7 +167,12 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         });
     }
 
-
+    /**
+     * Create the options menu.
+     *
+     * @param menu The options menu in which you place your items.
+     * @return true for the menu to be displayed, false otherwise.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -166,11 +180,17 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         return true;
     }
 
+    /**
+     * Handle option menu item selection.
+     *
+     * @param item The menu item that was selected.
+     * @return true to consume the event here, or false to allow normal menu processing to proceed.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.options_menu:
-
+                // Show the options dialog with theme options
                 ThemeOption themeOptionsDialog = new ThemeOption("Purple Theme", ContextCompat.getColor(this, R.color.seed), R.style.AppThemeread);
                 ThemeOption themeOptionsDialog2 = new ThemeOption("Green Theme", ContextCompat.getColor(this, R.color.sseed), R.style.AppThemeGree);
                 ThemeOption themeOptionsDialog3 = new ThemeOption("Red Theme", ContextCompat.getColor(this, R.color.ssseed), R.style.AppThemeRed);
@@ -185,24 +205,27 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                 OptionsDialog optionsDialog = new OptionsDialog(this, themeOptions);
                 optionsDialog.setOnOptionSelectedListener(MainActivity.this);
                 optionsDialog.show();
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    /**
+     * Handle the selected option from the options dialog.
+     *
+     * @param themeOption The selected theme option.
+     */
     @Override
     public void onOptionSelected(ThemeOption themeOption) {
         setTheme(R.style.AppThemeread);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        model.setTheme(themeOption.getNameofres());//set theme in db
-        restartApp();//restart app
+        model.setTheme(themeOption.getNameofres());
+        restartApp();
     }
 
-
-    /***
-     * restart app function when change theme
+    /**
+     * Restart the application after changing the theme.
      */
     private void restartApp() {
         Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
@@ -212,11 +235,12 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         System.exit(0);
     }
 
-    public  void UserTimeZoneExample(){
+    /**
+     * Example function to get the user's time zone.
+     */
+    public void UserTimeZoneExample() {
         TimeZone userTimeZone = TimeZone.getDefault();
-
         // Print the time zone ID and display name
         ConstantData.TimeZoneId = userTimeZone.getID();
     }
-
 }

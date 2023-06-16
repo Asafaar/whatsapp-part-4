@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -53,6 +54,7 @@ public class AddFriendDialogFragment extends DialogFragment {
                         // Send the positive button event back to the host activity
                         Model model = DatabaseSingleton.getModel(getContext());
                         model.addNewFriend(friend).thenAccept(status -> {
+                            Log.i("Status = ", String.valueOf(status));
                             if (status == -2) {
                                 showToast("Can't add yourself");
                             } else if (status == -3) {
@@ -60,8 +62,8 @@ public class AddFriendDialogFragment extends DialogFragment {
                             } else if (status == -1) {
                                 showToast("The user " + friend + "doesn't exist");
                             } else {
-                                showToast("You and " + mEditText.getText().toString() + " are now friends!");
-                                mListener.onAddFriendDialogPositiveClick(mEditText.getText().toString());
+                                showToast("You and " + friend + " are now friends!");
+                                mListener.onAddFriendDialogPositiveClick(friend);
                             }
                         });
                     }

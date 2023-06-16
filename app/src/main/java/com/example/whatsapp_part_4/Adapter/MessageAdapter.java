@@ -2,7 +2,6 @@ package com.example.whatsapp_part_4.Adapter;
 
 import static com.example.whatsapp_part_4.Adapter.UserGetAdapter.fixtimewithdata;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,20 +17,24 @@ import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Message;
 
 import java.util.List;
-//TODO make the message more beautiful
 
 /**
- * MessageAdapter-get message object and set the message in the view
+ * The MessageAdapter class is responsible for displaying message objects in a RecyclerView.
  */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
-    private List<Message> messages;
     public static final int USER_SENT = 1;
     public static final int FRIEND_RECEIVED = 2;
+    private List<Message> messages;
 
     public MessageAdapter(List<Message> messages) {
         this.messages = messages;
     }
 
+    /**
+     * Sets the list of messages to be displayed.
+     *
+     * @param messages The list of messages.
+     */
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
@@ -41,9 +44,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
+        // Inflate the appropriate layout based on the viewType
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sender_item, parent, false);
-
-//         }
         return new MessageViewHolder(view, viewType);
     }
 
@@ -58,7 +60,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             return FRIEND_RECEIVED;
         }
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
@@ -82,7 +83,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.linearLayout.setLayoutParams(params);
     }
 
-
     @Override
     public int getItemCount() {
         return messages.size();
@@ -98,7 +98,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             contentTextView = itemView.findViewById(R.id.message);
             createdTextView = itemView.findViewById(R.id.timestamp);
             linearLayout = itemView.findViewById(R.id.layout);
-
         }
     }
 }

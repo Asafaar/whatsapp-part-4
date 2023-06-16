@@ -49,7 +49,7 @@ public class Repository {
         listusers = new ListUsers();
         listmessages = new ListMessage();
         listUserGets = new ListUserGet();
-        mainApiManger = new MainApiManger(listusers, listUserGets, listmessages, messageDao, null, userMessageConnectDao, useserGet);
+        mainApiManger = new MainApiManger(null, useserGet);
     }
 
     public MutableLiveData<List<Message>> getListmessages() {
@@ -69,14 +69,7 @@ public class Repository {
     }
 
     public int sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic, String friendusername) {
-//        Message message = mainApiManger.sendMessage(idofFriend, msg, username, displayName, profilePic);
-//        messageDao.insertMessage(message);
-//        List<Message> myDataList = listmessages.getValue();//add to live data
-//        myDataList.add(message);
-//        listmessages.setValue(myDataList);
-//        userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));//add to user message connect
-//        lastMsgByuser.updateMessageById(idofFriend, message);//update last message
-        CompletableFuture<Message> future = mainApiManger.sendMessage(idofFriend, msg, username, displayName, profilePic);
+        CompletableFuture<Message> future = mainApiManger.sendMessage(idofFriend, msg);
         future.thenCompose(message -> {
             if (message != null) {
                 Log.e("60", "sendMessage:work ");
@@ -191,7 +184,7 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
         listmessages.postValue(list1);
     }
     public void loadMsgOfUserfromapi(String id) {
-        CompletableFuture<List<Message>> future = mainApiManger.getMessgesByuser(id);
+        CompletableFuture<List<Message>> future = mainApiManger.getMessagesByUser(id);
         future.thenApply(messages -> {
             if (messages != null) {
 //                messageDao.deleteAllMessages();
@@ -218,7 +211,7 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
 
         List<Message> list = messageDao.getMessagesById(id);
         listmessages.setValue(list);
-        CompletableFuture<List<Message>> future = mainApiManger.getMessgesByuser(id);
+        CompletableFuture<List<Message>> future = mainApiManger.getMessagesByUser(id);
         future.thenApply(messages -> {
             if (messages != null) {
 //                messageDao.deleteAllMessages();
@@ -266,11 +259,11 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
 
 
     public synchronized CompletableFuture<Integer> addNewFriend(String Friend) {
-        return mainApiManger.Addfriend(Friend)
+        return mainApiManger.AddFriend(Friend)
                 .thenCompose(statusCode -> {
                     if (statusCode == 200) {
                         Log.e("TAG", "addnewfriend:load ");
-                        return mainApiManger.getfriends()
+                        return mainApiManger.getFriends()
                                 .thenApply(response -> {
                                     Log.e("TAG", "addNewFriend: "+response.toString() );
                                     List<UserGet> userGetList1 = useserGet.getAllUsers();
@@ -311,12 +304,12 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
 
     }
 
-    public CompletableFuture<Integer> registerfirebase(String token, String username) {
-        return mainApiManger.registerfirebase(token, username);
+    public CompletableFuture<Integer> registerFireBase(String token, String username) {
+        return mainApiManger.registerFireBase(token, username);
     }
 
     public void reloadmessg(String id) {
-        mainApiManger.getMessgesByuser(id);
+        mainApiManger.getMessagesByUser(id);
     }
 
     public void reloadusers() {
@@ -341,7 +334,7 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
     public void reloadusersOntheback() {
 
 
-        CompletableFuture<Integer> future= mainApiManger.getfriends();
+        CompletableFuture<Integer> future= mainApiManger.getFriends();
         future.thenApply(statusCode -> {
             if (statusCode == 200) {
                 Log.e("TAG", "reloadusers: " + "load" );
@@ -355,8 +348,8 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
         });
     }
 
-    public CompletableFuture<Integer> trylogin(String username, String password) {
-        return mainApiManger.trylogin(username, password);
+    public CompletableFuture<Integer> tryLogin(String username, String password) {
+        return mainApiManger.tryLogin(username, password);
 
 
     }
@@ -364,12 +357,12 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
     //when make register//TODO need to add the error by status code
     public CompletableFuture<Integer>  MakeNewUser(String username, String password, String displayName, String profilePic) {
 
-        return mainApiManger.makenewuser(username, password, displayName, profilePic);
+        return mainApiManger.MakeNewUser(username, password, displayName, profilePic);
     }
 
-    public void sendTokenfirebasedel(String username) {
+    public void sendTokenFireBaseDel(String username) {
 
-        CompletableFuture<Integer> future= mainApiManger.sendTokenfirebasedel(username);
+        CompletableFuture<Integer> future= mainApiManger.sendTokenFireBaseDel(username);
         future.thenApply(statusCode -> {
             if (statusCode == 200) {
                 Log.e("TAG", "sendTokenfirebasedel: " + "load" );

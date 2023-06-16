@@ -6,13 +6,27 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * ListUsers is a custom implementation of MutableLiveData that holds a list of User objects.
+ * It provides convenience methods to access and modify the list of User objects.
+ */
 public class ListUsers extends MutableLiveData<List<User>> {
-    public ListUsers(){
-        super();
-        setValue(new LinkedList<User>());
 
+    /**
+     * Constructs a new instance of ListUsers.
+     * Initializes the underlying list with an empty LinkedList of User objects.
+     */
+    public ListUsers() {
+        super();
+        setValue(new LinkedList<>());
     }
-    public LiveData<List<User>> getUsers(){
+
+    /**
+     * Returns a LiveData object that represents the list of User objects.
+     *
+     * @return A LiveData object containing the list of User objects.
+     */
+    public LiveData<List<User>> getUsers() {
         return this;
     }
 }

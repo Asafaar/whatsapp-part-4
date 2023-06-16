@@ -1,19 +1,44 @@
 package com.example.whatsapp_part_4.data;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Query;
 
-import java.util.List;
-
+/**
+ * LastMsgByuser is a Data Access Object (DAO) interface for performing database operations
+ * on the LastMessageByUser entity.
+ */
 @Dao
 public interface LastMsgByuser {
-    @Query("SELECT * FROM LastmessgeByuser WHERE id = :id")
-    LastmessgeByuser getlastMessagesById(String id);
-    @Query("UPDATE LastmessgeByuser SET msgid = :newMessage WHERE id = :id")
+
+    /**
+     * Retrieves the last message by user with the specified ID.
+     *
+     * @param id The ID of the user.
+     * @return The LastMessageByUser object representing the last message by the user.
+     */
+    @Query("SELECT * FROM LastMessageByUser WHERE id = :id")
+    LastMessageByUser getlastMessagesById(String id);
+
+    /**
+     * Updates the message of the LastMessageByUser with the specified ID.
+     *
+     * @param id         The ID of the user.
+     * @param newMessage The new Message object to be updated.
+     */
+    @Query("UPDATE LastMessageByUser SET msgId = :newMessage WHERE id = :id")
     void updateMessageById(String id, Message newMessage);
-    @Query("DELETE FROM LastmessgeByuser WHERE id = :id")
+
+    /**
+     * Deletes the LastMessageByUser with the specified ID.
+     *
+     * @param id The ID of the user.
+     */
+    @Query("DELETE FROM LastMessageByUser WHERE id = :id")
     void deleteMessageById(String id);
-    @Query("DELETE FROM LastmessgeByuser")
+
+    /**
+     * Deletes all LastMessageByUser entries from the table.
+     */
+    @Query("DELETE FROM LastMessageByUser")
     void deleteAllUsers();
 }
