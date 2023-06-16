@@ -9,264 +9,228 @@ import com.example.whatsapp_part_4.Async.AsyncTaskUsers;
 import com.example.whatsapp_part_4.Model.Model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class Repository {
-    //    private UserDao userDao;
-    private MessageDao messageDao;
+    private final MessageDao messageDao;
     private String token;
-    private ListUsers listusers;
-
-    private ListUserGet listUserGets;
-    private Appdb db;
-    private ListMessage listmessages;
-    private MainApiManger mainApiManger;
-    private UserMessageConnectDao userMessageConnectDao;
-
-    private LastMsgByuser lastMsgByuser;
-
-    private UeserGet useserGet;
-    private ThemeSave themeSavedb;
-    private LastUserLogin lastUserLogin;
+    private final ListUsers listusers;
+    private final ListUserGet listUserGets;
+    private final ListMessage listMessages;
+    private final MainApiManger mainApiManger;
+    private final UserMessageConnectDao userMessageConnectDao;
+    private final LastMsgByuser lastMsgByuser;
+    private final UeserGet UserGet;
+    private final ThemeSave themeSaveDb;
+    private final LastUserLogin lastUserLogin;
     private String username;
     private String displayName;
     private String profilePic;
-    private Model model;
+    private final Model model;
 
+    /**
+     * Creates a new Repository object.
+     *
+     * @param db    The Appdb object for database access.
+     * @param model The Model object.
+     */
     public Repository(Appdb db, Model model) {
         this.model = model;
 
-        this.db = db;
-//        userDao = db.userDao();
         messageDao = db.messageDao();
         userMessageConnectDao = db.userMessageConnectDao();
         lastMsgByuser = db.lastMsgByuser();
-        useserGet = db.UeserGet();
-        themeSavedb = db.ThemeSave();
-        lastUserLogin=db.LastUserLogin();
+        UserGet = db.UeserGet();
+        themeSaveDb = db.ThemeSave();
+        lastUserLogin = db.LastUserLogin();
         listusers = new ListUsers();
-        listmessages = new ListMessage();
+        listMessages = new ListMessage();
         listUserGets = new ListUserGet();
-        mainApiManger = new MainApiManger(null, useserGet);
+        mainApiManger = new MainApiManger(null, UserGet);
     }
 
-    public MutableLiveData<List<Message>> getListmessages() {
-        return listmessages;
+    /**
+     * Returns the MutableLiveData object for list of messages.
+     *
+     * @return The MutableLiveData object containing the list of messages.
+     */
+    public MutableLiveData<List<Message>> getListMessages() {
+        return listMessages;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setProfilePic(String profilePic) {
-        this.profilePic = profilePic;
-    }
-
-    public int sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic, String friendusername) {
-        CompletableFuture<Message> future = mainApiManger.sendMessage(idofFriend, msg);
+    /**
+     * Sends a message to a friend.
+     *
+     * @param idOfFriend     The ID of the friend.
+     * @param msg            The message to send.
+     * @param friendUserName The username of the friend.
+     * @return The result of sending the message (1 if successful, -1 otherwise).
+     */
+    public int sendMessage(String idOfFriend, String msg, String friendUserName) {
+        CompletableFuture<Message> future = mainApiManger.sendMessage(idOfFriend, msg);
         future.thenCompose(message -> {
             if (message != null) {
-                Log.e("60", "sendMessage:work ");
-                List<Message> myDataList = listmessages.getValue();
+                List<Message> myDataList = listMessages.getValue();
+                assert myDataList != null;
                 myDataList.add(0, message);
-                listmessages.setValue(myDataList);
-
-                CompletableFuture<Integer> completableFuture = mainApiManger.sendMessageWithFirebase(message, friendusername);
+                listMessages.setValue(myDataList);
+                CompletableFuture<Integer> completableFuture = mainApiManger.sendMessageWithFirebase(message, friendUserName);
                 return completableFuture.thenApply(integer -> {
                     if (integer == 200) {
-                        Log.e("70", "sendMessage: work ");
-//                        userMessageConnectDao.insert(new UserMessage(idofFriend, message.getId()));
-//                        lastMsgByuser.updateMessageById(idofFriend, message);
                         return 1;
                     } else {
-                        Log.e("70", "sendMessage: dont work ");
                         return -1;
                     }
                 });
             } else {
-                Log.e("70", "sendMessage: dont work ");
                 return CompletableFuture.completedFuture(-1);
             }
-        }).exceptionally(throwable -> {
-            Log.e("TAG", "sendMessage: Exception occurred: " + throwable.getMessage());
-            return -1;
-        });
-
-        Log.e("60", "sendMessage:end send -1 ");
-
+        }).exceptionally(throwable -> -1);
         return 1;
-
     }
-    public void setRetrofit(String url){
+
+    /**
+     * Sets the Retrofit base URL.
+     *
+     * @param url The base URL to set.
+     */
+    public void setRetrofit(String url) {
         mainApiManger.setRetrofit(url);
     }
+
+    /**
+     * Retrieves the token.
+     *
+     * @return The token.
+     */
     public String getToken() {
         return token;
     }
 
-    public void setTheme(int Theme) {
-        this.themeSavedb.deleteTheme();
-        this.themeSavedb.insertTheme(String.valueOf(Theme));
-    }
-
+    /**
+     * Retrieves the theme.
+     *
+     * @return The theme string.
+     */
     public ThemeString getTheme() {
-//        Log.e("TAG", "getTheme: "+this.themeSavedb.getTheme().theme );
-        if (this.themeSavedb.getTheme() == null) {
-            Log.e("TAG", "getTheme: " );
+        if (this.themeSaveDb.getTheme() == null) {
             return null;
-        } else{
-
-            return this.themeSavedb.getTheme();
+        } else {
+            return this.themeSaveDb.getTheme();
         }
     }
 
+    /**
+     * Sets the theme.
+     *
+     * @param theme The theme to set.
+     */
+    public void setTheme(int theme) {
+        this.themeSaveDb.deleteTheme();
+        this.themeSaveDb.insertTheme(String.valueOf(theme));
+    }
+
+    /**
+     * Retrieves the username.
+     *
+     * @return The username.
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Sets the username.
+     *
+     * @param username The username to set.
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Retrieves the display name.
+     *
+     * @return The display name.
+     */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Sets the display name.
+     *
+     * @param displayName The display name to set.
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    /**
+     * Retrieves the profile picture.
+     *
+     * @return The profile picture.
+     */
     public String getProfilePic() {
         return profilePic;
     }
 
-//    public void getUserData(String username) {
-//        CompletableFuture<DataUserRes> completableFuture=  mainApiManger.getUserData(username);
-//        completableFuture.thenApply(dataUserRes -> {
-//            if (dataUserRes != null) {
-//                this.username = dataUserRes.getUsername();
-//                this.displayName = dataUserRes.getDisplayName();
-//                this.profilePic = dataUserRes.getProfilePic();
-//                return 1;
-//            } else {
-//                return -1;
-//            }
-//        });
-//
-//    }
-public CompletableFuture<DataUserRes> getUserData(String username) {
-    CompletableFuture<DataUserRes> future = mainApiManger.getUserData(username);
+    /**
+     * Sets the profile picture.
+     *
+     * @param profilePic The profile picture to set.
+     */
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
 
-    future.thenAccept(userData -> {
-        if (userData != null) {
-            Log.d("repository", "Received object: " + userData.toString());
-        } else {
-            Log.d("repository", "Received object is null");
-        }
-    });
+    /**
+     * Retrieves user data from the main API manager.
+     *
+     * @param username The username of the user.
+     * @return A CompletableFuture containing the user data.
+     */
+    public CompletableFuture<DataUserRes> getUserData(String username) {
+        CompletableFuture<DataUserRes> future = mainApiManger.getUserData(username);
 
-    return future;
-}
+        future.thenAccept(userData -> {
+            if (userData != null) {
+                Log.d("repository", "Received object: " + userData);
+            } else {
+                Log.d("repository", "Received object is null");
+            }
+        });
 
-    public MutableLiveData<List<User>> getListusers() {
+        return future;
+    }
+
+    /**
+     * Returns the MutableLiveData object for the list of users.
+     *
+     * @return The MutableLiveData object containing the list of users.
+     */
+    public MutableLiveData<List<User>> getListUsers() {
         return listusers;
     }
 
-    public LiveData<List<User>> getfriendslist() {
-        return listusers;
-    }
-    public void loadMsgOfUserfromDb(String id) {
-        List<String> list=userMessageConnectDao.getMessageIdsForUser(id);
-        List<Message> list1=new ArrayList<>();
-        for (String s : list) {
-         List<Message> list2=  messageDao.getMessagesById(s);
-            list1.add(list2.get(0));
-        }
-        Collections.reverse(list1);
-        listmessages.postValue(list1);
-    }
-    public void loadMsgOfUserfromapi(String id) {
-        CompletableFuture<List<Message>> future = mainApiManger.getMessagesByUser(id);
-        future.thenApply(messages -> {
-            if (messages != null) {
-//                messageDao.deleteAllMessages();
-//                messageDao.insertAll(messages);
-//                userMessageConnectDao.deleteAllMessages();\
-                List<Message> list=messageDao.getAllMessages();
-                for (Message message : messages) {
-                    if (!list.contains(message)){
-                        messageDao.insertMessage(message);
-                        UserMessage userMessage = new UserMessage(id, message.getId());
-                        userMessageConnectDao.insert(userMessage);
-
-                    }
-                }
-                loadMsgOfUserfromDb(id);
-
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-    }
-    public int getMessgesByuser(String id) {
-
-        List<Message> list = messageDao.getMessagesById(id);
-        listmessages.setValue(list);
-        CompletableFuture<List<Message>> future = mainApiManger.getMessagesByUser(id);
-        future.thenApply(messages -> {
-            if (messages != null) {
-//                messageDao.deleteAllMessages();
-                messageDao.insertAll(messages);
-//                userMessageConnectDao.deleteAllMessages();
-
-                for (Message message : messages) {//add to the db connect table
-                    UserMessage userMessage = new UserMessage(id, message.getId());
-                    userMessageConnectDao.insert(userMessage);
-
-                    listmessages.setValue(messages);
-                }
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-        return 1;
-    }
-
-//    public synchronized CompletableFuture<Integer> adduser(String Friend) {
-//        CompletableFuture<Integer> future = new CompletableFuture<>();
-//        mainApiManger.Addfriend(Friend)
-//                .thenAccept(statusCode -> {
-//                    if (statusCode == 200) {
-//                        Log.e("TAG", "addnewfriend:load ");
-//                        mainApiManger.getfriends();
-//                        future.complete(1); // Complete with status 1 (success)
-//                    } else if (statusCode == 401) {
-//                        Log.e("TAG", "addnewfriend: -1");
-//                        future.complete(-2); // Complete with status -2 (Unauthorized)
-//                    } else if (statusCode == 400) {
-//                        Log.e("TAG", "addnewfriend: -1");
-//                        future.complete(-3); // Complete with status -3 (Bad Request)
-//                    } else {
-//                        future.complete(-1); // Complete with status -1 (Unknown error)
-//                    }
-//                })
-//                .exceptionally(throwable -> {
-//                    future.complete(-1); // Complete with status -1 (Unknown error)
-//                    return null;
-//                });
-//        return future;
-//    }
-
-
-    public synchronized CompletableFuture<Integer> addNewFriend(String Friend) {
-        return mainApiManger.AddFriend(Friend)
+    /**
+     * Adds a new friend to the main API manager.
+     *
+     * @param friend The username of the friend to add.
+     * @return A CompletableFuture containing the result code:
+     * - 1: Success
+     * - -2: Unauthorized
+     * - -3: Bad Request
+     * - -1: Unknown error
+     */
+    public synchronized CompletableFuture<Integer> addNewFriend(String friend) {
+        return mainApiManger.AddFriend(friend)
                 .thenCompose(statusCode -> {
                     if (statusCode == 200) {
-                        Log.e("TAG", "addnewfriend:load ");
                         return mainApiManger.getFriends()
                                 .thenApply(response -> {
-                                    Log.e("TAG", "addNewFriend: "+response.toString() );
-                                    List<UserGet> userGetList1 = useserGet.getAllUsers();
+                                    List<UserGet> userGetList1 = UserGet.getAllUsers();
                                     listUserGets.postValue(userGetList1);
                                     return 1; // Success
                                 });
@@ -275,72 +239,58 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
                     } else if (statusCode == 400) {
                         return CompletableFuture.completedFuture(-3); // Bad Request
                     } else {
-                        Log.e("TAG", "addnewfriend: -1");
+                        Log.e("TAG", "addNewFriend: -1");
                         return CompletableFuture.completedFuture(-1); // Unknown error
                     }
                 })
                 .exceptionally(throwable -> {
-                    Log.e("TAG", "addnewfriend: -1");
+                    Log.e("TAG", "addNewFriend: -1");
                     return -1; // Unknown error
                 });
     }
-    public void addmessage(Message message) {
-        List<Message> myDataList = listmessages.getValue();//add to live data
+
+    /**
+     * Adds a message to the list of messages.
+     *
+     * @param message The message to add.
+     */
+    public void addMessage(Message message) {
+        List<Message> myDataList = listMessages.getValue();
+        assert myDataList != null;
         myDataList.add(0, message);
-        listmessages.postValue(myDataList);
-
-//        listmessages.notify();
+        listMessages.postValue(myDataList);
     }
 
-    public void updateuser(User user) {
-
-    }
-
-    public void deletemessage(Message message) {
-
-    }
-
-    public void deleteuser(User user) {
-
-    }
-
+    /**
+     * Registers the Firebase token for a user in the main API manager.
+     *
+     * @param token    The Firebase token.
+     * @param username The username of the user.
+     * @return A CompletableFuture containing the result code:
+     * - 1: Success
+     * - -1: Unknown error
+     */
     public CompletableFuture<Integer> registerFireBase(String token, String username) {
         return mainApiManger.registerFireBase(token, username);
     }
 
-    public void reloadmessg(String id) {
-        mainApiManger.getMessagesByUser(id);
-    }
-
-    public void reloadusers() {
+    /**
+     * Reloads the users by executing an AsyncTask.
+     */
+    public void reloadUsers() {
         AsyncTaskUsers messageLoader = new AsyncTaskUsers(model);
         messageLoader.execute();
-
-//        List<UserGet> userGetList = useserGet.getAllUsers();
-//        listUserGets.setValue(userGetList);
-//        CompletableFuture<Integer> future= mainApiManger.getfriends();
-//        future.thenApply(statusCode -> {
-//            if (statusCode == 200) {
-//                Log.e("TAG", "reloadusers: " + "load" );
-//                List<UserGet> userGetList1 = useserGet.getAllUsers();
-//                listUserGets.setValue(userGetList1);
-//                return 1;
-//            } else {
-//                return -1;
-//            }
-//        });
     }
 
-    public void reloadusersOntheback() {
-
-
-        CompletableFuture<Integer> future= mainApiManger.getFriends();
+    /**
+     * Reloads the users in the background using CompletableFuture.
+     */
+    public void reloadUsersInTheBack() {
+        CompletableFuture<Integer> future = mainApiManger.getFriends();
         future.thenApply(statusCode -> {
             if (statusCode == 200) {
-                Log.e("TAG", "reloadusers: " + "load" );
-                List<UserGet> userGetList1 = useserGet.getAllUsers();
+                List<UserGet> userGetList1 = UserGet.getAllUsers();
                 listUserGets.postValue(userGetList1);
-
                 return 1;
             } else {
                 return -1;
@@ -348,24 +298,43 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
         });
     }
 
+    /**
+     * Attempts to log in a user using the provided username and password.
+     *
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @return A CompletableFuture containing the result code:
+     * - 1: Success
+     * - Other values: Error codes based on the status code returned by the API
+     */
     public CompletableFuture<Integer> tryLogin(String username, String password) {
         return mainApiManger.tryLogin(username, password);
-
-
     }
 
-    //when make register//TODO need to add the error by status code
-    public CompletableFuture<Integer>  MakeNewUser(String username, String password, String displayName, String profilePic) {
-
+    /**
+     * Makes a new user registration request with the provided details.
+     *
+     * @param username    The username of the new user.
+     * @param password    The password of the new user.
+     * @param displayName The display name of the new user.
+     * @param profilePic  The profile picture of the new user.
+     * @return A CompletableFuture containing the result code:
+     * - 1: Success
+     * - Other values: Error codes based on the status code returned by the API
+     */
+    public CompletableFuture<Integer> MakeNewUser(String username, String password, String displayName, String profilePic) {
         return mainApiManger.MakeNewUser(username, password, displayName, profilePic);
     }
 
+    /**
+     * Sends a Firebase token deletion request for the specified username.
+     *
+     * @param username The username for which the Firebase token should be deleted.
+     */
     public void sendTokenFireBaseDel(String username) {
-
-        CompletableFuture<Integer> future= mainApiManger.sendTokenFireBaseDel(username);
+        CompletableFuture<Integer> future = mainApiManger.sendTokenFireBaseDel(username);
         future.thenApply(statusCode -> {
             if (statusCode == 200) {
-                Log.e("TAG", "sendTokenfirebasedel: " + "load" );
                 return 1;
             } else {
                 return -1;
@@ -373,6 +342,14 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
         });
     }
 
+    /**
+     * Deletes a friend from the user's friend list.
+     *
+     * @param user The user to be deleted as a friend.
+     * @return An integer indicating the result:
+     * - 1: Success
+     * - Other values: Error codes based on the status code returned by the API
+     */
     public int deleteFriend(UserGet user) {
         CompletableFuture<Integer> future = mainApiManger.deleteFriend(user.getId());
         future.thenApply(statusCode -> {
@@ -383,6 +360,7 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
                 }
                 userMessageConnectDao.deleteMessagesForUser(user.getId());
                 List<UserGet> myDataList = listUserGets.getValue();
+                assert myDataList != null;
                 myDataList.remove(user);
                 listUserGets.setValue(myDataList);
             } else {
@@ -390,55 +368,54 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
             }
             return 1;
         });
-//        userDao.deleteUser(user);
-//        List<String> list = userMessageConnectDao.getMessageIdsForUser(user.getId());
-//        for (String id : list) {
-//            messageDao.deleteMessageById(id);
-//        }
-//        userMessageConnectDao.deleteMessagesForUser(user.getId());
-//
-////        List<User> myDataList = listusers.getValue();
-////        myDataList.remove(user);
-////        listusers.postValue(myDataList);
-//        List<UserGet> myDataList = listUserGets.getValue();
-//        myDataList.remove(user);
-//        listUserGets.setValue(myDataList);
-//        lastMsgByuser.deleteMessageById(user.getId());
         return 1;
     }
 
-    public LiveData<List<UserGet>> getListusersget() {
+    /**
+     * Returns the LiveData object for the list of UserGet objects.
+     *
+     * @return The LiveData object containing the list of UserGet objects.
+     */
+    public LiveData<List<UserGet>> getListUsersGet() {
         return listUserGets;
     }
 
-    public void reloadlastmsg() {
-        List<UserGet> userGetList = useserGet.getAllUsers();
-
+    /**
+     * Reloads the UserGet objects from the database.
+     */
+    public void reloadUserGetFromDb() {
+        listUserGets.postValue(UserGet.getAllUsers());
     }
 
-    public void reloadusergetfromdb() {
-        listUserGets.postValue(useserGet.getAllUsers());
-
-    }
-
+    /**
+     * Clears the data associated with the logged out user.
+     */
     public void clearLogoutUser() {
-
         messageDao.deleteAllMessages();
-        useserGet.deleteAllUsers();
+        UserGet.deleteAllUsers();
         userMessageConnectDao.deleteAllMessages();
         lastMsgByuser.deleteAllUsers();
-        listmessages.setValue(new ArrayList<>());
+        listMessages.setValue(new ArrayList<>());
         listusers.setValue(new ArrayList<>());
         listUserGets.setValue(new ArrayList<>());
     }
 
-    public String getlstuserlogin() {
+    /**
+     * Returns the username of the last logged-in user.
+     *
+     * @return The username of the last logged-in user.
+     */
+    public String getLastUserLogin() {
         return lastUserLogin.getlastUserLogin();
     }
 
-    public void setlstuserlogin(String username) {
+    /**
+     * Sets the username of the last logged-in user.
+     *
+     * @param username The username of the last logged-in user.
+     */
+    public void setLastUserLogin(String username) {
         lastUserLogin.deleteAllUsers();
         lastUserLogin.insertUser(username);
-
     }
 }

@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                             intent.putExtra("username", username);
                             intent.putExtra("displayName", userData.getDisplayName());
                             intent.putExtra("profilePic", userData.getProfilePic());
-                            intent.putExtra("token", model.gettoken());
+                            intent.putExtra("token", model.getToken());
                             UserTimeZoneExample();
                             startActivity(intent);
                         } else {
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
     public void onOptionSelected(ThemeOption themeOption) {
         setTheme(R.style.AppThemeread);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        model.setTheme(themeOption.getNameofres());
+        model.setTheme(themeOption.getNameOfRes());
         restartApp();
     }
 

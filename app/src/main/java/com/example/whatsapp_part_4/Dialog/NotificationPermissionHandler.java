@@ -8,8 +8,8 @@ import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
 
-/** notification permission handler-need the permission to send notification by firebase
- *
+/**
+ * Handles notification permission.
  */
 public class NotificationPermissionHandler {
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -20,6 +20,9 @@ public class NotificationPermissionHandler {
         this.activity = activity;
     }
 
+    /**
+     * Checks and requests the notification permission.
+     */
     public void checkAndRequestPermission() {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
@@ -42,24 +45,6 @@ public class NotificationPermissionHandler {
                 // No explanation needed, request the permission
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE);
             }
-        } else {
-            // Permission has already been granted
-            // Proceed with your logic here
         }
-    }
-
-    // Call this method from the activity's onRequestPermissionsResult() to handle the permission request result
-    public boolean handlePermissionResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
-                // Proceed with your logic here
-                return true;
-            } else {
-                // Permission denied
-                return false;
-            }
-        }
-        return false;
     }
 }

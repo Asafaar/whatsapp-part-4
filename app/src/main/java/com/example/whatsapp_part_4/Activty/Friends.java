@@ -59,14 +59,14 @@ public class Friends extends AppCompatActivity implements AddFriendDialogFragmen
         }
 
         // Check if the user is the same user that logged in last time, if not clear the database
-        if (model.getlstuserlogin() != null) {
-            String usernamelast = model.getlstuserlogin();
-            if (!usernamelast.equals(username)) {
+        if (model.getLastUserLogin() != null) {
+            String userNameLast = model.getLastUserLogin();
+            if (!userNameLast.equals(username)) {
                 model.clearLogoutUser();
-                model.setlstuserlogin(username);
+                model.setLastUserLogin(username);
             }
         } else {
-            model.setlstuserlogin(username);
+            model.setLastUserLogin(username);
         }
 
         // Set the activity layout
@@ -101,9 +101,9 @@ public class Friends extends AppCompatActivity implements AddFriendDialogFragmen
         }
 
         // Set up the UserGetAdapter and observe changes to the users data
-        UserGetAdapter adapter = new UserGetAdapter(model.getUsersget().getValue(), username);
+        UserGetAdapter adapter = new UserGetAdapter(model.getUsersGet().getValue(), username);
         recyclerView.setAdapter(adapter);
-        model.getUsersget().observe(this, new Observer<List<UserGet>>() {
+        model.getUsersGet().observe(this, new Observer<List<UserGet>>() {
             @Override
             public void onChanged(List<UserGet> users) {
                 // Sort the users based on the last message

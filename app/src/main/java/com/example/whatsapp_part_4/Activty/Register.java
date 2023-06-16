@@ -133,7 +133,7 @@ public class Register extends AppCompatActivity {
             binding.msgnewuser.setVisibility(View.VISIBLE);
         } else {
             AtomicInteger resulsave = new AtomicInteger();
-            CompletableFuture<Integer> integerCompletableFuture = model.makenewuser(username, password, displayName, img);
+            CompletableFuture<Integer> integerCompletableFuture = model.makeNewUser(username, password, displayName, img);
             integerCompletableFuture.thenCompose((result) -> {
                 resulsave.set(result);
                 if (result == 200) {

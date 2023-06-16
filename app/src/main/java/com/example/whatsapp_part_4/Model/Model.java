@@ -9,90 +9,119 @@ import com.example.whatsapp_part_4.data.DataUserRes;
 import com.example.whatsapp_part_4.data.Message;
 import com.example.whatsapp_part_4.data.Repository;
 import com.example.whatsapp_part_4.data.ThemeString;
-import com.example.whatsapp_part_4.data.User;
 import com.example.whatsapp_part_4.data.UserGet;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The Model class represents the data and business logic of the application.
+ */
 public class Model {
-    private LiveData<List<Message>> messages;//the local data message that will be on the screnn
-    private LiveData<List<User>> users;//not need TODO delete
-    private LiveData<List<UserGet>> usersget;//the local data friend that will be on the screnn
+    private final LiveData<List<Message>> messages; // Local data messages that will be displayed on the screen
+    private final LiveData<List<UserGet>> usersGet; // Local data for friends that will be displayed on the screen
+    private final Repository repository;
 
-    private Repository repository;
-
+    /**
+     * Constructs a Model object.
+     *
+     * @param db The Appdb object for database operations.
+     */
     public Model(Appdb db) {
-        this.repository = new Repository(db,this);
-        messages = repository.getListmessages();
-        users = repository.getListusers();
-        usersget = repository.getListusersget();
+        this.repository = new Repository(db, this);
+        messages = repository.getListMessages();
+        usersGet = repository.getListUsersGet();
     }
 
-    public String getUserDisplayname(){
-        return  repository.getDisplayName();
-    }
-    public String getUserimg(){
-        return  repository.getProfilePic();
-    }
-
-    public void setdisplayname(String displayname){
-        repository.setDisplayName(displayname);
-    }
-    public void setprofilepic(String profilepic){
-        repository.setProfilePic(profilepic);
-    }
-    /**reload
-     * @return reload the users from the db and from the server to the livedata
+    /**
+     * Reloads the users from the database and the server to LiveData.
      */
     public void reload() {
-        repository.reloadusers();
-    }
-    public void reloadusersOntheback() {
-        repository.reloadusersOntheback();
-    }
-    public void reloadusergetfromdb() {
-        repository.reloadusergetfromdb();
+        repository.reloadUsers();
     }
 
-    /** sendMessage to the server
-     *
-     * @param idofFriend the id of the friend
-     * @param msg the message
-     * @param username the username of the user
-     * @param displayName the display name of the user
-     * @param profilePic the profile pic of the user
-     * @param friendusername the username of the friend
+    /**
+     * Reloads the users in the background.
      */
-    public synchronized void sendMessage(String idofFriend, String msg, String username, String displayName, byte[] profilePic,String friendusername) {
-        int status= repository.sendMessage(idofFriend, msg, username, displayName, profilePic,friendusername);
-        if (status==1){
-            Log.e("TAG", "sendMessage: sucss" );
-        }else{
-            Log.e("TAG", "sendMessage: fail" );
+    public void reloadUsersInTheBack() {
+        repository.reloadUsersInTheBack();
+    }
 
+    /**
+     * Reloads the UserGet from the database.
+     */
+    public void reloadUserGetFromDb() {
+        repository.reloadUserGetFromDb();
+    }
+
+    /**
+     * Sends a message to the server.
+     *
+     * @param idOfFriend     The ID of the friend.
+     * @param msg            The message.
+     * @param friendUsername The username of the friend.
+     */
+    public synchronized void sendMessage(String idOfFriend, String msg, String friendUsername) {
+        int status = repository.sendMessage(idOfFriend, msg, friendUsername);
+        if (status == 1) {
+            Log.i("TAG", "sendMessage: success");
+        } else {
+            Log.e("TAG", "sendMessage: fail");
         }
     }
 
-    public ThemeString getTheme(){
-        if (repository.getTheme()==null){
-            Log.e("TAG", "getTheme: " + "null" );
-           return null;
-        }else{
-
-            return  repository.getTheme();
+    /**
+     * Gets the current theme.
+     *
+     * @return The ThemeString object representing the current theme.
+     */
+    public ThemeString getTheme() {
+        if (repository.getTheme() == null) {
+            return null;
+        } else {
+            return repository.getTheme();
         }
+    }
 
+    /**
+     * Sets the current theme.
+     *
+     * @param theme The theme value to be set.
+     */
+    public void setTheme(int theme) {
+        repository.setTheme(theme);
     }
-    public String getlstuserlogin(){
-        return repository.getlstuserlogin();
+
+    /**
+     * Gets the last user login.
+     *
+     * @return The last user login.
+     */
+    public String getLastUserLogin() {
+        return repository.getLastUserLogin();
     }
-    public CompletableFuture<DataUserRes> getUserData(String username){
+
+    /**
+     * Sets the last user login.
+     *
+     * @param username The username of the last logged-in user.
+     */
+    public void setLastUserLogin(String username) {
+        repository.setLastUserLogin(username);
+    }
+
+    /**
+     * Retrieves the user data from the server.
+     *
+     * @param username The username of the user.
+     * @return A CompletableFuture that resolves to the DataUserRes object representing the user data.
+     */
+    public CompletableFuture<DataUserRes> getUserData(String username) {
         CompletableFuture<DataUserRes> future = repository.getUserData(username);
 
         future.thenAccept(userData -> {
             if (userData != null) {
-                Log.d("model", "Received object: " + userData.toString());
+                Log.d("model", "Received object: " + userData);
             } else {
                 Log.d("model", "Received object is null");
             }
@@ -101,107 +130,118 @@ public class Model {
         return future;
     }
 
-    public void setRetrofit(String url){
+    /**
+     * Sets the Retrofit URL for API calls.
+     *
+     * @param url The base URL of the Retrofit service.
+     */
+    public void setRetrofit(String url) {
         repository.setRetrofit(url);
     }
 
-    public void setTheme(int Theme){
-         repository.setTheme(Theme);
-    }
-
     /**
-     * trylogin to the server
-     * @param username the username
-     * @param password the password
-     * @return if the login is sucsses
+     * Attempts to log in to the server.
+     *
+     * @param username The username.
+     * @param password The password.
+     * @return A CompletableFuture that resolves to an Integer representing the login status.
      */
     public synchronized CompletableFuture<Integer> tryLogin(String username, String password) {
         return repository.tryLogin(username, password);
     }
 
     /**
-     * makenewuser- make new user in the server
-     * @param username the username
-     * @param password the password
-     * @param displayName the display name
-     * @param profilePic the profile pic
+     * Creates a new user on the server.
+     *
+     * @param username    The username.
+     * @param password    The password.
+     * @param displayName The display name.
+     * @param profilePic  The profile picture.
+     * @return A CompletableFuture that resolves to an Integer representing the status of the user creation.
      */
-    public CompletableFuture<Integer> makenewuser(String username, String password, String displayName, String profilePic) {
-       return repository.MakeNewUser(username, password, displayName, profilePic);
+    public CompletableFuture<Integer> makeNewUser(String username, String password, String displayName, String profilePic) {
+        return repository.MakeNewUser(username, password, displayName, profilePic);
     }
 
     /**
-     * deleteFriend-frm the server ,db and livedata
-     * @param user the user we want to delete
+     * Deletes a friend from the server, database, and LiveData.
+     *
+     * @param user The UserGet object representing the friend to be deleted.
      */
     public synchronized void deleteFriend(UserGet user) {
-            repository.deleteFriend(user);
+        repository.deleteFriend(user);
     }
 
     /**
-     * addnewfriend- add new friend to the server search if the friend is in the server
+     * Adds a new friend to the server by searching if the friend is in the server.
      *
-     * @param Friend the friend we want to add
-     * @return if the friend is in the server and can be added
+     * @param friend The username of the friend to be added.
+     * @return A CompletableFuture that resolves to an Integer representing the status of adding the friend.
      */
-    public synchronized CompletableFuture<Integer> addNewFriend(String Friend){
-       return repository.addNewFriend(Friend);
+    public synchronized CompletableFuture<Integer> addNewFriend(String friend) {
+        return repository.addNewFriend(friend);
     }
+
+    /**
+     * Sends the delete token to Firebase.
+     *
+     * @param username The username.
+     */
     public void sendTokenFireBaseDel(String username) {
         repository.sendTokenFireBaseDel(username);
     }
 
     /**
-     * registerfirebase- register the token to the server
-     * @param token the token
-     * @param username the username
-     * @return if the register is sucsses
+     * Registers the Firebase token to the server.
+     *
+     * @param token    The Firebase token.
+     * @param username The username.
+     * @return A CompletableFuture that resolves to an Integer representing the registration status.
      */
-    public CompletableFuture<Integer> registerFireBase(String token,String username){
-      return   repository.registerFireBase(token,username);
+    public CompletableFuture<Integer> registerFireBase(String token, String username) {
+        return repository.registerFireBase(token, username);
     }
 
     /**
-     * addmessage- add message to livedata when the user send message to the friend so need to add the message to the livedata
-     * @param message the message
+     * Adds a message to LiveData when the user sends a message to a friend.
+     *
+     * @param message The Message object representing the sent message.
      */
-    public void addmessage(Message message) {
-        repository.addmessage(message);
+    public void addMessage(Message message) {
+        repository.addMessage(message);
     }
 
     /**
-     * gettoken- get the token from the repository
-     * @return the token
+     * Gets the Firebase token from the repository.
+     *
+     * @return The Firebase token.
      */
-    public String gettoken() {
+    public String getToken() {
         return repository.getToken();
     }
 
     /**
-     * getMessages
-     * @return the messages
+     * Gets the messages LiveData.
+     *
+     * @return The LiveData object representing the messages.
      */
     public LiveData<List<Message>> getMessages() {
         return messages;
     }
 
-
     /**
-     * getUsersget
-     * @return the usersget
+     * Gets the usersGet LiveData.
+     *
+     * @return The LiveData object representing the usersGet.
      */
-    public LiveData<List<UserGet>> getUsersget() {
-        return usersget;
+    public LiveData<List<UserGet>> getUsersGet() {
+        return this.usersGet;
     }
 
     /**
-     * clearLogoutUser- clear the logout user from the repository
+     * Clears the logout user from the repository.
      */
     public void clearLogoutUser() {
         repository.clearLogoutUser();
-    }
-
-    public void setlstuserlogin(String username) {
-        repository.setlstuserlogin(username);
     }
 }

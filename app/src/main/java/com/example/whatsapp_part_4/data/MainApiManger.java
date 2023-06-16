@@ -18,12 +18,22 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * MainApiManger is a class that manages API requests and communication with the server.
+ * It uses Retrofit library for making network calls.
+ */
 public class MainApiManger {
     private final WebserviceApi api;
     private final UeserGet UeserGet;
     private Retrofit retrofit;
     private String token;
 
+    /**
+     * Constructor for MainApiManger.
+     *
+     * @param token    The authentication token for API requests.
+     * @param ueserGet An instance of the UeserGet class for performing database operations.
+     */
     public MainApiManger(String token, UeserGet ueserGet) {
         this.token = "bearer" + token;
         this.UeserGet = ueserGet;
@@ -32,9 +42,13 @@ public class MainApiManger {
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                 .build();
         api = retrofit.create(WebserviceApi.class);
-
     }
 
+    /**
+     * Sets the base URL for Retrofit.
+     *
+     * @param url The base URL to set for Retrofit.
+     */
     public void setRetrofit(String url) {
         this.retrofit = new Retrofit.Builder()
                 .baseUrl(url)
@@ -42,12 +56,16 @@ public class MainApiManger {
                 .build();
     }
 
-    public CompletableFuture<Integer> getFriends() {//TODO add check
+    /**
+     * Retrieves the friends list from the API.
+     *
+     * @return A CompletableFuture<Integer> that completes with the HTTP status code of the API response.
+     */
+    public CompletableFuture<Integer> getFriends() {
         CompletableFuture<Integer> integerCompletableFuture = new CompletableFuture<>();
         api.getFriends(token).enqueue(new Callback<List<UserGet>>() {
             @Override
             public void onResponse(@NonNull Call<List<UserGet>> call, @NonNull Response<List<UserGet>> response) {
-
                 if (response.code() == 200) {
                     UeserGet.deleteAllUsers();
                     if (response.body() != null) {
@@ -68,6 +86,13 @@ public class MainApiManger {
         return integerCompletableFuture;
     }
 
+    /**
+     * Sends a message to a friend.
+     *
+     * @param idOfFriend The ID of the friend to send the message to.
+     * @param msg        The message to send.
+     * @return A CompletableFuture<Message> that completes with the sent message if successful.
+     */
     public CompletableFuture<Message> sendMessage(String idOfFriend, String msg) {
         SendMessageRequest sendMessageRequest = new SendMessageRequest(msg);
         Message[] message = {null};
@@ -79,18 +104,23 @@ public class MainApiManger {
                     message[0] = response.body();
                     future.complete(message[0]);
                 } else {
-                    Log.d("sendMsg", "Error: " + response.code());
+                    Log.e("sendMsg", "Error: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Message> call, @NonNull Throwable t) {
-            }
+            public void onFailure(@NonNull Call<Message> call, @NonNull Throwable t) {}
         });
         return future;
     }
 
     //Todo don't get all date
+    /**
+     * Retrieves messages for a specific user from the API.
+     *
+     * @param id The ID of the user.
+     * @return A CompletableFuture<List<Message>> that completes with the list of messages if successful.
+     */
     public CompletableFuture<List<Message>> getMessagesByUser(String id) {
         CompletableFuture<List<Message>> future = new CompletableFuture<>();
         api.getMessage(id, token).enqueue(new Callback<List<Message>>() {
@@ -102,14 +132,21 @@ public class MainApiManger {
 
             @Override
             public void onFailure(@NonNull Call<List<Message>> call, @NonNull Throwable t) {
-
+                // Handle failure case
             }
         });
         return future;
     }
 
+    /**
+     * Registers the Firebase token for push notifications.
+     *
+     * @param token    The Firebase token.
+     * @param username The username of the user.
+     * @return A CompletableFuture<Integer> that completes with the HTTP status code of the API response.
+     */
     public CompletableFuture<Integer> registerFireBase(String token, String username) {
-        reqfirebase reqfirebase = new reqfirebase(token, username);
+        ReqFireBase reqfirebase = new ReqFireBase(token, username);
         CompletableFuture<Integer> future = new CompletableFuture<>();
         api.sendTokenfirebase(reqfirebase).enqueue(new Callback<Void>() {
             @Override
@@ -129,6 +166,12 @@ public class MainApiManger {
         return future;
     }
 
+    /**
+     * Sends a Firebase token for deletion.
+     *
+     * @param username The username of the user.
+     * @return A CompletableFuture<Integer> that completes with the HTTP status code of the API response.
+     */
     public CompletableFuture<Integer> sendTokenFireBaseDel(String username) {
         JSONObject json = new JSONObject();
         try {
@@ -151,11 +194,17 @@ public class MainApiManger {
         return future;
     }
 
+    /**
+     * Adds a friend to the user's friend list.
+     *
+     * @param userFriend The username of the friend to add.
+     * @return A CompletableFuture<Integer> that completes with the HTTP status code of the API response.
+     */
     public CompletableFuture<Integer> AddFriend(String userFriend) {
         CompletableFuture<Integer> future = new CompletableFuture<>();
 
         FindFriendRequest findFriendRequest = new FindFriendRequest(userFriend);
-        api.addUserFrined(findFriendRequest, token).enqueue(new Callback<UserGet.User>() {
+        api.addUserFriend(findFriendRequest, token).enqueue(new Callback<UserGet.User>() {
             @Override
             public void onResponse(@NonNull Call<UserGet.User> call, @NonNull Response<UserGet.User> response) {
                 future.complete(response.code());
@@ -170,6 +219,12 @@ public class MainApiManger {
         return future;
     }
 
+    /**
+     * Retrieves user data from the API.
+     *
+     * @param username The username of the user.
+     * @return A CompletableFuture<DataUserRes> that completes with the user data if successful.
+     */
     public CompletableFuture<DataUserRes> getUserData(String username) {
         CompletableFuture<DataUserRes> future = new CompletableFuture<>();
         api.getUserData(username, token).enqueue(new Callback<DataUserRes>() {
@@ -191,8 +246,14 @@ public class MainApiManger {
         return future;
     }
 
+    /**
+     * Attempts to log in with the provided username and password.
+     *
+     * @param username The username.
+     * @param password The password.
+     * @return A CompletableFuture<Integer> that completes with the HTTP status code of the API response.
+     */
     public CompletableFuture<Integer> tryLogin(String username, String password) {
-
         LoginRequest loginRequest = new LoginRequest(username, password);
         JSONObject jsonObject = new JSONObject();
         try {
@@ -204,7 +265,6 @@ public class MainApiManger {
         CompletableFuture<Integer> future = new CompletableFuture<>();
         final int[] statusCode = new int[1];
         api.getToken(loginRequest).enqueue(new Callback<String>() {
-
             @Override
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 statusCode[0] = response.code();
@@ -225,15 +285,20 @@ public class MainApiManger {
         return future;
     }
 
-
+    /**
+     * Creates a new user with the provided information.
+     *
+     * @param username    The username.
+     * @param password    The password.
+     * @param displayName The display name.
+     * @param profilePic  The URL of the profile picture.
+     * @return A CompletableFuture<Integer> that completes with the HTTP status code of the API response.
+     */
     public CompletableFuture<Integer> MakeNewUser(String username, String password, String displayName, String profilePic) {
-
         UserRequest user = new UserRequest(username, password, displayName, profilePic);
         final int[] statusCode = new int[1];
         CompletableFuture<Integer> future = new CompletableFuture<>();
         api.createUser(user).enqueue(new Callback<Void>() {
-
-
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 statusCode[0] = response.code();
@@ -253,6 +318,12 @@ public class MainApiManger {
         return future;
     }
 
+    /**
+     * Deletes a friend with the specified friend ID.
+     *
+     * @param friendId The ID of the friend to delete.
+     * @return A CompletableFuture<Integer> that completes with the HTTP status code of the API response.
+     */
     public CompletableFuture<Integer> deleteFriend(String friendId) {
         final int[] statusCode = new int[1];
         CompletableFuture<Integer> future = new CompletableFuture<>();
@@ -277,16 +348,22 @@ public class MainApiManger {
         return future;
     }
 
+    /**
+     * Sends a message to a friend using Firebase.
+     *
+     * @param message        The message to send.
+     * @param friendUserName The username of the friend.
+     * @return A CompletableFuture<Integer> that completes with the HTTP status code of the API response.
+     */
     public CompletableFuture<Integer> sendMessageWithFirebase(Message message, String friendUserName) {
         CompletableFuture<Integer> future = new CompletableFuture<>();
         api.sendMessageWithFirebase(friendUserName, message).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.code() == 200) {
-                    Log.d("firebase", "send successfully");
                     future.complete(200);
                 } else {
-                    Log.d("firebase", "Error: " + response.code());
+                    Log.e("firebase", "Error: " + response.code());
                     future.complete(404);
                 }
             }
@@ -294,7 +371,6 @@ public class MainApiManger {
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 future.complete(404);
-
             }
         });
         return future;

@@ -39,13 +39,13 @@ public class AsyncTaskUsers extends AsyncTask<Void, Void, Void> {
      */
     @Override
     protected void onPostExecute(Void aVoid) {
-        model.reloadusersOntheback();
+        model.reloadUsersInTheBack();
     }
 
     /**
      * Loads user data from the database using the Model object.
      */
     private void loadMessagesFromDatabase() {
-        model.reloadusergetfromdb();
+        model.reloadUserGetFromDb();
     }
 }

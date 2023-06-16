@@ -116,7 +116,7 @@ public class Chat extends AppCompatActivity {
                 }
 
                 // Send message to the friend on the server
-                model.sendMessage(userIdfriend, message, username, displayName, decodedString, friendusername);
+                model.sendMessage(userIdfriend, message, friendusername);
                 binding.inputField.setText("");
             }
         });
