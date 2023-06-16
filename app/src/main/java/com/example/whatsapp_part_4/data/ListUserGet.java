@@ -1,6 +1,5 @@
 package com.example.whatsapp_part_4.data;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.LinkedList;
