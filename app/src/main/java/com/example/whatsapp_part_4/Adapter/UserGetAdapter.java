@@ -3,9 +3,7 @@ package com.example.whatsapp_part_4.Adapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +59,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
     @Override
     public UserGetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friend_item, parent, false);
-        return new UserGetViewHolder(view, viewType);
+        return new UserGetViewHolder(view);
     }
 
     @Override
@@ -79,7 +77,6 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         }
         if (userGet.getLastMessage() == null) {
             holder.lastMessageTextView.setText("");
-            return;
         } else {
             holder.lastMessageTextView.setText(userGet.getLastMessage().getContent());
             holder.lastMessagetimeTextView.setText(fixTime(userGet.getLastMessage().getCreated()));
@@ -104,9 +101,8 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
          * Constructs a UserGetViewHolder with the specified itemView and position.
          *
          * @param itemView The itemView for the UserGetViewHolder.
-         * @param position The position of the UserGetViewHolder.
          */
-        public UserGetViewHolder(@NonNull View itemView, int position) {
+        public UserGetViewHolder(@NonNull View itemView) {
             super(itemView);
             model = DatabaseSingleton.getModel(itemView.getContext());
             profilePicImageView = itemView.findViewById(R.id.imagefrined);

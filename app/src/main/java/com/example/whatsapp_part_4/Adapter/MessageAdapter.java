@@ -46,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         // Inflate the appropriate layout based on the viewType
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sender_item, parent, false);
-        return new MessageViewHolder(view, viewType);
+        return new MessageViewHolder(view);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public TextView createdTextView;
         public LinearLayout linearLayout;
 
-        public MessageViewHolder(@NonNull View itemView, int viewType) {
+        public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             contentTextView = itemView.findViewById(R.id.message);
             createdTextView = itemView.findViewById(R.id.timestamp);

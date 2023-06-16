@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -20,13 +19,10 @@ import com.example.whatsapp_part_4.Dialog.OptionsDialog;
 import com.example.whatsapp_part_4.Dialog.ThemeOption;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
-import com.example.whatsapp_part_4.data.Appdb;
 import com.example.whatsapp_part_4.data.ConstantData;
 import com.example.whatsapp_part_4.data.DataUserRes;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.databinding.ActivityMainBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -38,8 +34,6 @@ import java.util.concurrent.CompletableFuture;
  * The main activity of the WhatsApp-like application.
  */
 public class MainActivity extends AppCompatActivity implements OptionsDialog.OnOptionSelectedListener {
-
-    private Appdb db;
     private Model model;
     private String password;
     private String username;
@@ -122,18 +116,10 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
      * @param username The username of the user.
      * @param model    The model instance.
      */
-    public static void Registerfirebase(String username, Model model) {
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                String tokenfirebase = task.getResult();
-                model.registerFireBase(username, tokenfirebase).thenApply(statusCode -> {
-                    if (statusCode == 200) {
-                        // Registration successful
-                    }
-                    return null;
-                });
-            }
+    public static void RegisterFirebase(String username, Model model) {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            String tokenFirebase = task.getResult();
+            model.registerFireBase(username, tokenFirebase).thenApply(statusCode -> null);
         });
     }
 
@@ -188,27 +174,24 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.options_menu:
-                // Show the options dialog with theme options
-                ThemeOption themeOptionsDialog = new ThemeOption("Purple Theme", ContextCompat.getColor(this, R.color.seed), R.style.AppThemeread);
-                ThemeOption themeOptionsDialog2 = new ThemeOption("Green Theme", ContextCompat.getColor(this, R.color.sseed), R.style.AppThemeGree);
-                ThemeOption themeOptionsDialog3 = new ThemeOption("Red Theme", ContextCompat.getColor(this, R.color.ssseed), R.style.AppThemeRed);
-                ThemeOption themeOptionsDialog4 = new ThemeOption("Blue Theme", ContextCompat.getColor(this, R.color.sssseed), R.style.AppThemeBlue);
-                ThemeOption themeOptionsDialog5 = new ThemeOption("Dark Theme", ContextCompat.getColor(this, R.color.ssssseed), R.style.AppThemeDark);
-                List<ThemeOption> themeOptions = new ArrayList<>();
-                themeOptions.add(themeOptionsDialog);
-                themeOptions.add(themeOptionsDialog2);
-                themeOptions.add(themeOptionsDialog3);
-                themeOptions.add(themeOptionsDialog4);
-                themeOptions.add(themeOptionsDialog5);
-                OptionsDialog optionsDialog = new OptionsDialog(this, themeOptions);
-                optionsDialog.setOnOptionSelectedListener(MainActivity.this);
-                optionsDialog.show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.options_menu) {// Show the options dialog with theme options
+            ThemeOption themeOptionsDialog = new ThemeOption("Purple Theme", ContextCompat.getColor(this, R.color.seed), R.style.AppThemeread);
+            ThemeOption themeOptionsDialog2 = new ThemeOption("Green Theme", ContextCompat.getColor(this, R.color.sseed), R.style.AppThemeGree);
+            ThemeOption themeOptionsDialog3 = new ThemeOption("Red Theme", ContextCompat.getColor(this, R.color.ssseed), R.style.AppThemeRed);
+            ThemeOption themeOptionsDialog4 = new ThemeOption("Blue Theme", ContextCompat.getColor(this, R.color.sssseed), R.style.AppThemeBlue);
+            ThemeOption themeOptionsDialog5 = new ThemeOption("Dark Theme", ContextCompat.getColor(this, R.color.ssssseed), R.style.AppThemeDark);
+            List<ThemeOption> themeOptions = new ArrayList<>();
+            themeOptions.add(themeOptionsDialog);
+            themeOptions.add(themeOptionsDialog2);
+            themeOptions.add(themeOptionsDialog3);
+            themeOptions.add(themeOptionsDialog4);
+            themeOptions.add(themeOptionsDialog5);
+            OptionsDialog optionsDialog = new OptionsDialog(this, themeOptions);
+            optionsDialog.setOnOptionSelectedListener(MainActivity.this);
+            optionsDialog.show();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

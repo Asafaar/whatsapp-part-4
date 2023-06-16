@@ -1,6 +1,6 @@
 package com.example.whatsapp_part_4.Activty;
 
-import static com.example.whatsapp_part_4.Activty.MainActivity.Registerfirebase;
+import static com.example.whatsapp_part_4.Activty.MainActivity.RegisterFirebase;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,11 +23,8 @@ import com.example.whatsapp_part_4.Dialog.AddFriendDialogFragment;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
-import com.example.whatsapp_part_4.data.UserGet;
 import com.example.whatsapp_part_4.databinding.ActivityFriendsBinding;
 
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * The Friends activity in the WhatsApp-like application.
@@ -36,7 +32,6 @@ import java.util.List;
 public class Friends extends AppCompatActivity implements AddFriendDialogFragment.AddFriendDialogListener {
 
     public static String username;
-    private ActivityFriendsBinding binding;
     private Model model;
 
     /**
@@ -70,7 +65,7 @@ public class Friends extends AppCompatActivity implements AddFriendDialogFragmen
         }
 
         // Set the activity layout
-        binding = ActivityFriendsBinding.inflate(getLayoutInflater());
+        com.example.whatsapp_part_4.databinding.ActivityFriendsBinding binding = ActivityFriendsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Set up the RecyclerView for displaying users
@@ -84,7 +79,7 @@ public class Friends extends AppCompatActivity implements AddFriendDialogFragmen
         // Retrieve display name and profile picture from the intent
         String displayName = intent.getStringExtra("displayName");
         String profilePic = intent.getStringExtra("profilePic");
-        Registerfirebase(username, model);
+        RegisterFirebase(username, model);
 
         // Set the profile picture and display name in the toolbar
         ImageView profileImageView = toolbar.findViewById(R.id.profileImageView);
@@ -103,41 +98,35 @@ public class Friends extends AppCompatActivity implements AddFriendDialogFragmen
         // Set up the UserGetAdapter and observe changes to the users data
         UserGetAdapter adapter = new UserGetAdapter(model.getUsersGet().getValue(), username);
         recyclerView.setAdapter(adapter);
-        model.getUsersGet().observe(this, new Observer<List<UserGet>>() {
-            @Override
-            public void onChanged(List<UserGet> users) {
-                // Sort the users based on the last message
-                users.sort(new Comparator<UserGet>() {
-                    @Override
-                    public int compare(UserGet user1, UserGet user2) {
-                        String created1 = null;
-                        String created2 = null;
+        model.getUsersGet().observe(this, users -> {
+            // Sort the users based on the last message
+            users.sort((user1, user2) -> {
+                String created1 = null;
+                String created2 = null;
 
-                        if (user1.getLastMessage() != null) {
-                            created1 = user1.getLastMessage().getCreated();
-                        }
-                        if (user2.getLastMessage() != null) {
-                            created2 = user2.getLastMessage().getCreated();
-                        }
+                if (user1.getLastMessage() != null) {
+                    created1 = user1.getLastMessage().getCreated();
+                }
+                if (user2.getLastMessage() != null) {
+                    created2 = user2.getLastMessage().getCreated();
+                }
 
-                        // Handle null values
-                        if (created1 == null && created2 == null) {
-                            return 0;
-                        } else if (created1 == null) {
-                            return 1; // Place null values at the end
-                        } else if (created2 == null) {
-                            return -1; // Place null values at the end
-                        }
+                // Handle null values
+                if (created1 == null && created2 == null) {
+                    return 0;
+                } else if (created1 == null) {
+                    return 1; // Place null values at the end
+                } else if (created2 == null) {
+                    return -1; // Place null values at the end
+                }
 
-                        // Compare the created dates
-                        return created2.compareTo(created1); // Use created1.compareTo(created2) for ascending order
-                    }
-                });
+                // Compare the created dates
+                return created2.compareTo(created1); // Use created1.compareTo(created2) for ascending order
+            });
 
-                // Update the adapter with the new users data
-                adapter.setUserGetList(users);
-                adapter.notifyDataSetChanged();
-            }
+            // Update the adapter with the new users data
+            adapter.setUserGetList(users);
+            adapter.notifyDataSetChanged();
         });
     }
 

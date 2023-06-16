@@ -1,5 +1,6 @@
 package com.example.whatsapp_part_4.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -28,8 +29,6 @@ public class ThemeOptionsAdapter extends RecyclerView.Adapter<ThemeOptionsAdapte
 
     private int selectedPosition = RecyclerView.NO_POSITION;
 
-    private OnThemeOptionClickListener themeOptionClickListener;
-
     /**
      * Constructs a ThemeOptionsAdapter with the specified list of theme options.
      *
@@ -45,7 +44,6 @@ public class ThemeOptionsAdapter extends RecyclerView.Adapter<ThemeOptionsAdapte
      * @param listener The click listener for theme options.
      */
     public void setOnThemeOptionClickListener(OnThemeOptionClickListener listener) {
-        this.themeOptionClickListener = listener;
     }
 
     /**
@@ -93,22 +91,19 @@ public class ThemeOptionsAdapter extends RecyclerView.Adapter<ThemeOptionsAdapte
         private TextView nameTextView;
         private ImageView iconImageView;
 
+        @SuppressLint("NotifyDataSetChanged")
         ThemeOptionViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.themeName);
             iconImageView = itemView.findViewById(R.id.themeIcon);
 
             // Set click listener for the theme option item
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        selectedPosition = position;
-                        selectedOption = themeOptions.get(position);
-
-                        notifyDataSetChanged();
-                    }
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    selectedPosition = position;
+                    selectedOption = themeOptions.get(position);
+                    notifyDataSetChanged();
                 }
             });
         }

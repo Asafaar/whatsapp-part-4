@@ -33,7 +33,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * This activity handles the registration process for new users.
  */
 public class Register extends AppCompatActivity {
-    private static final int PICK_IMAGE_REQUEST = 1;
     private Model model;
     private ImageView profileImageButton;
     private Uri selectedImageUri;
@@ -64,25 +63,10 @@ public class Register extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         byte[] imageBytes = outputStream.toByteArray();
         img = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        binding.clickableText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        binding.uploadimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openFileChooser();
-            }
-        });
+        binding.clickableText.setOnClickListener(v -> finish());
+        binding.uploadimg.setOnClickListener(view -> openFileChooser());
 
-        binding.submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSubmitButtonClick(view);
-            }
-        });
+        binding.submitButton.setOnClickListener(view -> onSubmitButtonClick(view));
 
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -90,10 +74,10 @@ public class Register extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Intent data = result.getData();
                         selectedImageUri = data.getData();
-                        if (profileImageButton != null && isImageSizeValid(selectedImageUri, 200 * 1024)) {
+                        if (profileImageButton != null && isImageSizeValid(selectedImageUri)) {
                             profileImageButton.setImageURI(selectedImageUri);
                         } else {
-                            binding.msgnewuser.setText("Image size must be less than 200KB");
+                            binding.msgnewuser.setText(R.string.registrationImageTooLargeError);
                             binding.msgnewuser.setVisibility(View.VISIBLE);
                         }
                     }
@@ -116,26 +100,24 @@ public class Register extends AppCompatActivity {
     public void onSubmitButtonClick(View view) {
         if (isImageSelected) {
             img = convertImageToBase64(selectedImageUri);
-            img = "data:image/jpeg;base64," + img;
-        } else {
-            img = "data:image/jpeg;base64," + img;
         }
+        img = "data:image/jpeg;base64," + img;
         username = binding.usernameEditText.getText().toString();
         password = binding.passwordEditText.getText().toString();
         displayName = binding.displayNameEditText.getText().toString();
         if (password.length() < 8) {
-            binding.msgnewuser.setText("Password must be at least 8 characters");
+            binding.msgnewuser.setText(R.string.registrationPasswordError);
             binding.msgnewuser.setVisibility(View.VISIBLE);
             return;
         }
-        if (username.isEmpty() || password.isEmpty() || displayName.isEmpty()) {
-            binding.msgnewuser.setText("Please fill all fields");
+        if (username.isEmpty() || displayName.isEmpty()) {
+            binding.msgnewuser.setText(R.string.RegistraionFiledError);
             binding.msgnewuser.setVisibility(View.VISIBLE);
         } else {
-            AtomicInteger resulsave = new AtomicInteger();
+            AtomicInteger saveResult = new AtomicInteger();
             CompletableFuture<Integer> integerCompletableFuture = model.makeNewUser(username, password, displayName, img);
             integerCompletableFuture.thenCompose((result) -> {
-                resulsave.set(result);
+                saveResult.set(result);
                 if (result == 200) {
                     return model.tryLogin(username, password);
                 } else {
@@ -150,14 +132,12 @@ public class Register extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else if (res == -1) {
-                    if (resulsave.get() == 409) {
-                        binding.msgnewuser.setText("Username already exists");
-                    } else if (resulsave.get() == 400) {
-                        binding.msgnewuser.setText("Invalid request");
+                    if (saveResult.get() == 409) {
+                        binding.msgnewuser.setText(R.string.registrationUserExistsError);
+                    } else if (saveResult.get() == 400) {
+                        binding.msgnewuser.setText(R.string.registrationInvalidError);
                     }
                     binding.msgnewuser.setVisibility(View.VISIBLE);
-                } else {
-                    // Handle the case where login was not successful
                 }
                 return null;
             });
@@ -187,18 +167,17 @@ public class Register extends AppCompatActivity {
     /**
      * Checks if the size of the selected image is valid.
      *
-     * @param imageUri        The URI of the selected image.
-     * @param maxSizeInBytes  The maximum size allowed for the image in bytes.
+     * @param imageUri The URI of the selected image.
      * @return True if the image size is valid, false otherwise.
      */
-    private boolean isImageSizeValid(Uri imageUri, long maxSizeInBytes) {
+    private boolean isImageSizeValid(Uri imageUri) {
         try {
             ContentResolver contentResolver = getContentResolver();
             InputStream inputStream = contentResolver.openInputStream(imageUri);
             if (inputStream != null) {
                 int sizeInBytes = inputStream.available();
                 inputStream.close();
-                return sizeInBytes <= maxSizeInBytes;
+                return sizeInBytes <= (long) 204800;
             }
         } catch (IOException e) {
             e.printStackTrace();

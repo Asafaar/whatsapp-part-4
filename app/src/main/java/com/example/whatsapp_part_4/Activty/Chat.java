@@ -1,5 +1,6 @@
 package com.example.whatsapp_part_4.Activty;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,16 +14,12 @@ import com.example.whatsapp_part_4.Adapter.SpaceItemDecoration;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
-import com.example.whatsapp_part_4.data.Message;
 import com.example.whatsapp_part_4.databinding.ActivityChatBinding;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
 
 /**
  * The Chat activity in the WhatsApp-like application.
@@ -31,11 +28,8 @@ public class Chat extends AppCompatActivity {
 
     // Declare class variables
     private Model model;
-    private String displayName;
-    private String profilePic;
-    private String userIdfriend;
-    static public String friendusername;
-    private String username;
+    private String userIdFriend;
+    static public String friendUserName;
     private ActivityChatBinding binding;
 
     /**
@@ -43,6 +37,7 @@ public class Chat extends AppCompatActivity {
      *
      * @param savedInstanceState The saved instance state Bundle.
      */
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,21 +69,17 @@ public class Chat extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // Update the cached copy of the messages in the adapter
-        model.getMessages().observe(this, new Observer<List<Message>>() {
-            @Override
-            public void onChanged(List<Message> messages) {
-                adapter.setMessages(messages);
-                adapter.notifyDataSetChanged();
-            }
+        model.getMessages().observe(this, messages -> {
+            adapter.setMessages(messages);
+            adapter.notifyDataSetChanged();
         });
 
         // Retrieve data from the previous activity
         Intent intent = getIntent();
-        displayName = intent.getStringExtra("displayName");
-        profilePic = intent.getStringExtra("profilePic");
-        userIdfriend = intent.getStringExtra("userId");
-        username = intent.getStringExtra("username");
-        friendusername = intent.getStringExtra("friendusername");
+        String displayName = intent.getStringExtra("displayName");
+        String profilePic = intent.getStringExtra("profilePic");
+        this.userIdFriend = intent.getStringExtra("userId");
+        friendUserName = intent.getStringExtra("friendUserName");
 
         // Set the display name and profile picture
         ImageView profileImageView = findViewById(R.id.profileImageView);
@@ -108,15 +99,8 @@ public class Chat extends AppCompatActivity {
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
             if (!message.isEmpty()) {
-                byte[] decodedString = null;
-                try {
-                    decodedString = Base64.decode(profilePic, Base64.DEFAULT);
-                } catch (Exception e) {
-                    // Handle exception
-                }
-
                 // Send message to the friend on the server
-                model.sendMessage(userIdfriend, message, friendusername);
+                model.sendMessage(this.userIdFriend, message, friendUserName);
                 binding.inputField.setText("");
             }
         });

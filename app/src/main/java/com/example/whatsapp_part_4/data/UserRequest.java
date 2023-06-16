@@ -43,15 +43,6 @@ public class UserRequest {
     }
 
     /**
-     * Gets the password of the user.
-     *
-     * @return The password.
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
      * Sets the password of the user.
      *
      * @param password The password to set.

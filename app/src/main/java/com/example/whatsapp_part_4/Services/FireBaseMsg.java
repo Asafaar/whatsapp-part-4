@@ -49,7 +49,7 @@ public class FireBaseMsg extends FirebaseMessagingService {
             Message.Sender senderObject = gson.fromJson(sender, Message.Sender.class);
             Model model = DatabaseSingleton.getModel(this);
             model.reloadUsersInTheBack(); // Update the users' time
-            if (Objects.equals(Chat.friendusername, senderObject.getUsername())) {
+            if (Objects.equals(Chat.friendUserName, senderObject.getUsername())) {
                 model.addMessage(new Message(id, senderObject, content, created));
             }
         }
