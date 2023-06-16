@@ -23,6 +23,7 @@ import com.example.whatsapp_part_4.Dialog.ThemeOption;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.Appdb;
+import com.example.whatsapp_part_4.data.ConstantData;
 import com.example.whatsapp_part_4.data.DataUserRes;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.databinding.ActivityMainBinding;
@@ -32,6 +33,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity implements OptionsDialog.OnOptionSelectedListener {
@@ -142,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
                             intent.putExtra("displayName", userData.getDisplayName());
                             intent.putExtra("profilePic", userData.getProfilePic());
                             intent.putExtra("token", model.gettoken());
+                            UserTimeZoneExample();
                             startActivity(intent);
                         } else {
                             Toast.makeText(this, "Error server", Toast.LENGTH_SHORT).show();
@@ -207,6 +210,13 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         startActivity(intent);
         finish();
         System.exit(0);
+    }
+
+    public  void UserTimeZoneExample(){
+        TimeZone userTimeZone = TimeZone.getDefault();
+
+        // Print the time zone ID and display name
+        ConstantData.TimeZoneId = userTimeZone.getID();
     }
 
 }

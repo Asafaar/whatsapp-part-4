@@ -7,4 +7,6 @@ public class ConstantData {
     public static  String BASE_URL = "http://192.168.77.209:5000/api/";
     public static String BASE_URL4="http://172.30.160.1:5000/api/";
     public static String BASE_URL5="http://192.168.70.51:5000/api/";
+
+    public static String TimeZoneId="";
 }

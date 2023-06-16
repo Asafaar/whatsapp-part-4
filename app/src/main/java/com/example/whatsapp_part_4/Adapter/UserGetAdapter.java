@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.whatsapp_part_4.Activty.Chat;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
+import com.example.whatsapp_part_4.data.ConstantData;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.data.UserGet;
 
@@ -26,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 //todo make the list of friends more beautiful
 
 public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetViewHolder> {
@@ -145,8 +148,10 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         }
     }
 
-    /** fixtime
+    /**
+     * fixtime
      * make the time on format of time and without date
+     *
      * @param time the time string from the server
      * @return the time on format of time and date
      */
@@ -161,10 +166,14 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
 
         try {
             // Parse the timestamp into a Date object
+            inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
             Date date = inputFormat.parse(createdTimestamp);
 
             // Format the time and date using the output format
             String formattedDateTime = outputFormat.format(date);
+
+            outputFormat.setTimeZone(TimeZone.getTimeZone(ConstantData.TimeZoneId));
 
             // Print the formatted time and date
             System.out.println("Formatted DateTime: " + formattedDateTime);
@@ -181,12 +190,13 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
 
     /**
      * fixtimewithdata - make the time on format of time with date
+     *
      * @param time the time string from the server
      * @return the time on format of time with date
      */
     public static String fixtimewithdata(String time) {
         String createdTimestamp = time; // Replace with your timestamp
-
+        Log.e("TAG", "fixtimewithdata: " + createdTimestamp);
         // Define the input format of the timestamp
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS", Locale.getDefault());
 
@@ -195,10 +205,15 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
 
         try {
             // Parse the timestamp into a Date object
+
+            inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
             Date date = inputFormat.parse(createdTimestamp);
 
             // Format the time using the output format
             String formattedTime = outputFormat.format(date);
+
+            outputFormat.setTimeZone(TimeZone.getTimeZone(ConstantData.TimeZoneId));
 
             // Print the formatted time
             System.out.println("Formatted Time: " + formattedTime);
@@ -212,7 +227,6 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         }
         return createdTimestamp;
     }
-
 
 
 }

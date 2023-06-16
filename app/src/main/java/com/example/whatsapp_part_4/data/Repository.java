@@ -9,6 +9,7 @@ import com.example.whatsapp_part_4.Async.AsyncTaskUsers;
 import com.example.whatsapp_part_4.Model.Model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -186,6 +187,7 @@ public CompletableFuture<DataUserRes> getUserData(String username) {
          List<Message> list2=  messageDao.getMessagesById(s);
             list1.add(list2.get(0));
         }
+        Collections.reverse(list1);
         listmessages.postValue(list1);
     }
     public void loadMsgOfUserfromapi(String id) {
