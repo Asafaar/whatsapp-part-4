@@ -2,6 +2,7 @@ package com.example.whatsapp_part_4.Dialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -65,8 +66,12 @@ public class OptionsDialog {
         builder.setPositiveButton("Accept", (dialog, which) -> {
             // Find the selected theme option
             ThemeOption selectedOption = adapter.getSelectedOption();
-            ConstantData.BASE_URL = editText.getText().toString();
-            DatabaseSingleton.getModel(context).setRetrofit(ConstantData.BASE_URL);
+            if (!editText.getText().toString().equals(ConstantData.BASE_URL)){
+                ConstantData.BASE_URL = editText.getText().toString();
+                DatabaseSingleton.getModel(context).setRetrofit(context,ConstantData.BASE_URL);
+
+            }
+            Log.e("TAG", "show: "+ConstantData.BASE_URL );
             if (selectedOption != null && optionSelectedListener != null) {
                 optionSelectedListener.onOptionSelected(selectedOption);
             }

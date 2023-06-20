@@ -22,7 +22,7 @@
     <string name="title_activity_testlayout">testlayout</string>
     <string name="registrationPasswordError">Password must be at least 8 characters</string>
     <string name="RegistraionFiledError">Please fill all fields</string>
-    <string name="registrationImageTooLargeError">Image size must be less than 200KB</string>
+    <string name="registrationImageTooLargeError">Image size must be less than 85MB</string>
     <string name="registrationUserExistsError">Username already exists</string>
     <string name="registrationInvalidError">Invalid request</string>
 

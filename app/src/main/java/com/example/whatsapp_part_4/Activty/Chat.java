@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.whatsapp_part_4.Adapter.MessageAdapter;
@@ -79,7 +81,7 @@ public class Chat extends AppCompatActivity {
         Intent intent = getIntent();
         String displayName = intent.getStringExtra("displayName");
         String profilePic = intent.getStringExtra("profilePic");
-        this.userIdFriend = intent.getStringExtra("userId");
+        userIdFriend = intent.getStringExtra("userId");
         friendUserName = intent.getStringExtra("friendUserName");
 
         // Set the display name and profile picture
@@ -97,7 +99,9 @@ public class Chat extends AppCompatActivity {
         }
 
         //get messages from db and from server with async task
-        AsyncTaskMessage asyncTaskMesseges = new AsyncTaskMessage(model, this.userIdFriend);
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+
+        AsyncTaskMessage asyncTaskMesseges = new AsyncTaskMessage(model, this.userIdFriend,progressBar);
         asyncTaskMesseges.execute();
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
@@ -108,7 +112,8 @@ public class Chat extends AppCompatActivity {
                 } catch (Exception e) {
                 }
                 //send message to friend to server
-                model.sendMessage(this.userIdFriend, message, friendUserName);
+                Log.e("TAG", "onCreate: " + userIdFriend );
+                model.sendMessage(userIdFriend, message, friendUserName);
                 binding.inputField.setText("");
             }
         });

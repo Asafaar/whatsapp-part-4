@@ -78,6 +78,7 @@ public class Register extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Intent data = result.getData();
                         selectedImageUri = data.getData();
+                        isImageSelected = true;
                         if (profileImageButton != null && isImageSizeValid(selectedImageUri)) {
                             profileImageButton.setImageURI(selectedImageUri);
                         } else {
@@ -92,7 +93,9 @@ public class Register extends AppCompatActivity {
      * Opens the file chooser for selecting an image from the gallery.
      */
     private void openFileChooser() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/jpeg");
+
         imagePickerLauncher.launch(intent);
     }
 
@@ -156,17 +159,48 @@ public class Register extends AppCompatActivity {
      */
     private String convertImageToBase64(Uri imageUri) {
         try {
-            InputStream inputStream = getContentResolver().openInputStream(imageUri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            byte[] imageBytes = outputStream.toByteArray();
-            return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            ContentResolver contentResolver = getContentResolver();
+            InputStream inputStream = contentResolver.openInputStream(imageUri);
+            if (inputStream != null) {
+                // Decode the input stream to get the bitmap
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                // Calculate the new dimensions for resizing
+                int maxWidth = 1024;
+                int maxHeight = 1024;
+                int originalWidth = bitmap.getWidth();
+                int originalHeight = bitmap.getHeight();
+                int newWidth = originalWidth;
+                int newHeight = originalHeight;
+                float aspectRatio = (float) originalWidth / originalHeight;
+
+                if (originalWidth > maxWidth || originalHeight > maxHeight) {
+                    if (aspectRatio > 1) {
+                        newWidth = maxWidth;
+                        newHeight = (int) (maxWidth / aspectRatio);
+                    } else {
+                        newHeight = maxHeight;
+                        newWidth = (int) (maxHeight * aspectRatio);
+                    }
+                }
+
+                // Resize the bitmap
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+
+                // Compress the resized bitmap
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
+
+                // Get the compressed image bytes in base64 format
+                byte[] imageBytes = outputStream.toByteArray();
+                return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
+
 
     /**
      * Checks if the size of the selected image is valid.
@@ -174,18 +208,18 @@ public class Register extends AppCompatActivity {
      * @param imageUri The URI of the selected image.
      * @return True if the image size is valid, false otherwise.
      */
-    private boolean isImageSizeValid(Uri imageUri) {
-        try {
-            ContentResolver contentResolver = getContentResolver();
-            InputStream inputStream = contentResolver.openInputStream(imageUri);
-            if (inputStream != null) {
-                int sizeInBytes = inputStream.available();
-                inputStream.close();
-                return sizeInBytes <= (long) 204800;
+        private boolean isImageSizeValid(Uri imageUri) {
+            try {
+                ContentResolver contentResolver = getContentResolver();
+                InputStream inputStream = contentResolver.openInputStream(imageUri);
+                if (inputStream != null) {
+                    int sizeInBytes = inputStream.available();
+                    inputStream.close();
+                    return sizeInBytes <= (long) 90000000;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
-        return false;
-    }
 }

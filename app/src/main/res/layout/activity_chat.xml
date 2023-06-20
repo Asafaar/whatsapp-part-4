@@ -42,7 +42,11 @@
         </RelativeLayout>
 
     </androidx.appcompat.widget.Toolbar>
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
     <!-- The RecyclerView that displays the chat bubbles -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_item_text"

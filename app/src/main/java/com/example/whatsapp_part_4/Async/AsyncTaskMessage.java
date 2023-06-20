@@ -1,8 +1,14 @@
 package com.example.whatsapp_part_4.Async;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.whatsapp_part_4.Model.Model;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * This class represents an asynchronous task for loading messages of a user from the database and API.
@@ -11,6 +17,9 @@ import com.example.whatsapp_part_4.Model.Model;
 public class AsyncTaskMessage extends AsyncTask<Void, Void, Void> {
     private Model model;
     private String userid;
+    @SuppressLint("StaticFieldLeak")
+    private final ProgressBar progressBar;
+
 
     /**
      * Constructs a new instance of the AsyncTaskMessage class.
@@ -18,11 +27,16 @@ public class AsyncTaskMessage extends AsyncTask<Void, Void, Void> {
      * @param model  The model instance used for loading messages.
      * @param userid The ID of the user whose messages need to be loaded.
      */
-    public AsyncTaskMessage(Model model, String userid) {
+    public AsyncTaskMessage(Model model, String userid, ProgressBar progressBar) {
         this.model = model;
         this.userid = userid;
-    }
+        this.progressBar = progressBar;
 
+    }
+    @Override
+    protected void onPreExecute() {
+        progressBar.setVisibility(View.VISIBLE); // Show the progress bar
+    }
     /**
      * Background task that loads messages of a user from the database.
      *
@@ -31,6 +45,7 @@ public class AsyncTaskMessage extends AsyncTask<Void, Void, Void> {
      */
     @Override
     protected Void doInBackground(Void... voids) {
+//        progressBar.setVisibility(View.GONE); // Hide the progress bar
         model.loadMsgOfUserFromDb(userid);
         return null;
     }
@@ -43,6 +58,8 @@ public class AsyncTaskMessage extends AsyncTask<Void, Void, Void> {
      */
     @Override
     protected void onPostExecute(Void aVoid) {
-        model.loadMsgOfUserFromApi(userid);
+        Log.e("TAG", "onPostExecute: " );
+        model.loadMsgOfUserFromApi(userid, progressBar);
+
     }
 }

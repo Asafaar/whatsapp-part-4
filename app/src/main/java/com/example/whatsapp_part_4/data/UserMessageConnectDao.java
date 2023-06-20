@@ -50,4 +50,6 @@ public interface UserMessageConnectDao {
      */
     @Query("DELETE FROM user_messages")
     void deleteAllMessages();
+
+
 }

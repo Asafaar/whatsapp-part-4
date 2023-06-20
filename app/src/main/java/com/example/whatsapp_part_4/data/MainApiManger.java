@@ -1,6 +1,8 @@
 package com.example.whatsapp_part_4.data;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -49,11 +51,17 @@ public class MainApiManger {
      *
      * @param url The base URL to set for Retrofit.
      */
-    public void setRetrofit(String url) {
-        this.retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
-                .build();
+    public void setRetrofit(Context context, String url) {
+        try {
+            this.retrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
+                    .build();
+            Toast.makeText(context, "Set new connection", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e){
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -361,6 +369,7 @@ public class MainApiManger {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.code() == 200) {
+                    Log.e("TAG", "onResponse: " + "Message sent successfully");
                     future.complete(200);
                 } else {
                     Log.e("firebase", "Error: " + response.code());
@@ -370,6 +379,7 @@ public class MainApiManger {
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Log.e("firebase", "Error: " + t.getMessage());
                 future.complete(404);
             }
         });

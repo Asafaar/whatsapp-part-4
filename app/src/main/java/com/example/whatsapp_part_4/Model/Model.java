@@ -1,6 +1,8 @@
 package com.example.whatsapp_part_4.Model;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import androidx.lifecycle.LiveData;
 
@@ -84,8 +86,8 @@ public class Model {
      *
      * @param id The ID of the user.
      */
-    public void loadMsgOfUserFromApi(String id) {
-        repository.loadMsgOfUserFromApi(id);
+    public void loadMsgOfUserFromApi(String id, ProgressBar progressBar) {
+        repository.loadMsgOfUserFromApi(id, progressBar);
     }
 
 
@@ -154,8 +156,8 @@ public class Model {
      *
      * @param url The base URL of the Retrofit service.
      */
-    public void setRetrofit(String url) {
-        repository.setRetrofit(url);
+    public void setRetrofit(Context context,String url) {
+        repository.setRetrofit(context,url);
     }
 
     /**

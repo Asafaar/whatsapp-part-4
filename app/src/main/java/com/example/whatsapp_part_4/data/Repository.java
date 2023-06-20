@@ -1,6 +1,10 @@
 package com.example.whatsapp_part_4.data;
 
+import android.content.Context;
+import android.icu.text.SimpleDateFormat;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -8,9 +12,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.whatsapp_part_4.Async.AsyncTaskUsers;
 import com.example.whatsapp_part_4.Model.Model;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class Repository {
@@ -76,8 +84,14 @@ public class Repository {
                 assert myDataList != null;
                 myDataList.add(0, message);
                 listMessages.setValue(myDataList);
+
+                Log.e("TAG", "sendMessage: ");
                 CompletableFuture<Integer> completableFuture = mainApiManger.sendMessageWithFirebase(message, friendUserName);
                 return completableFuture.thenApply(integer -> {
+                    Log.e("TAG", "sendMessage: " + message.getId()+"sendMessage" + idOfFriend );
+//                    messageDao.insertMessage(message);
+//                    UserMessage userMessage = new UserMessage(idOfFriend, message.getId());
+//                    userMessageConnectDao.insert(userMessage);
                     if (integer == 200) {
                         return 1;
                     } else {
@@ -96,8 +110,8 @@ public class Repository {
      *
      * @param url The base URL to set.
      */
-    public void setRetrofit(String url) {
-        mainApiManger.setRetrofit(url);
+    public void setRetrofit(Context context, String url) {
+        mainApiManger.setRetrofit(context, url);
     }
 
     /**
@@ -428,24 +442,45 @@ public class Repository {
     public void loadMsgOfUserFromDb(String id) {
         List<String> list = userMessageConnectDao.getMessageIdsForUser(id);
         List<Message> list1 = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         for (String s : list) {
             List<Message> list2 = messageDao.getMessagesById(s);
-            list1.add(list2.get(0));
+            if (!list2.isEmpty()) {
+                list1.add(list2.get(0));
+            }
         }
-        Collections.reverse(list1);
+        Collections.sort(list1, new Comparator<Message>() {
+            @Override
+            public int compare(Message message1, Message message2) {
+                Date date1 = null;
+                Date date2 = null;
+
+                try {
+                    date1 = dateFormat.parse(message1.getCreated());
+                     date2 = dateFormat.parse(message2.getCreated());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                return date2.compareTo(date1);
+            }
+        });
         listMessages.postValue(list1);
     }
+
 
     /**
      * Loads messages of a user from the API and updates the database.
      *
      * @param id The ID of the user.
      */
-    public void loadMsgOfUserFromApi(String id) {
+    public int loadMsgOfUserFromApi(String id, ProgressBar progressBar) {
         CompletableFuture<List<Message>> future = mainApiManger.getMessagesByUser(id);
         future.thenApply(messages -> {
+            progressBar.post(() -> progressBar.setVisibility(View.GONE)); // Update UI on the main thread
+
             if (messages != null) {
                 List<Message> list = messageDao.getAllMessages();
+                listMessages.postValue(messages);
                 for (Message message : messages) {
                     if (!list.contains(message)) {
                         messageDao.insertMessage(message);
@@ -454,11 +489,12 @@ public class Repository {
                     }
                 }
                 loadMsgOfUserFromDb(id);
-                return 1;
-            } else {
-                return -1;
+                Log.e("TAG", "loadMsgOfUserFromApi: " + "success" );
             }
+            return 1;
         });
+
+        return 1;
     }
 
 }
