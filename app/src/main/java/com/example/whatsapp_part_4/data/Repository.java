@@ -420,37 +420,45 @@ public class Repository {
         lastUserLogin.insertUser(username);
     }
 
-    // TODO javadoc
+    /**
+     * Loads messages of a user from the database.
+     *
+     * @param id The ID of the user.
+     */
     public void loadMsgOfUserFromDb(String id) {
-        List<String> list=userMessageConnectDao.getMessageIdsForUser(id);
-        List<Message> list1=new ArrayList<>();
+        List<String> list = userMessageConnectDao.getMessageIdsForUser(id);
+        List<Message> list1 = new ArrayList<>();
         for (String s : list) {
-            List<Message> list2=  messageDao.getMessagesById(s);
+            List<Message> list2 = messageDao.getMessagesById(s);
             list1.add(list2.get(0));
         }
         Collections.reverse(list1);
         listMessages.postValue(list1);
     }
 
+    /**
+     * Loads messages of a user from the API and updates the database.
+     *
+     * @param id The ID of the user.
+     */
     public void loadMsgOfUserFromApi(String id) {
         CompletableFuture<List<Message>> future = mainApiManger.getMessagesByUser(id);
         future.thenApply(messages -> {
             if (messages != null) {
-                List<Message> list=messageDao.getAllMessages();
+                List<Message> list = messageDao.getAllMessages();
                 for (Message message : messages) {
-                    if (!list.contains(message)){
+                    if (!list.contains(message)) {
                         messageDao.insertMessage(message);
                         UserMessage userMessage = new UserMessage(id, message.getId());
                         userMessageConnectDao.insert(userMessage);
-
                     }
                 }
                 loadMsgOfUserFromDb(id);
-
                 return 1;
             } else {
                 return -1;
             }
         });
     }
+
 }

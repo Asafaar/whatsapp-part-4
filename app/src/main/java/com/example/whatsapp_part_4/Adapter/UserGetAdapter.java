@@ -79,7 +79,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
             holder.lastMessageTextView.setText("");
         } else {
             holder.lastMessageTextView.setText(userGet.getLastMessage().getContent());
-            holder.lastMessagetimeTextView.setText(fixTime(userGet.getLastMessage().getCreated()));
+            holder.lastMessageTimeTextView.setText(fixTime(userGet.getLastMessage().getCreated()));
         }
     }
 
@@ -92,7 +92,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         public ImageView profilePicImageView;
         public TextView displayNameTextView;
         public TextView lastMessageTextView;
-        public TextView lastMessagetimeTextView;
+        public TextView lastMessageTimeTextView;
         public ImageView deleteButton;
 
         Model model;
@@ -108,19 +108,16 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
             profilePicImageView = itemView.findViewById(R.id.imagefrined);
             displayNameTextView = itemView.findViewById(R.id.displayname);
             lastMessageTextView = itemView.findViewById(R.id.lastmsg);
-            lastMessagetimeTextView = itemView.findViewById(R.id.timestamp);
+            lastMessageTimeTextView = itemView.findViewById(R.id.timestamp);
             deleteButton = itemView.findViewById(R.id.deletefriend);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.open_trash_can);
-                    view.startAnimation(animation);
+            deleteButton.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.open_trash_can);
+                view.startAnimation(animation);
 
-                    if (position != RecyclerView.NO_POSITION) {
-                        UserGet userGet = userGetList.get(position);
-                        model.deleteFriend(userGet);
-                    }
+                if (position != RecyclerView.NO_POSITION) {
+                    UserGet userGet = userGetList.get(position);
+                    model.deleteFriend(userGet);
                 }
             });
             itemView.setOnClickListener(this);
@@ -191,8 +188,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
      * @param time The time string from the server.
      * @return The formatted time without date.
      */
-    public static String fixtimewithdata(String time) {
-        String createdTimestamp = time;
+    public static String fixTimeWithData(String time) {
 
         // Define the input format of the timestamp
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS", Locale.getDefault());
@@ -203,7 +199,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         try {
             // Parse the timestamp into a Date object
             inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = inputFormat.parse(createdTimestamp);
+            Date date = inputFormat.parse(time);
 
             // Format the time using the output format
             String formattedTime = outputFormat.format(date);
@@ -220,6 +216,6 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return createdTimestamp;
+        return time;
     }
 }

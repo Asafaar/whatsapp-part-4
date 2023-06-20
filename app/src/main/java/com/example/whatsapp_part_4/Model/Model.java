@@ -70,14 +70,24 @@ public class Model {
         }
     }
 
-    //TODO javadoc
+    /**
+     * Loads messages of a user from the database.
+     *
+     * @param id The ID of the user.
+     */
     public void loadMsgOfUserFromDb(String id) {
         repository.loadMsgOfUserFromDb(id);
     }
 
+    /**
+     * Loads messages of a user from the API.
+     *
+     * @param id The ID of the user.
+     */
     public void loadMsgOfUserFromApi(String id) {
         repository.loadMsgOfUserFromApi(id);
     }
+
 
     /**
      * Gets the current theme.

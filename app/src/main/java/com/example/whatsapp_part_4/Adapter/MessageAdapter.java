@@ -1,6 +1,6 @@
 package com.example.whatsapp_part_4.Adapter;
 
-import static com.example.whatsapp_part_4.Adapter.UserGetAdapter.fixtimewithdata;
+import static com.example.whatsapp_part_4.Adapter.UserGetAdapter.fixTimeWithData;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +65,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         Message message = messages.get(position);
         holder.contentTextView.setText(message.getContent());
-        holder.createdTextView.setText(fixtimewithdata(message.getCreated()));
+        holder.createdTextView.setText(fixTimeWithData(message.getCreated()));
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
         if (message.getSender().getUsername().equals(Friends.username)) {

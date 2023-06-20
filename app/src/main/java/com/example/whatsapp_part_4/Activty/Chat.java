@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.example.whatsapp_part_4.Adapter.MessageAdapter;
 import com.example.whatsapp_part_4.Adapter.SpaceItemDecoration;
-import com.example.whatsapp_part_4.Async.AsyncTaskMessege;
+import com.example.whatsapp_part_4.Async.AsyncTaskMessage;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
@@ -97,7 +97,7 @@ public class Chat extends AppCompatActivity {
         }
 
         //get messages from db and from server with async task
-        AsyncTaskMessege asyncTaskMesseges = new AsyncTaskMessege(model, this.userIdFriend);
+        AsyncTaskMessage asyncTaskMesseges = new AsyncTaskMessage(model, this.userIdFriend);
         asyncTaskMesseges.execute();
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
