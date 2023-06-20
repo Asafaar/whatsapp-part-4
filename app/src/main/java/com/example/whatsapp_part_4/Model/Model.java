@@ -70,6 +70,15 @@ public class Model {
         }
     }
 
+    //TODO javadoc
+    public void loadMsgOfUserFromDb(String id) {
+        repository.loadMsgOfUserFromDb(id);
+    }
+
+    public void loadMsgOfUserFromApi(String id) {
+        repository.loadMsgOfUserFromApi(id);
+    }
+
     /**
      * Gets the current theme.
      *

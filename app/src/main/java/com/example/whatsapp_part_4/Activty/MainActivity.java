@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -23,6 +24,8 @@ import com.example.whatsapp_part_4.data.ConstantData;
 import com.example.whatsapp_part_4.data.DataUserRes;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
 import com.example.whatsapp_part_4.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -76,13 +79,12 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         binding.passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Do something when the text changes
                 password = s.toString();
-                // ...
             }
 
             @Override
@@ -94,13 +96,12 @@ public class MainActivity extends AppCompatActivity implements OptionsDialog.OnO
         binding.usernameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Do something when the text changes
                 username = s.toString();
-                // ...
             }
 
             @Override

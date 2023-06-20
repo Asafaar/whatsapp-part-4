@@ -94,6 +94,7 @@ public class Friends extends AppCompatActivity implements AddFriendDialogFragmen
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             profileImageView.setImageBitmap(decodedByte);
         }
+        model.reload();
 
         // Set up the UserGetAdapter and observe changes to the users data
         UserGetAdapter adapter = new UserGetAdapter(model.getUsersGet().getValue(), username);

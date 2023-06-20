@@ -9,15 +9,17 @@ import com.example.whatsapp_part_4.Async.AsyncTaskUsers;
 import com.example.whatsapp_part_4.Model.Model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class Repository {
     private final MessageDao messageDao;
+    private ListMessage listMessages;
+
     private String token;
     private final ListUsers listusers;
     private final ListUserGet listUserGets;
-    private final ListMessage listMessages;
     private final MainApiManger mainApiManger;
     private final UserMessageConnectDao userMessageConnectDao;
     private final LastMsgByuser lastMsgByuser;
@@ -37,7 +39,6 @@ public class Repository {
      */
     public Repository(Appdb db, Model model) {
         this.model = model;
-
         messageDao = db.messageDao();
         userMessageConnectDao = db.userMessageConnectDao();
         lastMsgByuser = db.lastMsgByuser();
@@ -417,5 +418,39 @@ public class Repository {
     public void setLastUserLogin(String username) {
         lastUserLogin.deleteAllUsers();
         lastUserLogin.insertUser(username);
+    }
+
+    // TODO javadoc
+    public void loadMsgOfUserFromDb(String id) {
+        List<String> list=userMessageConnectDao.getMessageIdsForUser(id);
+        List<Message> list1=new ArrayList<>();
+        for (String s : list) {
+            List<Message> list2=  messageDao.getMessagesById(s);
+            list1.add(list2.get(0));
+        }
+        Collections.reverse(list1);
+        listMessages.postValue(list1);
+    }
+
+    public void loadMsgOfUserFromApi(String id) {
+        CompletableFuture<List<Message>> future = mainApiManger.getMessagesByUser(id);
+        future.thenApply(messages -> {
+            if (messages != null) {
+                List<Message> list=messageDao.getAllMessages();
+                for (Message message : messages) {
+                    if (!list.contains(message)){
+                        messageDao.insertMessage(message);
+                        UserMessage userMessage = new UserMessage(id, message.getId());
+                        userMessageConnectDao.insert(userMessage);
+
+                    }
+                }
+                loadMsgOfUserFromDb(id);
+
+                return 1;
+            } else {
+                return -1;
+            }
+        });
     }
 }

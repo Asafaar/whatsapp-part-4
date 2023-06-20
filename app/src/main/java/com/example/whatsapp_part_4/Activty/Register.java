@@ -49,14 +49,18 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         model = DatabaseSingleton.getModel(this);
         if (model.getTheme() != null) {
             setTheme(model.getTheme().getTheme());
         }
+
         setContentView(R.layout.activity_register);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         profileImageButton = binding.profileImageView;
         setContentView(binding.getRoot());
+
+        // Create the default image
         profileImageButton.setImageResource(R.drawable.anoymousavatar);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.anoymousavatar);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

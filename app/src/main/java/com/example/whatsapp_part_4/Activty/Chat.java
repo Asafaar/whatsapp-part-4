@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.whatsapp_part_4.Adapter.MessageAdapter;
 import com.example.whatsapp_part_4.Adapter.SpaceItemDecoration;
+import com.example.whatsapp_part_4.Async.AsyncTaskMessege;
 import com.example.whatsapp_part_4.Model.Model;
 import com.example.whatsapp_part_4.R;
 import com.example.whatsapp_part_4.data.DatabaseSingleton;
@@ -95,11 +96,18 @@ public class Chat extends AppCompatActivity {
             profileImageView.setImageBitmap(decodedByte);
         }
 
-        // Set up the click listener for the send button
+        //get messages from db and from server with async task
+        AsyncTaskMessege asyncTaskMesseges = new AsyncTaskMessege(model, this.userIdFriend);
+        asyncTaskMesseges.execute();
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
             if (!message.isEmpty()) {
-                // Send message to the friend on the server
+                byte[] decodedString = null;
+                try {
+                    decodedString = Base64.decode(profilePic, Base64.DEFAULT);
+                } catch (Exception e) {
+                }
+                //send message to friend to server
                 model.sendMessage(this.userIdFriend, message, friendUserName);
                 binding.inputField.setText("");
             }
