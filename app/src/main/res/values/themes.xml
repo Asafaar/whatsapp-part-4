@@ -22,4 +22,159 @@
     <style name="Theme.Whatsapppart4.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Whatsapppart4.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppThemeread" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/md_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_light_error</item>
+        <item name="colorOnError">@color/md_theme_light_onError</item>
+        <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>
+        <item name="colorOutline">@color/md_theme_light_outline</item>
+        <item name="android:colorBackground">@color/md_theme_light_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
+    </style>
+
+
+    <style name="AppThemeGree" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/smd_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/smd_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/smd_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/smd_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/smd_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/smd_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/smd_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/smd_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/smd_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/smd_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/smd_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/smd_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/smd_theme_light_error</item>
+        <item name="colorErrorContainer">@color/smd_theme_light_errorContainer</item>
+        <item name="colorOnError">@color/smd_theme_light_onError</item>
+        <item name="colorOnErrorContainer">@color/smd_theme_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/smd_theme_light_background</item>
+        <item name="colorOnBackground">@color/smd_theme_light_onBackground</item>
+        <item name="colorSurface">@color/smd_theme_light_surface</item>
+        <item name="colorOnSurface">@color/smd_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/smd_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/smd_theme_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/smd_theme_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/smd_theme_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/smd_theme_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/smd_theme_light_inversePrimary</item>
+    </style>
+
+    <style name="AppThemeRed" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/ssmd_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/ssmd_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/ssmd_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/ssmd_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/ssmd_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/ssmd_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/ssmd_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/ssmd_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/ssmd_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/ssmd_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/ssmd_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/ssmd_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/ssmd_theme_light_error</item>
+        <item name="colorErrorContainer">@color/ssmd_theme_light_errorContainer</item>
+        <item name="colorOnError">@color/ssmd_theme_light_onError</item>
+        <item name="colorOnErrorContainer">@color/ssmd_theme_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/ssmd_theme_light_background</item>
+        <item name="colorOnBackground">@color/ssmd_theme_light_onBackground</item>
+        <item name="colorSurface">@color/ssmd_theme_light_surface</item>
+        <item name="colorOnSurface">@color/ssmd_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/ssmd_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/ssmd_theme_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/ssmd_theme_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/ssmd_theme_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/ssmd_theme_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/ssmd_theme_light_inversePrimary</item>
+    </style>
+
+    <style name="AppThemeBlue" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/sssmd_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/sssmd_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/sssmd_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/sssmd_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/sssmd_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/sssmd_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/sssmd_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/sssmd_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/sssmd_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/sssmd_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/sssmd_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/sssmd_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/sssmd_theme_light_error</item>
+        <item name="colorErrorContainer">@color/sssmd_theme_light_errorContainer</item>
+        <item name="colorOnError">@color/sssmd_theme_light_onError</item>
+        <item name="colorOnErrorContainer">@color/sssmd_theme_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/sssmd_theme_light_background</item>
+        <item name="colorOnBackground">@color/sssmd_theme_light_onBackground</item>
+        <item name="colorSurface">@color/sssmd_theme_light_surface</item>
+        <item name="colorOnSurface">@color/sssmd_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/sssmd_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/sssmd_theme_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/sssmd_theme_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/sssmd_theme_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/sssmd_theme_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/sssmd_theme_light_inversePrimary</item>
+    </style>
+
+    <style name="AppThemeDark" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/ssssmd_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/ssssmd_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/ssssmd_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/ssssmd_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/ssssmd_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/ssssmd_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/ssssmd_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/ssssmd_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/ssssmd_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/ssssmd_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/ssssmd_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/ssssmd_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/ssssmd_theme_light_error</item>
+        <item name="colorErrorContainer">@color/ssssmd_theme_light_errorContainer</item>
+        <item name="colorOnError">@color/ssssmd_theme_light_onError</item>
+        <item name="colorOnErrorContainer">@color/ssssmd_theme_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/ssssmd_theme_light_background</item>
+        <item name="colorOnBackground">@color/ssssmd_theme_light_onBackground</item>
+        <item name="colorSurface">@color/ssssmd_theme_light_surface</item>
+        <item name="colorOnSurface">@color/ssssmd_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/ssssmd_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/ssssmd_theme_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/ssssmd_theme_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/ssssmd_theme_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/ssssmd_theme_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/ssssmd_theme_light_inversePrimary</item>
+    </style>
+
+    <style name="AppThemeDark.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppThemeDark.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppThemeDark.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
