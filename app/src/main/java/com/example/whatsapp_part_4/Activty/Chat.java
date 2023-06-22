@@ -93,11 +93,16 @@ public class Chat extends AppCompatActivity {
         // Decode the profile picture from Base64 and set it to the ImageView
         String[] parts = profilePic.split(",");
         if (parts.length > 1) {
-            String imageString = parts[1];
-            byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            profileImageView.setImageBitmap(decodedByte);
+            try {
+                String imageString = parts[1];
+                byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                profileImageView.setImageBitmap(decodedByte);
+            } catch (Exception e) {
+                Log.e("Chat", "Error while decoding image");
+            }
         }
+
 
         //get messages from db and from server with async task
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -107,14 +112,6 @@ public class Chat extends AppCompatActivity {
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
             if (!message.isEmpty()) {
-                byte[] decodedString;
-                try {
-                    decodedString = Base64.decode(profilePic, Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    profileImageView.setImageBitmap(decodedByte);
-                } catch (Exception e) {
-                    Log.e("Chat", "Error while decoding image");
-                }
                 //send message to friend to server
                 model.sendMessage(userIdFriend, message, friendUserName);
                 binding.inputField.setText("");

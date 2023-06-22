@@ -43,8 +43,10 @@
                     android:layout_height="wrap_content"
                     android:text="@string/activity_friend_last_message"
                     android:textColor="@color/black"
-                    android:textSize="14sp" />
-
+                    android:textSize="14sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true" />
             </LinearLayout>
 
             <TextView

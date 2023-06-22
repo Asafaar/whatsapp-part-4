@@ -64,8 +64,10 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
 
     @Override
     public void onBindViewHolder(@NonNull UserGetViewHolder holder, int position) {
+        int maxTextLength = 35;
         UserGet userGet = userGetList.get(position);
         holder.displayNameTextView.setText(userGet.getUser().getDisplayName());
+
         String base64String = userGet.getUser().getProfilePic();
         String[] parts = base64String.split(",");
         if (parts.length > 1) {
@@ -74,13 +76,21 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             holder.profilePicImageView.setImageBitmap(decodedByte);
         }
+
         if (userGet.getLastMessage() == null) {
             holder.lastMessageTextView.setText("");
         } else {
-            holder.lastMessageTextView.setText(userGet.getLastMessage().getContent());
+            String lastMessage = userGet.getLastMessage().getContent();
+            if (lastMessage.length() > maxTextLength) {
+                String truncatedMessage = lastMessage.substring(0, maxTextLength) + "...";
+                holder.lastMessageTextView.setText(truncatedMessage);
+            } else {
+                holder.lastMessageTextView.setText(lastMessage);
+            }
             holder.lastMessageTimeTextView.setText(fixTime(userGet.getLastMessage().getCreated()));
         }
     }
+
 
     @Override
     public int getItemCount() {
