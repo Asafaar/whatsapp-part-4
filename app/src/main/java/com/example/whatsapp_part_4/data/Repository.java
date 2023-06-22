@@ -369,6 +369,7 @@ public class Repository {
         CompletableFuture<Integer> future = mainApiManger.deleteFriend(user.getId());
         future.thenApply(statusCode -> {
             if (statusCode == 200) {
+                UserGet.deleteUserById(user.getId());
                 List<String> list = userMessageConnectDao.getMessageIdsForUser(user.getId());
                 for (String id : list) {
                     messageDao.deleteMessageById(id);

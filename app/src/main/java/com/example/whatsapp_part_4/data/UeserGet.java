@@ -22,6 +22,9 @@ public interface UeserGet {
     void insertAll(List<UserGet> users);
     @Update
     void updateUser(UserGet... userget);
+
+    @Query("DELETE FROM UserGet WHERE id = :id")
+    void deleteUserById(String id);
     @Delete
     void deleteUser(UserGet... user);
     @Query("DELETE FROM UserGet")
