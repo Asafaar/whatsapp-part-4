@@ -8,8 +8,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imagefrined"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imagefriend"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
-                android:text="Display Name"
+                android:text="@string/activity_friend_display_name"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -41,7 +41,7 @@
                     android:id="@+id/lastmsg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Last message"
+                    android:text="@string/activity_friend_last_message"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 

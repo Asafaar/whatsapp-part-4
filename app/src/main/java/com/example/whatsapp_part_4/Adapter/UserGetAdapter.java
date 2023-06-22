@@ -65,7 +65,6 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
     @Override
     public void onBindViewHolder(@NonNull UserGetViewHolder holder, int position) {
         UserGet userGet = userGetList.get(position);
-
         holder.displayNameTextView.setText(userGet.getUser().getDisplayName());
         String base64String = userGet.getUser().getProfilePic();
         String[] parts = base64String.split(",");
@@ -105,7 +104,7 @@ public class UserGetAdapter extends RecyclerView.Adapter<UserGetAdapter.UserGetV
         public UserGetViewHolder(@NonNull View itemView) {
             super(itemView);
             model = DatabaseSingleton.getModel(itemView.getContext());
-            profilePicImageView = itemView.findViewById(R.id.imagefrined);
+            profilePicImageView = itemView.findViewById(R.id.imagefriend);
             displayNameTextView = itemView.findViewById(R.id.displayname);
             lastMessageTextView = itemView.findViewById(R.id.lastmsg);
             lastMessageTimeTextView = itemView.findViewById(R.id.timestamp);

@@ -25,5 +25,7 @@
     <string name="registrationImageTooLargeError">Image size must be less than 85MB</string>
     <string name="registrationUserExistsError">Username already exists</string>
     <string name="registrationInvalidError">Invalid request</string>
+    <string name="activity_friend_last_message">Last message</string>
+    <string name="activity_friend_display_name">Display Name</string>
 
 </resources>

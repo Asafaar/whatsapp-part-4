@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * The Chat activity in the WhatsApp-like application.
@@ -85,7 +86,7 @@ public class Chat extends AppCompatActivity {
         friendUserName = intent.getStringExtra("friendUserName");
 
         // Set the display name and profile picture
-        ImageView profileImageView = findViewById(R.id.profileImageView);
+        CircleImageView profileImageView = findViewById(R.id.profileImageView);
         TextView textView = findViewById(R.id.displayNameTextView);
         textView.setText(displayName);
 
@@ -101,18 +102,20 @@ public class Chat extends AppCompatActivity {
         //get messages from db and from server with async task
         ProgressBar progressBar = findViewById(R.id.progressBar);
 
-        AsyncTaskMessage asyncTaskMesseges = new AsyncTaskMessage(model, this.userIdFriend,progressBar);
-        asyncTaskMesseges.execute();
+        AsyncTaskMessage asyncTaskMessages = new AsyncTaskMessage(model, this.userIdFriend,progressBar);
+        asyncTaskMessages.execute();
         binding.sendButton.setOnClickListener(v -> {
             String message = binding.inputField.getText().toString();
             if (!message.isEmpty()) {
-                byte[] decodedString = null;
+                byte[] decodedString;
                 try {
                     decodedString = Base64.decode(profilePic, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    profileImageView.setImageBitmap(decodedByte);
                 } catch (Exception e) {
+                    Log.e("Chat", "Error while decoding image");
                 }
                 //send message to friend to server
-                Log.e("TAG", "onCreate: " + userIdFriend );
                 model.sendMessage(userIdFriend, message, friendUserName);
                 binding.inputField.setText("");
             }
