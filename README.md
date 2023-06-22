@@ -1,4 +1,3 @@
-
 # Messaging Program
 
 This is a texting program comprised of a server, a web app and an android app.
