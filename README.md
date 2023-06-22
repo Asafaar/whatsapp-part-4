@@ -60,11 +60,11 @@ The web app was built with React and is styled using css.
 ### Android app
 The android app was built using Android Studio and Java.
 
-<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/comments/screenshots/login%20app.jpg?token=GHSAT0AAAAAACAHOMINLU7E72Q6RR7XMKBQZEUILOA" align="left" height="630" width="265" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/comments/screenshots/login%20app.jpg?token=GHSAT0AAAAAACAHOMINLU7E72Q6RR7XMKBQZEUILOA" align="left" height="630" width="255" ></a>
 
-<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/comments/screenshots/main%20page%20app.jpg?token=GHSAT0AAAAAACAHOMIMPZEBV3XGMFGFCXN2ZEUIKDQ" align="left" height="630" width="265" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/comments/screenshots/main%20page%20app.jpg?token=GHSAT0AAAAAACAHOMIMPZEBV3XGMFGFCXN2ZEUIKDQ" align="left" height="630" width="255" ></a>
 
-<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/comments/screenshots/chat%20app.jpg?token=GHSAT0AAAAAACAHOMIMFJFTCSCFPBWOCTB6ZEUIJRQ" align="left" height="630" width="265" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/comments/screenshots/chat%20app.jpg?token=GHSAT0AAAAAACAHOMIMFJFTCSCFPBWOCTB6ZEUIJRQ" align="left" height="630" width="255" ></a>
 
 ## Authors
 
