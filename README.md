@@ -66,7 +66,7 @@ The android app was built using Android Studio and Java.
 
 <a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/comments/screenshots/chat%20app.jpg?token=GHSAT0AAAAAACAHOMIMFJFTCSCFPBWOCTB6ZEUIJRQ" align="left" height="630" width="315" ></a>
 
-## Authors
+## <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />Authors
 
 - [Asaf Rozen](https://www.github.com/asafaar)
 - [Aharon Gross](https://github.com/AharonGross1)
