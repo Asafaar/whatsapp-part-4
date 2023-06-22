@@ -67,8 +67,9 @@ public class OptionsDialog {
             // Find the selected theme option
             ThemeOption selectedOption = adapter.getSelectedOption();
             if (!editText.getText().toString().equals(ConstantData.BASE_URL)){
+                Log.e("TAG", "show: "+editText.getText().toString() );
                 ConstantData.BASE_URL = editText.getText().toString();
-                DatabaseSingleton.getModel(context).setRetrofit(context,ConstantData.BASE_URL);
+                DatabaseSingleton.getModel(context).setRetrofit(context,editText.getText().toString());
 
             }
             Log.e("TAG", "show: "+ConstantData.BASE_URL );

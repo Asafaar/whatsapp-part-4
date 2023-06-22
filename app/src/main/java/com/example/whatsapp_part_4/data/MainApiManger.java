@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * It uses Retrofit library for making network calls.
  */
 public class MainApiManger {
-    private final WebserviceApi api;
+    private WebserviceApi api;
     private final UeserGet UeserGet;
     private Retrofit retrofit;
     private String token;
@@ -58,6 +58,8 @@ public class MainApiManger {
                     .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                     .build();
             Toast.makeText(context, "Set new connection", Toast.LENGTH_SHORT).show();
+            api = retrofit.create(WebserviceApi.class);
+
         }
         catch (Exception e){
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
