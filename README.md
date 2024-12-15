@@ -50,22 +50,18 @@ Download Mongodb - community edition from [here](https://www.mongodb.com/try/dow
 - Io and Firebase, to allow recieving messages from other users without the need to refresh the page.
 
 ### Web app
-The web app was built with React and is styled using css.
+The web app was built with React and is styled using CSS.
 
-![registration page](https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/master/screenshots/registration%20web.png?token=GHSAT0AAAAAACAHOMINUNFFFN2CGY4OJDXWZEUKGKQ)
+![registration page](https://raw.githubusercontent.com/AharonGross1/Chat-App/main/screenshots/registration%20web.png)
 
-![main page](https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/master/screenshots/main%20page%20web.png?token=GHSAT0AAAAAACAHOMINUSVSFMZXYCSDQZTMZEUKGHQ)
+![main page](https://raw.githubusercontent.com/AharonGross1/Chat-App/main/screenshots/main%20page%20web.png)
 
 ### Android app
-The android app was built using Android Studio and Java.
+The Android app was built using Android Studio and Java.
 
-<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/master/screenshots/login%20app.jpg?token=GHSAT0AAAAAACAHOMIMECUM6KL5PHQFGJ6MZEUKGCA" align="left" height="510" width="255" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/AharonGross1/Chat-App/main/screenshots/login%20app.jpg" align="left" height="510" width="255" ></a>
 
-<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/master/screenshots/main%20page%20app.jpg?token=GHSAT0AAAAAACAHOMIN2MY7IS7H3YETPWJSZEUKGEA" align="left" height="510" width="255" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/AharonGross1/Chat-App/main/screenshots/main%20page%20app.jpg" align="left" height="510" width="255" ></a>
 
-<a href="url"><img src="https://raw.githubusercontent.com/Asafaar/whatsapp-part-4/master/screenshots/chat%20app.jpg?token=GHSAT0AAAAAACAHOMIMZALEXGK4ZET7GWEYZEUKGAA" align="left" height="510" width="255" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/AharonGross1/Chat-App/main/screenshots/chat%20app.jpg" align="left" height="510" width="255" ></a>
 
-## <br /><br />Authors
-
-- [Asaf Rozen](https://www.github.com/asafaar)
-- [Aharon Gross](https://github.com/AharonGross1)
